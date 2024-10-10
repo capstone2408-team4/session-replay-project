@@ -1,3 +1,6 @@
+# This workflow is currently disabled as we haven't implemented tests yet.
+# To re-enable, rename this file to 'ci.yml' and update the job steps as needed.
+
 name: CI
 
 on:
