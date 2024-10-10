@@ -9,17 +9,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '20'
+    - name: Clear npm cache
+      run: npm cache clean --force
     - name: Install dependencies
       run: |
-        cd frontend && npm ci
-        cd ../backend && npm ci
+        cd frontend && npm install
+        cd ../backend && npm install
     - name: Run tests
       run: |
         cd frontend && npm test
