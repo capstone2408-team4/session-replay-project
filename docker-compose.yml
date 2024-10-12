@@ -5,7 +5,7 @@ services:
       context: ./frontend
       target: development
     ports:
-      - "5173:5173"  # Maps port 5173 on the host to port 5173 in the container
+      - "${REACT_PORT}:${REACT_PORT}"  # Maps port 5173 on the host to port 5173 in the container
     volumes:
       - ./frontend:/app  # Mounts the frontend directory for live reloading
       - /app/node_modules  # Anonymous volume to prevent overwriting node_modules
@@ -21,20 +21,23 @@ services:
       context: ./backend
       target: development
     ports:
-      - "5001:5001"  # Maps port 5001 on the host to port 5001 in the container
+      - "${API_PORT}:${API_PORT}"  # Maps port 5001 on the host to port 5001 in the container
     volumes:
       - ./backend:/app  # Mounts the backend directory for live reloading
       - /app/node_modules  # Anonymous volume to prevent overwriting node_modules
     environment:
-      - NODE_ENV=development
-      - DB_HOST=${DB_HOST:-postgres}  # Hostname for the PostgreSQL service
-      - DB_USER=${DB_USER:-user}  # Default username for PostgreSQL
-      - DB_PASSWORD=${DB_PASSWORD:-password}  # Default password for PostgreSQL
-      - DB_NAME=${DB_NAME:-sessionreplay}  # Default database name in PostgreSQL
-      - REDIS_URL=${REDIS_URL:-redis://default:redis_password@redis:6379}  # URL for Redis connection
-      - S3_ENDPOINT=${S3_ENDPOINT:-http://minio:9000}  # Endpoint for MinIO (S3) connection
-      - S3_ACCESS_KEY=${S3_ACCESS_KEY:-minioadmin} # Default key for MinIO
-      - S3_SECRET_KEY=${S3_SECRET_KEY:-minioadmin} # Default secret for MinIO
+      - OPENAI_API_KEY
+      - REDIS_URL
+      - PSQL_HOST
+      - PSQL_PORT
+      - PSQL_USER
+      - PSQL_PASSWORD
+      - PSQL_DB_NAME
+      - S3_ENDPOINT
+      - S3_ACCESS_KEY
+      - S3_SECRET_ACCESS_KEY
+      - S3_BUCKET_NAME
+      - API_PORT
     command: sh -c "npm install && npm run dev"
     depends_on:
       - postgres
@@ -45,33 +48,37 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_DB: sessionreplay  # Sets the name of the default database
-      POSTGRES_USER: user  # Sets the superuser name
-      POSTGRES_PASSWORD: password  # Sets the superuser password
+      POSTGRES_DB: ${PSQL_DB_NAME}  # Sets the name of the default database
+      POSTGRES_USER: ${PSQL_USER}  # Sets the superuser name
+      POSTGRES_PASSWORD: ${PSQL_PASSWORD}  # Sets the superuser password
     volumes:
       - postgres_data:/var/lib/postgresql/data  # Persists database data
     ports:
-      - "5432:5432"  # Maps port 5432 on the host to port 5432 in the container
+      - "${PSQL_PORT}:${PSQL_PORT}"  # Maps port 5432 on the host to port 5432 in the container
 
   # Redis + RedisStack database
   redis:
     image: redis/redis-stack:latest
     ports:
-      - "6379:6379"  # Redis port
-      - "8001:8001"  # RedisInsight port
+      - "${REDIS_PORT}:${REDIS_PORT}"  # Redis port
+      - "${REDIS_INSIGHT_PORT}:${REDIS_INSIGHT_PORT}"  # RedisInsight port
     volumes:
       - redis_data:/data  # Persists Redis data
+    environment:
+      - REDIS_ARGS=--requirepass ${REDIS_PASSWORD}
+      - REDISINSIGHT_DEFAULT_USERNAME=default
+      - REDISINSIGHT_DEFAULT_PASSWORD=${REDIS_PASSWORD}
 
   # MinIO for S3-compatible object storage
   minio:
     image: minio/minio
     ports:
-      - "9000:9000"  # API port
-      - "9001:9001"  # Console port
+      - "${S3_PORT}:${S3_PORT}"  # API port
+      - "${S3_CONSOLE_PORT}:${S3_CONSOLE_PORT}"  # Console port
     environment:
-      MINIO_ROOT_USER: minioadmin  # Default root user for MinIO
-      MINIO_ROOT_PASSWORD: minioadmin  # Default root password for MinIO
-    command: server /data --console-address ":9001"  # Starts MinIO server and console
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY}  # Default root user for MinIO
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY}  # Default root password for MinIO
+    command: server /data --console-address ":${S3_CONSOLE_PORT}"  # Starts MinIO server and console
     volumes:
       - minio_data:/data  # Persists MinIO data
 
