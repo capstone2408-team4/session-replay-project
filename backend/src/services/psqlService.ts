@@ -30,16 +30,26 @@ export class PsqlService {
   }
 
   // To be changed for actual data, but this is the code to insert data into psql. 
-  async addSession(id: string, data: any): Promise<any> {
+  async addSession(projectID: string, sessionID: string, session_start: Date): Promise<any> {
     try {
       const result = await this.connection.query(
-        'INSERT INTO sessions (session_id, recording_data) VALUES ($1, $2) RETURNING *',
-        [Math.floor(Math.random() * 1000), JSON.stringify({ example: 'data' })]
+        'INSERT INTO sessions (project_id, session_id, events_file_name, session_start) VALUES ($1, $2, $3, $4) RETURNING *',
+        [1, sessionID, `${sessionID}-events.txt`, session_start]
       );
       return result.rows[0];
     } catch (error) {
-      console.error(`Error adding session ${id} to PSQL`, error);
+      console.error(`Error adding session ${sessionID} to PSQL`, error);
       throw error;
     }
   }
 }
+
+// CREATE TABLE sessions (
+//   id PK SERIAL,
+//   project_id FK INTEGER NOT NULL,
+//   session_id VARCHAR(255),
+//   events_file_name VARCHAR (255) NOT NULL,
+//   session_summary VARCHAR (5000),                           
+//   session_start TIMESTAMP NOT NULL,
+//   session_end TIMESTAMP
+// );
