@@ -32,7 +32,7 @@ export class PsqlService {
   // Get session metadata
   async getActiveSession(sessionID: string): Promise<any[]> {
     try {
-      const result = await this.connection.query('SELECT * FROM sessions WHERE session_id = $1 AND is_active = t', [sessionID]);
+      const result = await this.connection.query('SELECT * FROM sessions WHERE session_id = $1 AND is_active = TRUE', [sessionID]);
       return result.rows;
     } catch (error) {
       console.error(`Error fetching session ${sessionID} from PSQL`, error);
@@ -57,7 +57,7 @@ export class PsqlService {
   async updateSessionMetadata(sessionID: string, timestamp: string): Promise<void> {
     try {
       await this.connection.query(
-        'UPDATE sessions SET last_activity_at = $1 WHERE is_active = t AND session_ID = $2',
+        'UPDATE sessions SET last_activity_at = $1 WHERE is_active = TRUE AND session_ID = $2',
         [timestamp, sessionID]
       );
     } catch (error) {
