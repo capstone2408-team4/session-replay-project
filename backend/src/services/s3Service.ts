@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand, HeadBucketCommand, CreateBucketCommand } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 import config from '../config/environment';
 
@@ -25,6 +25,24 @@ export class S3Service {
       forcePathStyle: true, // Needed for MinIO, doesn't affect AWS S3
     });
     this.bucketName = config.S3.BUCKET_NAME!;
+    this.createBucket();
+  }
+
+  private async createBucket(): Promise<void> {
+    try {
+      // Check if the bucket exists
+      await this.connection.send(new HeadBucketCommand({ Bucket: this.bucketName }));
+      console.log(`Bucket ${this.bucketName} already exists.`);
+    } catch (error: any) {
+      if (error.name === 'NotFound') {
+        // Bucket doesn't exist, create it
+        await this.connection.send(new CreateBucketCommand({ Bucket: this.bucketName }));
+        console.log(`Bucket ${this.bucketName} created successfully.`);
+      } else {
+        console.error('Error checking bucket existence:', error);
+        throw error;
+      }
+    }
   }
 
   async addFile(fileName: string, fileContent: any): Promise<string> {

@@ -18,27 +18,75 @@ export class PsqlService {
     });
   }
 
-  // Get session metadata
-  async getSession(id: string): Promise<any[]> {
+  // Get project metadata
+  async getProject(projectID: string): Promise<any[]> {
     try {
-      const result = await this.connection.query('SELECT * FROM sessions WHERE session_id = $1', [id]);
+      const result = await this.connection.query('SELECT * FROM projects WHERE id = $1', [projectID]);
+      return result.rows[0];
+    } catch (error) {
+      console.error(`Error fetching project ${projectID} from PSQL`, error);
+      throw error;
+    }
+  }
+
+  // Get session metadata
+  async getActiveSession(sessionID: string): Promise<any[]> {
+    try {
+      const result = await this.connection.query('SELECT * FROM sessions WHERE session_id = $1 AND is_active = t', [sessionID]);
       return result.rows;
     } catch (error) {
-      console.error(`Error fetching session ${id} from PSQL`, error);
+      console.error(`Error fetching session ${sessionID} from PSQL`, error);
       throw error;
     }
   }
 
   // To be changed for actual data, but this is the code to insert data into psql. 
-  async addSession(id: string, data: any): Promise<any> {
+  async addSession(projectID: string, sessionID: string, sessionStart: string): Promise<any> {
     try {
       const result = await this.connection.query(
-        'INSERT INTO sessions (session_id, recording_data) VALUES ($1, $2) RETURNING *',
-        [Math.floor(Math.random() * 1000), JSON.stringify({ example: 'data' })]
+        'INSERT INTO sessions (project_id, session_id, events_file_name, session_start, last_activity_at) VALUES ($1, $2, $3, $4, $5)',
+        [projectID, sessionID, `${sessionID}-${sessionStart}.txt`, sessionStart, sessionStart]
       );
       return result.rows[0];
     } catch (error) {
-      console.error(`Error adding session ${id} to PSQL`, error);
+      console.error(`Error adding session ${sessionID} to PSQL`, error);
+      throw error;
+    }
+  }
+
+  async updateSessionMetadata(sessionID: string, timestamp: string): Promise<void> {
+    try {
+      await this.connection.query(
+        'UPDATE sessions SET last_activity_at = $1 WHERE is_active = t AND session_ID = $2',
+        [timestamp, sessionID]
+      );
+    } catch (error) {
+      console.error(`Error updating session metadata for ${sessionID}`, error);
+      throw error;
+    }
+  }
+
+  async getInactiveSessions(cutoffTime: string): Promise<any> {
+    try {
+      const result = await this.connection.query(
+        'SELECT id FROM sessions WHERE last_activity_at < $1 AND session_end IS NULL',
+        [cutoffTime]
+      );
+      return result.rows;
+    } catch (error) {
+      console.error('Error fetching inactive sessions', error);
+      throw error;
+    }
+  }
+  
+  async endSession(sessionId: string, timestamp: string): Promise<void> {
+    try {
+      await this.connection.query(
+        'UPDATE sessions SET session_end = $2 WHERE id = $1',
+        [sessionId, timestamp]
+      );
+    } catch (error) {
+      console.error(`Error ending session ${sessionId}`, error);
       throw error;
     }
   }
