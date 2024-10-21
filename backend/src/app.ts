@@ -2,9 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import pkg from 'body-parser';
 const { json, urlencoded } = pkg;
-import psqlRoutes from './routes/psqlRoutes';
-import s3Routes from './routes/s3Routes';
-import redisRoutes from './routes/redisRoutes';
 import recordRouter from './routes/record';
 import path from 'path';
 import { fork } from 'child_process';
@@ -35,10 +32,5 @@ worker.on('exit', (code, signal) => {
   console.log(`Worker process exited with code ${code} and signal ${signal}`);
   // Restart?
 });
-
-// Test routes
-app.use('/api/psql', psqlRoutes);
-app.use('/api/s3', s3Routes);
-app.use('/api/redis', redisRoutes);
 
 export default app;
