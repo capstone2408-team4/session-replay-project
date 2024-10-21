@@ -41,6 +41,17 @@ export class RedisService {
     }
   }
 
+  async deleteRecording(key:string): Promise<void> {
+    try {
+      await this.connection.call('JSON.DEL', key)
+      console.log(`${key} deleted from redis sucessfully`)
+    } catch (error) {
+      console.error(`Error delete key ${key} from redis`, error)
+      throw error;
+    }
+  }
+
+
   // Private method only to be called by addRecording
   private async appendRecording(key: string, value: string): Promise<void> {
     try {
