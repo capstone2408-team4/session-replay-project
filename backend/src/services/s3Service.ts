@@ -39,7 +39,8 @@ export class S3Service {
         await this.connection.send(new CreateBucketCommand({ Bucket: this.bucketName }));
         console.log(`Bucket ${this.bucketName} created successfully.`);
       } else {
-        console.error('Error checking b')
+        console.error('Error checking bucket existence:', error);
+        throw error;
       }
     }
   }

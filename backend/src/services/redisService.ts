@@ -6,11 +6,11 @@ export class RedisService {
   private connection: Redis;
 
   constructor() {
-    this.connection = new Redis(config.REDIS.URL);
+    this.connection = new Redis(config.REDIS.URL as string);
   }
 
   // Pull recording data from redis
-  async getRecording(key: string): Promise<string | null> {
+  async getRecording(key: string): Promise<string | unknown> {
     try {
       const data = await this.connection.call('JSON.GET', key);
       return data;
