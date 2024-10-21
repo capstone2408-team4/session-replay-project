@@ -21,7 +21,7 @@ app.use('/api/record', recordRouter);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const workerPath = path.join(__dirname, 'workers', 'inactiveSessionWorker.ts');
+const workerPath = path.join(__dirname, 'workers', 'inactiveSessionsWorker.ts');
 const worker = fork(workerPath);
 
 worker.on('error', (error) => {

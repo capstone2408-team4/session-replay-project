@@ -25,26 +25,26 @@ async function checkInactiveSessions() {
   }
 }
 
-async function handleSessionEnd(sessionId: string) {
+async function handleSessionEnd(sessionID: string) {
   try {
     // Get session events from Redis
-    const events = await redis.getRecording(sessionId);
+    const events = await redis.getRecording(sessionID);
 
     if (events) {
       // Add to S3
-      const fileName = `${sessionId}-events.txt`;
+      const fileName = `${sessionID}-events.txt`;
       await s3.addFile(fileName, events);
 
       // Update session metadata PSQL
       const timestamp = new Date().toISOString(); // UTC
-      await psql.endSession(sessionId, timestamp);
+      await psql.endSession(sessionID, timestamp);
 
       // Delete session event data from Redis
-      await redis.deleteRecording(sessionId);
+      await redis.deleteRecording(sessionID);
 
-      console.log(`Successfully ended and processed session ${sessionId}`);
+      console.log(`Successfully ended and processed session ${sessionID}`);
     } else {
-      console.warn(`No events found for session ${sessionId}`);
+      console.warn(`No events found for session ${sessionID}`);
     }
   } catch (error) {
     console.error('Error handling session end:', error);

@@ -8,6 +8,7 @@ const psql = new PsqlService();
 
 router.post('/', async (req, res) => {
   const { projectID, sessionID, timestamp, events } = req.body;
+  console.log(req.body);
   const serverTimestamp = new Date().toISOString(); // UTC
 
   try {
@@ -20,7 +21,7 @@ router.post('/', async (req, res) => {
     }
 
     // Check for session metadata in PSQL
-    const sessionMetadata = await psql.getSession(sessionID);
+    const sessionMetadata = await psql.getActiveSession(sessionID);
     
     if (!sessionMetadata) {
       await psql.addSession(sessionID, projectID, serverTimestamp);

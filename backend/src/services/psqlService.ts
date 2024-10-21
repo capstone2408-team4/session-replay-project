@@ -1,4 +1,5 @@
-import { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 import config from '../config/environment';
 
 // Provides functionality to interact with the PSQL database.
@@ -12,14 +13,13 @@ export class PsqlService {
       database: config.POSTGRESQL.DATABASE,
       password: config.POSTGRESQL.PASSWORD,
       port: config.POSTGRESQL.PORT,
-      ssl: {
-        rejectUnauthorized: false, // Use this if your RDS instance requires SSL and you're testing locally
-      },
+      ssl: false
     });
   }
 
   // Get project metadata
   async getProject(projectID: string): Promise<any[]> {
+    console.log('this is project id in getProject', projectID);
     try {
       const result = await this.connection.query('SELECT * FROM projects WHERE id = $1', [projectID]);
       return result.rows[0];
@@ -79,14 +79,14 @@ export class PsqlService {
     }
   }
   
-  async endSession(sessionId: string, timestamp: string): Promise<void> {
+  async endSession(sessionID: string, timestamp: string): Promise<void> {
     try {
       await this.connection.query(
         'UPDATE sessions SET session_end = $2 WHERE id = $1',
-        [sessionId, timestamp]
+        [sessionID, timestamp]
       );
     } catch (error) {
-      console.error(`Error ending session ${sessionId}`, error);
+      console.error(`Error ending session ${sessionID}`, error);
       throw error;
     }
   }
