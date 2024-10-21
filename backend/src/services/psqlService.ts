@@ -18,6 +18,17 @@ export class PsqlService {
     });
   }
 
+  // Get project metadata
+  async getProject(projectID: string): Promise<any[]> {
+    try {
+      const result = await this.connection.query('SELECT * FROM projects WHERE id = $1', [projectID]);
+      return result.rows[0];
+    } catch (error) {
+      console.error(`Error fetching project ${projectID} from PSQL`, error);
+      throw error;
+    }
+  }
+
   // Get session metadata
   async getSession(id: string): Promise<any[]> {
     try {
@@ -30,11 +41,11 @@ export class PsqlService {
   }
 
   // To be changed for actual data, but this is the code to insert data into psql. 
-  async addSession(projectID: string, sessionID: string, session_start: Date): Promise<any> {
+  async addSession(projectID: string, sessionID: string, sessionStart: string): Promise<any> {
     try {
       const result = await this.connection.query(
-        'INSERT INTO sessions (project_id, session_id, events_file_name, session_start) VALUES ($1, $2, $3, $4) RETURNING *',
-        [1, sessionID, `${sessionID}-events.txt`, session_start]
+        'INSERT INTO sessions (project_id, session_id, events_file_name, session_start, last_activity_at) VALUES ($1, $2, $3, $4, $5)',
+        [projectID, sessionID, `${sessionID}-events.txt`, sessionStart, sessionStart]
       );
       return result.rows[0];
     } catch (error) {
@@ -42,7 +53,18 @@ export class PsqlService {
       throw error;
     }
   }
-}
+
+  async updateSessionMetadata(sessionID: string, timestamp: string): Promise<void> {
+    try {
+      await this.connection.query(
+        'UPDATE sessions SET last_activity_at = $1 WHERE is_active = t AND session_ID = $2',
+        [timestamp, sessionID]
+      )
+    } catch (error) {
+      console.error(`Error updating session metadata for ${sessionID}`, error);
+      throw error;
+    }
+  }
 
 // CREATE TABLE sessions (
 //   id PK SERIAL,
