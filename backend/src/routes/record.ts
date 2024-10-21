@@ -6,7 +6,7 @@ const router = express.Router();
 const redis = new RedisService();
 const psql = new PsqlService();
 
-router.post('/record', async (req, res) => {
+router.post('/', async (req, res) => {
   const { projectID, sessionID, timestamp, events } = req.body;
   const serverTimestamp = new Date().toISOString(); // UTC
 
