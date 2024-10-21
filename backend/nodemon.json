@@ -2,5 +2,5 @@
   "watch": ["src"],
   "ext": "js,json,ts",
   "ignore": ["src/**/*.spec.ts"],
-  "exec": "ts-node --transpile-only ./src/server.ts"
+  "exec": "node --loader ts-node/esm --experimental-specifier-resolution=node src/server.ts --transpile-only"
 }

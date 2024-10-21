@@ -6,11 +6,11 @@ export class RedisService {
   private connection: Redis;
 
   constructor() {
-    this.connection = new Redis(config.REDIS.URL);
+    this.connection = new Redis(config.REDIS.URL as string);
   }
 
   // Pull recording data from redis
-  async getRecording(key: string): Promise<string | null> {
+  async getRecording(key: string): Promise<string | unknown> {
     try {
       const data = await this.connection.call('JSON.GET', key);
       return data;
@@ -41,10 +41,21 @@ export class RedisService {
     }
   }
 
+  async deleteRecording(key:string): Promise<void> {
+    try {
+      await this.connection.call('JSON.DEL', key)
+      console.log(`${key} deleted from redis sucessfully`)
+    } catch (error) {
+      console.error(`Error delete key ${key} from redis`, error)
+      throw error;
+    }
+  }
+
+
   // Private method only to be called by addRecording
   private async appendRecording(key: string, value: string): Promise<void> {
     try {
-      await this.connection.call('JSON.ARRAPPEND', key, '.events', value);
+      await this.connection.call('JSON.ARRAPPEND', key, '.', value);
       console.log(`${key} additional events added to redis successfully`);
     } catch (error) {
       console.error(`Error appending events for ${key} in redis`, error);
