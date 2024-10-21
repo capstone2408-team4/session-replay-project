@@ -26,31 +26,19 @@ router.post('/record', async (req, res) => {
       await psql.addSession(sessionID, projectID, serverTimestamp);
     } else {
       await psql.updateSessionMetadata(sessionID, serverTimestamp);
-
+    }
+    
     // Add session event data to Redis
     await redis.addRecording(sessionID, JSON.stringify(events));
 
     res.status(200).json({ message: 'Events batch processed successfully' });
-  } catch (error) {
-    console.error('Error processing batch:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    } catch (error) {
+      console.error('Error processing batch:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 export default router;
-
-//   // if session doesn't exist (not in progress)
-//   if (!redis.sessionExists(sessionID)) {
-//     psql.addSession(projectID, sessionID, timestamp);
-//   } 
-
-//   redis.addRecording(sessionID, events)
-//   // set expiry -- 
-
-// })
-
-// app.ts --> routes -->  controllers --> services
-
 
 //
 // CREATE TABLE sessions (

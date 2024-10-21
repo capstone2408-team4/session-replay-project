@@ -37,6 +37,7 @@ services:
       - S3_ACCESS_KEY
       - S3_SECRET_ACCESS_KEY
       - S3_BUCKET_NAME
+      - S3_REGION
       - API_PORT
     command: sh -c "npm install && npm run dev"
     depends_on:

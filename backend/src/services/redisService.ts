@@ -44,7 +44,7 @@ export class RedisService {
   // Private method only to be called by addRecording
   private async appendRecording(key: string, value: string): Promise<void> {
     try {
-      await this.connection.call('JSON.ARRAPPEND', key, '.events', value);
+      await this.connection.call('JSON.ARRAPPEND', key, '.', value);
       console.log(`${key} additional events added to redis successfully`);
     } catch (error) {
       console.error(`Error appending events for ${key} in redis`, error);

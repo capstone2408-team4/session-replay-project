@@ -65,7 +65,7 @@ export class PsqlService {
       throw error;
     }
   }
-
+}
 // CREATE TABLE sessions (
 //   id PK SERIAL,
 //   project_id FK INTEGER NOT NULL,
