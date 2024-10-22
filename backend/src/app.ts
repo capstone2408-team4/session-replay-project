@@ -3,6 +3,7 @@ import cors from 'cors';
 import pkg from 'body-parser';
 const { json, urlencoded } = pkg;
 import recordRouter from './routes/record';
+import eventsRouter from './routes/events';
 import path from 'path';
 import { fork } from 'child_process';
 import { fileURLToPath } from 'url';
@@ -16,6 +17,7 @@ app.use(json());
 app.use(cors());
 
 app.use('/api/record', recordRouter);
+app.use('/api/events', eventsRouter);
 
 // Spawn worker process
 const __filename = fileURLToPath(import.meta.url);
