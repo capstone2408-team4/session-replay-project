@@ -28,7 +28,7 @@ async function initalizeDatabase() {
     // Create sessions table
     await client.query(`
       CREATE TABLE IF NOT EXISTS sessions (
-        id VARCHAR(255) PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         session_id VARCHAR(255) NOT NULL,
         project_id VARCHAR(255) NOT NULL,
         file_name VARCHAR(255) NOT NULL,
@@ -36,7 +36,7 @@ async function initalizeDatabase() {
         session_start TIMESTAMP WITH TIME ZONE NOT NULL,
         session_end TIMESTAMP WITH TIME ZONE,
         last_activity_at TIMESTAMP WITH TIME ZONE NOT NULL,
-        is_active BOOLEAN NOT NULL,
+        is_active BOOLEAN NOT NULL DEFAULT TRUE,
         CONSTRAINT fk_project FOREIGN KEY (project_id) REFERENCES projects(id)
       );
     `);
