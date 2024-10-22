@@ -32,14 +32,14 @@ export class S3Service {
     try {
       // Check if the bucket exists
       await this.connection.send(new HeadBucketCommand({ Bucket: this.bucketName }));
-      console.log(`Bucket ${this.bucketName} already exists.`);
+      console.log(`Bucket ${this.bucketName} exists in S3`);
     } catch (error: any) {
       if (error.name === 'NotFound') {
         // Bucket doesn't exist, create it
         await this.connection.send(new CreateBucketCommand({ Bucket: this.bucketName }));
-        console.log(`Bucket ${this.bucketName} created successfully.`);
+        console.log(`Bucket ${this.bucketName} created successfully`);
       } else {
-        console.error('Error checking bucket existence:', error);
+        console.error(`Error checking bucket ${this.bucketName} existence in S3:`, error);
         throw error;
       }
     }
