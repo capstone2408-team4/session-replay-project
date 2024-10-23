@@ -1,0 +1,19 @@
+.sessionCard {
+  width: 280px;
+  height: 200px;
+  background-color: var(--providence-white);
+  margin: auto;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--providence-red);
+}
+
+.sessionCard:focus {
+  outline: 3px solid var(--providence-red);
+}
+
+.sessionCard:hover {
+  box-shadow: 1.2px 2.2px 12px var(--providence-red), 
+  0px 0.6px 1.8px 0px var(--providence-red);
+}
