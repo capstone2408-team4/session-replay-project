@@ -1,0 +1,25 @@
+.footer {
+  border-top: solid 1px gray;
+  padding: 16px;
+  bottom: 5px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.maxWidthWrapper {
+  max-width: 904px;
+  margin: auto;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.footerP {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  width: fit-content;
+  margin: auto;
+  font-size: 12px;
+}
