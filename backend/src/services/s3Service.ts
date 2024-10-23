@@ -89,10 +89,10 @@ export class S3Service {
       }
 
       const fileContent = Buffer.concat(chunks).toString('utf-8');
-      console.log('File downloaded from S3 successfully:', fileContent);
+      console.log(`${fileName} downloaded from S3 successfully`);
       return fileContent;
     } catch (error) {
-      console.error('Error downloading file from S3:', error);
+      console.error(`Error downloading ${fileName} from S3:`, error);
       throw error;
     }
   }

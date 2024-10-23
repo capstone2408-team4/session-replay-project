@@ -15,25 +15,27 @@ router.post('/', async (req, res) => {
     const projectMetadata = await psql.getProject(projectID);
 
     if (!projectMetadata) {
-      console.log(`Project not found for ${projectID}. Rejecting.`);
+      console.log(`Project not found for ${projectID}. Rejecting request`);
       // Reject the request >> 404?
       return res.status(400).json({ error: 'Invalid project' });
+    } else {
+      console.log(`Valid project ${projectID} found for incoming request`);
     }
 
     // Check for session metadata in PSQL
     const sessionMetadata = await psql.getActiveSession(sessionID);
     
     if (!sessionMetadata) {
-      console.log(`Active session not found for ${sessionID}. Creating...`);
+      console.log(`Active session not found in PSQL for ${sessionID}. Creating...`);
       await psql.addSession(projectID, sessionID, serverTimestamp);
     } else {
-      console.log(`Active session found for ${sessionID}. Updating... `);
+      console.log(`Active session found in PSQL for ${sessionID}. Updating... `);
       await psql.updateSessionMetadata(sessionID, serverTimestamp);
     }
     
     // Add session event data to Redis
     console.log(`Moving ${events.length} events for session ${sessionID} to Redis...`)
-    await redis.addRecording(sessionID, JSON.stringify(events));
+    await redis.addRecording(sessionID, events);
 
     res.status(200).json({ message: `Events batch for session ${sessionID} processed successfully` });
     } catch (error) {
