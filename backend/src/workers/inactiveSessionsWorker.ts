@@ -34,7 +34,10 @@ async function handleSessionEnd(sessionID: string, fileName: string) {
 
     if (events) {
       // Add to S3
-      await s3.addFile(fileName, events);
+      await s3.addFile(fileName, events).catch(error => {
+        console.error(`[worker] Error adding session ${sessionID} to S3:`, error);
+        throw new Error('Failed to add session to S3. Session will not be removed from Redis.');
+      });
 
       // Update session metadata PSQL
       const timestamp = new Date().toISOString(); // UTC
