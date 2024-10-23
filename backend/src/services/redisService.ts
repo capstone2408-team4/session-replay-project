@@ -10,10 +10,10 @@ export class RedisService {
   }
 
   // Pull recording data from redis
-  async getRecording(key: string): Promise<string | unknown> {
+  async getRecording(key: string): Promise<any[]> {
     try {
       const data = await this.connection.call('JSON.GET', key);
-      return data;
+      return JSON.parse(data);
     } catch (error) {
       console.error(`Error retrieving events for ${key} from Redis:`, error);
       throw error;
@@ -21,14 +21,15 @@ export class RedisService {
   }
 
   // Add recording data to redis. If key exists, append data. If not, create it
-  async addRecording(key: string, value: string): Promise<void> {
+  async addRecording(key: string, value: any[]): Promise<void> {
     const keyExists = await this.sessionExists(key);
     if (keyExists) {
-      console.log(`Redis session for ${key} found. Appending...`);
+      console.log(`Redis session for ${key} found. Appending ${value.length} events...`);
       await this.appendRecording(key, value);
     } else {
-      console.log(`Redis session for ${key} not found. Creating...`);
-      await this.createRecording(key, value);
+      console.log(`Redis session for ${key} not found. Creating with ${value.length} events...`);
+      await this.createRecording(key);
+      await this.appendRecording(key, value)
     }
   }
 
@@ -55,10 +56,10 @@ export class RedisService {
 
 
   // Private method only to be called by addRecording
-  private async appendRecording(key: string, value: string): Promise<void> {
+  private async appendRecording(key: string, value: any[]): Promise<void> {
     try {
-      await this.connection.call('JSON.ARRAPPEND', key, '.', value);
-      console.log(`Additional events appended for session ${key} in Redis`);
+      await this.connection.call('JSON.ARRAPPEND', key, '$', ...value.map(event => JSON.stringify(event)));
+      console.log(`Events appended to session ${key} in Redis`);
     } catch (error) {
       console.error(`Error appending events for session ${key} in Redis`, error);
       throw error;
@@ -66,12 +67,12 @@ export class RedisService {
   }
 
   // Private method only to be called by addRecording
-  private async createRecording(key: string, value: string): Promise<void> {
+  private async createRecording(key: string): Promise<void> {
     try {
-      await this.connection.call('JSON.SET', key, '.', value);
-      console.log(`Events for session ${key} added to Redis`);
+      await this.connection.call('JSON.SET', key, '$', '[]');
+      console.log(`Redis session for ${key} created`);
     } catch (error) {
-      console.error(`Error adding events for session ${key} to Redis`, error);
+      console.error(`Error creating session for ${key} in Redis`, error);
       throw error;
     }
   }
