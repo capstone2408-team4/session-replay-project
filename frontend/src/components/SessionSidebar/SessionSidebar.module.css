@@ -1,0 +1,58 @@
+.sidebarButton {
+  background: transparent;
+  border: none;
+  height: 100%;
+  color: var(--providence-white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.sidebarButton svg {
+  margin-left: 5px;
+
+}
+
+.sidebarButton:hover {
+  background-color: var(--providence-red);
+}
+
+
+.sidebarHeader {
+  text-align: center;
+  width: 280px;
+  height: 50px;
+  margin: auto;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-around;
+  position: relative;
+}
+
+.sidebarMain {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 4px;
+}
+
+.sessionCard {
+  width: 280px;
+  height: 200px;
+  background-color: var(--providence-white);
+  margin: auto;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sessionCard:focus {
+  outline: 3px solid var(--providence-red);
+}
+
+.sessionCard:hover {
+  box-shadow: 1.2px 2.2px 12px var(--providence-red), 
+  0px 0.6px 1.8px 0px var(--providence-red);
+}
