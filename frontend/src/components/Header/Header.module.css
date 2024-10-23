@@ -1,0 +1,24 @@
+.header {
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+}
+
+
+.login {
+  margin-left: auto;
+  background-color: hsl(360, 88%, 66%);
+  padding: 8px;
+  border-radius: 9999px;
+  color: black;
+  width: 100px;
+  height: 40px;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+}
+
+.login:hover {
+  background-color: hsl(0, 70%, 44%);
+}
