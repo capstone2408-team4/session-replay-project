@@ -1,0 +1,22 @@
+.dropdownContainer {
+  background-color: var(--providence-white);
+  position: absolute;
+  left: 30px;
+  bottom: -80px;
+  color: var(--providence-black);
+  border: 3px solid var(--providence-black)
+}
+
+.dropdownContainer ul {
+  list-style: none;
+  padding-left: 4px;
+}
+
+.dropdownContainer li {
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.dropdownContainer li:hover {
+  background-color: var(--providence-red);
+}
