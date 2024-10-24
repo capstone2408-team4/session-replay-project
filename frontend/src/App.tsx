@@ -4,8 +4,8 @@ import MainPage from './components/MainPage'
 function App() {
   return (
     <>
-      {/* <LandingPage /> */}
-      <MainPage />
+      <LandingPage />
+      {/* <MainPage /> */}
     </>
   )
 }

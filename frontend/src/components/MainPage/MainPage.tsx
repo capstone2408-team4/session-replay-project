@@ -14,7 +14,6 @@ function MainPage() {
   const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<any[]>([])
 
   const handleSessionSelect = async function(session: Session) {
-    console.log('handle session select called')
     setSelectedSession(session)
     const events = await fetchSessionEvents(session);
     setSelectedSessionEvents(events)
@@ -41,8 +40,6 @@ function MainPage() {
         throw error
       }
     }
-
-    // fetchSingleSession();
     fetchSessions();
   }, [])
 
