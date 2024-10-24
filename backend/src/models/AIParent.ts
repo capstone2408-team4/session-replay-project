@@ -24,9 +24,9 @@ abstract class AIParent {
     let summaries = await this.summarizeSessionChunks(chunks);
 
     if (summaries.length > 1) {
-      summaries = summaries.join(' ');
-      console.log('summarizing a whole sessions')
-      return await this.query(AIConfig.SessionSummariesPrompt, summaries);
+      const summary = summaries.join(' ');
+      console.log('summarizing a whole sessions');
+      return await this.query(AIConfig.SessionSummariesPrompt, summary);
     } else {
       return summaries[0];
     }
