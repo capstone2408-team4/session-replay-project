@@ -5,8 +5,8 @@
 .mainPageWrapper {
   display: grid;
   height: 100svh;
-  grid-template-columns: 310px 1fr;
-  grid-template-rows: 100px 1fr;
+  grid-template-columns: 310px minmax(310px, 1fr);
+  grid-template-rows: 100px minmax(500px, 1fr);
   grid-template-areas:
     'header header'
     'sidebar main';
@@ -16,6 +16,28 @@
   margin-right: auto;
 }
 
+@media (max-width: 1130px) {
+  .mainPageWrapper {
+    grid-template-columns: minmax(824px, 1130px); /* Only two columns now */
+    grid-template-rows: 100px 1fr;
+    grid-template-areas:
+    'header'
+    'main';
+  }
+
+  .sidebar {
+    display: none; /* Hide the first column */
+  }
+
+  /* .headerContainer {
+    display: none;
+  } */
+
+  .player {
+    grid-area: sidebar main;
+  }
+}
+
 .player {
   display: flex;
   flex-direction: column;
@@ -23,6 +45,7 @@
   padding-top: 16px;
   padding-bottom: 4px;
   grid-area: main;
+  overflow: scroll;
 }
 
 .sidebar {

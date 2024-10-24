@@ -21,8 +21,6 @@ function MainPage() {
 
   const fetchSessionEvents = async function(session: Session) {
     try {
-      console.log(session.file_name)
-      // const response = await axios.get(`https://conduit.jjjones.dev/api/events/dcdd34b7-d045-45d6-8ac8-b88e83b0a5f3-2024-10-23T14:48:58.238Z.txt`);
       const response = await axios.get(`https://conduit.jjjones.dev/api/events/${session.file_name}`);
       setSelectedSession(JSON.parse(response.data));
     } catch (error) {
@@ -40,13 +38,14 @@ function MainPage() {
         throw error
       }
     }
+
     fetchSessions();
   }, [])
 
   return (
     <div className={styles.mainPageWrapper}>
       <div className={styles.headerContainer}>
-        <Header />
+        <Header project='Providence'/>
       </div>
       <div className={styles.sidebar}>
         <SessionSidebar onSessionSelect={handleSessionSelect} sessions={allSessions}/>
