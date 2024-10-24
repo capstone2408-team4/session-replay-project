@@ -1,10 +1,12 @@
 import { PsqlService } from '../services/psqlService';
 import { RedisService } from '../services/redisService';
 import { S3Service } from '../services/s3Service';
+import { OpenAIService } from '../services/openAIService';
 
 const psql = new PsqlService();
 const redis = new RedisService();
 const s3 = new S3Service();
+const openAI = new OpenAIService();
 
 // Configuration (this could be moved elsewhere like environment or config.ts)
 const INACTIVITY_THRESHOLD = 1 * 60 * 1000; // 1 minute in milliseconds
@@ -31,6 +33,10 @@ async function handleSessionEnd(sessionID: string, fileName: string) {
 
     // Get session events from Redis
     const events = await redis.getRecording(sessionID);
+
+    const summary = await openAI.summarizeSession(JSON.stringify(events));
+    console.log('yo dog i here you like summarized sessions', summary)
+
 
     if (events) {
       // Add to S3

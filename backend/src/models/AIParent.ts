@@ -25,6 +25,7 @@ abstract class AIParent {
 
     if (summaries.length > 1) {
       summaries = summaries.join(' ');
+      console.log('summarizing a whole sessions')
       return await this.query(AIConfig.SessionSummariesPrompt, summaries);
     } else {
       return summaries[0];
@@ -35,6 +36,7 @@ abstract class AIParent {
 
   // This is needed to speed up the queries to the AI model via Promise.allSettled
   private async summarizeSessionChunks(chunks: string[]): Promise<string[]> {
+    console.log('summarizing a chunk')
     const promises = chunks.map(chunk => this.query(AIConfig.SessionChunkPrompt, chunk));
     const summaries = await Promise.allSettled(promises);
 
