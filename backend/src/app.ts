@@ -14,8 +14,17 @@ const app = express();
 
 // Middleware
 app.use(urlencoded({ extended: true }));
-app.use(json());
+app.use(json({
+  limit: '10mb' // Increase JSON payload limit
+}));
 app.use(cors());
+
+// Log request payload size
+app.use('/api/record', (req, res, next) => {
+  const contentLength = req.headers['content-length'];
+  console.log(`Batch request body: ${contentLength} bytes`);
+  next();
+});
 
 app.use('/api/record', recordRouter);
 app.use('/api/projects', projectsRouter);
