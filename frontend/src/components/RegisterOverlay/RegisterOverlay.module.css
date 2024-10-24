@@ -1,0 +1,107 @@
+.gradientBox {
+  background: linear-gradient(180deg, hsla(0, 88%, 66%, 1) 30%, hsla(0, 100%, 2%, 1) 100%);
+  width: 40%;
+  height: 100%;
+  border-radius: 8px 0 0 8px;
+  color: black;
+  font-size: 24px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.gradientBox p {
+  margin-left: 16px;
+}
+
+.loginBox {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+
+.loginBox button {
+  display: block;
+  border-radius: 5px;
+  height: 47px;
+  cursor: pointer;
+  width: 208px;
+  margin-top: 20px;
+  color: black;
+  background-color: darkgray;
+}
+
+.loginBox button:hover {
+  background-color: gray
+}
+
+.loginBox input {
+  background-color: white;
+  border-radius: 5px;
+  height: 30px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  width: 200px;
+  color: black;
+}
+
+.loginBox input:focus {
+  outline: 1px solid blue;
+  outline-offset: 2px;
+}
+
+.loginBoxContainer {
+  padding: 32px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1 1 0;
+  color: black;
+  white-space: nowrap;
+}
+
+.overlay {
+  background: hsl(210deg 15% 6% / 0.75);
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(15px);
+  padding: 104px 24px 104px 24px;
+  z-index: 0;
+}
+
+.overlayBox {
+  background-color: hsl(0, 0%, 95%);
+  color: black;
+  max-width: 700px;
+  height: 336px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4px;
+  position: relative;
+}
+
+.overlayContainer {
+  isolation: isolate;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+}
+
+.userNameContainer {
+  width: 100%;
+}
+
+.xButton {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  cursor: pointer;
+}
