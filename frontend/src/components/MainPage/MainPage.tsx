@@ -31,7 +31,7 @@ function MainPage() {
   React.useEffect(() => {
     const fetchSessions = async function() {
       try {
-        const sessions = await axios.get('https://conduit.jjjones.dev/api/projects/cfc15e83-970b-42cd-989f-b87b785a1fd4');
+        const sessions = await axios.get('https://conduit.jjjones.dev/api/projects/f47ac10b-58cc-4372-a567-0e02b2c3d479');
         setAllSessions(sessions.data);
       } catch (error) {
         console.error('Error fecthing sessions', error);
