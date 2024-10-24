@@ -1,7 +1,24 @@
+.gradientText {
+  background-image: linear-gradient(to right bottom, #f45c5c, #ff8551, #ffaf50, #ffd85f, #f5ff80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .header {
   padding: 16px 24px;
   display: flex;
   align-items: center;
+}
+
+.middleEye {
+  margin-left: 20px;
+  transition: transform 0.5s ease;
+  opacity: 0;
+}
+
+.middleEye:hover {
+  opacity: 1;
+  transform: scale(5);
 }
 
 
@@ -21,4 +38,13 @@
 
 .login:hover {
   background-color: hsl(0, 70%, 44%);
+}
+
+.projectName {
+  padding: 8px;
+  border-radius: 8px;
+  margin-left: auto;
+  white-space: nowrap;
+  border: 1px solid var(--providence-white);
+  overflow: hidden;
 }
