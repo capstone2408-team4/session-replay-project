@@ -1,0 +1,6 @@
+.landingPageWrapper {
+  flex-direction: column;
+  position: relative;
+  display: flex;
+  min-height: 100svh;
+}
