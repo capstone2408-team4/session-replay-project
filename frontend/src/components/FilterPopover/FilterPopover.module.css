@@ -1,0 +1,36 @@
+.popoverContainer {
+  background-color: var(--providence-white);
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 100px;
+  top: 40px;
+  color: var(--providence-black);
+  border: 3px solid var(--providence-black);
+  text-align: left;
+  width: 168px;
+}
+.popoverContainer fieldset {
+  box-sizing: border-box;
+  border: none;
+  width: 168px;
+  padding-left: 4px;
+}
+
+.popoverContainer input {
+  cursor: pointer;
+  position: relative;
+}
+
+.popoverContainer button {
+  cursor: pointer;
+  position: relative;
+  margin-left: 32px;
+  margin-top: 10px;
+}
+
+.numberInput {
+  width: 40px;
+  margin-left: 4px;
+  margin-right: 4px;
+}
