@@ -2,9 +2,11 @@
   background-color: var(--providence-white);
   position: absolute;
   left: 30px;
-  bottom: -80px;
+  bottom: -130px;
   color: var(--providence-black);
-  border: 3px solid var(--providence-black)
+  border: 3px solid var(--providence-black);
+  text-align: left;
+  padding-right: 8px;
 }
 
 .dropdownContainer ul {

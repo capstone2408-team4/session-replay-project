@@ -1,22 +1,29 @@
 import React from 'react';
 import styles from './SortDropdown.module.css'
 
-function SortDropdown() {
-  const [dropdownIsOpen, setShowSortDropdown] = React.useState(true)
+interface SortDropdownProp {
+  onClosingClick: (e: any) => void
+}
 
+const SortDropdown = React.forwardRef<HTMLDivElement, SortDropdownProp>(( {onClosingClick}, ref) => {
   React.useEffect(() => {
+    document.addEventListener('click', onClosingClick);
 
+    return (() => {
+      document.removeEventListener('click', onClosingClick)
+    })
   }, [])
 
-
   return (
-    <div id='sortDropdown' className={styles.dropdownContainer}>
+    <div ref={ref} className={styles.dropdownContainer}>
       <ul>
-        <li>Sort Ascending ↑</li>
-        <li>Sort Descending ↓</li>
+        <li>Date Ascending ↑</li>
+        <li>Data Descending ↓</li>
+        <li>Sentiment Ascending ↑</li>
+        <li>Sentiment Descending ↓</li>
       </ul>
     </div>
   );
-}
+})
 
 export default SortDropdown;
