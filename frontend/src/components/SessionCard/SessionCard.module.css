@@ -1,16 +1,20 @@
 .sessionCard {
   width: 280px;
   height: 200px;
-  background-color: var(--providence-white);
+  /* background-color: var(--providence-white); */
+  /* background-image: linear-gradient(to right bottom, #f45c5c, #ff8551, #ffaf50, #ffd85f, #f5ff80);; */
   margin: auto;
   margin-bottom: 8px;
   border-radius: 8px;
   cursor: pointer;
-  color: var(--providence-red);
+  color: var(--providence-white);
+  border-bottom: 3px solid #ffd85f;
+  border-right: 3px solid #ffd85f;
 }
 
 .sessionCard:focus {
-  outline: 3px solid var(--providence-red);
+  border-top: 3px solid var(--providence-red);
+  border-left: 3px solid var(--providence-red);
 }
 
 .sessionCard:hover {
