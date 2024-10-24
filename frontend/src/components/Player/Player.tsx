@@ -1,24 +1,24 @@
 import React from "react";
 import rrwebPlayer from "rrweb-player";
 import styles from './Player.module.css'
-import { Session } from "../../Types";
 
 interface PlayerProps {
-  session: Session | string
+  session: any[]
 }
 
 const Player = ({ session }: PlayerProps) => {
   React.useEffect(() => {
-    console.log('player effect hook')
     const playerRoot = document.getElementById("replayer");
-    let playerInstance;
+    let playerInstance: any;
+
     const initializeWebPlayer = function() {
-      if (playerRoot !== null && session) {
+      if (playerRoot !== null && session.length > 1) {
         try {
           playerInstance = new rrwebPlayer({
             target: playerRoot,
             props: {
               events: session,
+              autoPlay: false,
               mouseTail: {
                 strokeStyle: "#ff842d",
               },
@@ -27,8 +27,6 @@ const Player = ({ session }: PlayerProps) => {
         } catch (error) {
           console.log('Error initializing web player:', error);
         }
-      } else {
-        console.log('Web player root not found. Unable to load player');
       }
     }
 
@@ -39,7 +37,9 @@ const Player = ({ session }: PlayerProps) => {
         playerInstance.pause();
         playerInstance = null;
       }
-      playerRoot.innerHTML = '';
+      if (playerRoot) {
+        playerRoot.innerHTML = '';
+      }
     })
 
   }, [session]);

@@ -1,3 +1,4 @@
 .replayContainer {
-  width: 100%;
+  min-width: 710px;
+  max-height: 656px;
 }
