@@ -24,6 +24,7 @@
   flex-direction: column;
   align-items: center;
   color: black;
+  margin-top: -16px;
 }
 
 .notLoggedIn h1 {
@@ -38,4 +39,8 @@
 
 .notLoggedIn a:hover {
   text-decoration: underline;
+}
+
+.register {
+  margin-top: 0;
 }
