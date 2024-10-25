@@ -61,6 +61,8 @@ function SessionSidebar( { sessions, onSessionSelect } : SessionSidebarProps) {
       {sessions.map(session => {
         return <SessionCard onSessionSelect={onSessionSelect} session={session} />
       })}
+      {/* <SessionCard />
+      <SessionCard /> */}
     </div>
     
   );

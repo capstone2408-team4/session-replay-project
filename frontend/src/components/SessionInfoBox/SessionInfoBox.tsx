@@ -6,12 +6,14 @@ interface SessionInfoBoxProps {
 }
 
 function SessionInfoBox({ session }: SessionInfoBoxProps) {
+  console.log('sessioninfobox', session)
   return (
     <div className={styles.sessionInfoBox}>
       <div className={styles.sessionTitle}>
-        {session.session_id}
+        Sesssion: {session.session_id}
       </div>
-      Your future AI summary goes here:
+      Summary (provided generously by the Providence Team API):
+      <p>{session.session_summary}</p> 
     </div>
   )
 }
