@@ -1,6 +1,7 @@
 import React from "react";
 import rrwebPlayer from "rrweb-player";
 import styles from './Player.module.css'
+// import { getReplayConsolePlugin } from '@rrweb/rrweb-plugin-console-replay';
 
 interface PlayerProps {
   session: any[]
@@ -22,6 +23,11 @@ const Player = ({ session }: PlayerProps) => {
               mouseTail: {
                 strokeStyle: "#ff842d",
               },
+              // plugins: [
+              //   getReplayConsolePlugin({
+              //     level: ['info', 'log', 'warn', 'error'],
+              //   }),
+              // ], 
             },
           });
         } catch (error) {
