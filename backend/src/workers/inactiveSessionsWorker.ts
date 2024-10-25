@@ -34,16 +34,18 @@ async function handleSessionEnd(sessionID: string, fileName: string) {
     // Get session events from Redis
     const events = await redis.getRecording(sessionID);
 
-    const summary = await openAI.summarizeSession(JSON.stringify(events));
-    console.log('yo dog i here you like summarized sessions', summary)
-
-
     if (events) {
       // Add to S3
       await s3.addFile(fileName, events).catch(error => {
         console.error(`[worker] Error adding session ${sessionID} to S3:`, error);
         throw new Error('Failed to add session to S3. Session will not be removed from Redis.');
       });
+      
+      const summary = await openAI.summarizeSession(JSON.stringify(events));
+      console.log('yo dog i here you like summarized sessions', summary);
+      
+      // Add session summary to PSQL
+      await psql.addSessionSummary(sessionID, summary);
 
       // Update session metadata PSQL
       const timestamp = new Date().toISOString(); // UTC
