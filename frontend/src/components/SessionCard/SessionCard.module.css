@@ -21,3 +21,15 @@
   box-shadow: 1.2px 2.2px 12px var(--providence-red), 
   0px 0.6px 1.8px 0px var(--providence-red);
 }
+
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+}
+
+.cardContainer ul {
+  list-style: none;
+  padding-left: 8px;
+  margin-top: 2px;
+}

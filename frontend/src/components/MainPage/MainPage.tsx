@@ -15,14 +15,13 @@ function MainPage() {
 
   const handleSessionSelect = async function(session: Session) {
     setSelectedSession(session)
-    const events = await fetchSessionEvents(session);
-    setSelectedSessionEvents(events)
+    fetchSessionEvents(session);
   }
 
   const fetchSessionEvents = async function(session: Session) {
     try {
       const response = await axios.get(`https://conduit.jjjones.dev/api/events/${session.file_name}`);
-      setSelectedSession(JSON.parse(response.data));
+      setSelectedSessionEvents(JSON.parse(response.data));
     } catch (error) {
       console.log('error fetching single session', error)
     }
@@ -51,8 +50,8 @@ function MainPage() {
         <SessionSidebar onSessionSelect={handleSessionSelect} sessions={allSessions}/>
       </div>
       <div className={styles.player}>
-        <Player session={selectedSession}/>
-        <SessionInfoBox session={{session_id: 'Example Session Name'}}/>
+        <Player session={selectedSessionEvents}/>
+        <SessionInfoBox session={selectedSession}/>
       </div>
     </div>
   );
