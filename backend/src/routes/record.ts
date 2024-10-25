@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
       await psql.addSession(projectID, sessionID, serverTimestamp);
     } else {
       console.log(`Active session found in PSQL for ${sessionID}. Updating... `);
-      await psql.updateSessionMetadata(sessionID, serverTimestamp);
+      await psql.updateSessionLastActivity(sessionID, serverTimestamp);
     }
     
     // Add session event data to Redis

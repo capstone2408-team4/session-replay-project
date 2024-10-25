@@ -16,7 +16,7 @@ function SessionCard( { session, onSessionSelect }: SessionCardProps) {
           <li style={{color: 'orange'}}>Date: {new Date(session.session_start).toDateString()}</li>
           <li style={{color: 'yellow'}}>Duration: {millisToMinutesAndSeconds(new Date(session.session_end) - new Date(session.session_start))}</li>
           <li style={{color: 'green'}}>Behavior Sentiment: 7/10</li>
-          <li style={{color: 'white'}}>Location: Pearly Gates</li>
+          <li style={{color: 'white'}}>Location: Gates of Hell</li>
           <li style={{color: 'white'}}>IP Address: 192.168.1.1</li>
           <li style={{color: 'violet'}}>OS: </li>
         </ul>

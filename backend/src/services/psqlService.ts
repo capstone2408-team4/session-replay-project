@@ -53,7 +53,7 @@ export class PsqlService {
     }
   }
 
-  async updateSessionMetadata(sessionID: string, timestamp: string): Promise<void> {
+  async updateSessionLastActivity(sessionID: string, timestamp: string): Promise<void> {
     try {
       await this.connection.query(
         'UPDATE sessions SET last_activity_at = $1 WHERE is_active = TRUE AND session_ID = $2',
@@ -106,5 +106,16 @@ export class PsqlService {
     }
   }
 
-  
+  async addSessionSummary(sessionID: string, summary: string): Promise<void> {
+    try {
+      await this.connection.query(
+        'UPDATE sessions SET session_summary = $2 WHERE session_id = $1 AND is_active = TRUE',
+        [sessionID, summary]
+      );
+      console.log(`Successfully added a summary for ${sessionID} in PSQL`)
+    } catch (error) {
+      console.error(`Error adding session summary for ${sessionID} in PSQL`)
+      throw error;
+    }
+  }
 }
