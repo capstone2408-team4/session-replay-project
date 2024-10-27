@@ -3,29 +3,32 @@ import styles from './FilterPopover.module.css'
 
 interface FilterPopoverProp {
   onClosingClick: (e: any) => void
+  onFilter: (filterType: string, dayRange: number) => void
+  onRadioSelect: (selection: string) => void
+  radioChoice: string
 }
 
-const FilterPopover = React.forwardRef<HTMLDivElement, FilterPopoverProp>(( {onClosingClick}, ref) => {
-  const [radioChoice, setRadioChoice] = React.useState<null | string>(null)
-  const [dayRange, setDayRange] = React.useState<number | string>('')
+const FilterPopover = React.forwardRef<HTMLDivElement, FilterPopoverProp>(( {onClosingClick, onFilter, onRadioSelect, radioChoice}, ref) => {
+  const [dayRange, setDayRange] = React.useState<number>(1)
 
   const handleRadioSelection = function(e: React.ChangeEvent<HTMLInputElement>) {
-    setRadioChoice(e.target.value)
-  }
-
-  const handleFilter = function(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    if (radioChoice) {
-      alert('filtering')
-    }
+    onRadioSelect(e.target.value)
   }
 
   const handleDayRangeInput = function(e: React.ChangeEvent<HTMLInputElement>) {
     const input = parseInt(e.target.value)
     if (!isNaN(input)) {
-      setDayRange(e.target.value)
+      setDayRange(parseInt(e.target.value));
     } else {
-      setDayRange('')
+      setDayRange(0);
+    }
+  }
+
+  const handleSubmit = function(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    onFilter(radioChoice, dayRange)
+    if (radioChoice === 'remove') {
+      onRadioSelect('')
     }
   }
 
@@ -39,14 +42,14 @@ const FilterPopover = React.forwardRef<HTMLDivElement, FilterPopoverProp>(( {onC
 
   return (
     <div ref={ref} className={styles.popoverContainer}>
-      <form onSubmit={handleFilter}>
+      <form onSubmit={handleSubmit}>
         <fieldset>
           <input
             type="radio"
             name="today"
             id="today"
             value="today"
-            checked={radioChoice === 'today'}// state change here boolean
+            checked={radioChoice === 'today'}
             onChange={handleRadioSelection}
           />
           <label htmlFor="today">Today</label>
@@ -73,6 +76,16 @@ const FilterPopover = React.forwardRef<HTMLDivElement, FilterPopoverProp>(( {onC
             <input value={dayRange} onChange={handleDayRangeInput} min='0'max='30' className={styles.numberInput}type='number'></input>
             Days
           </label>
+          <br />
+          <input
+            type="radio"
+            name="remove"
+            id="remove"
+            value="remove"
+            checked={radioChoice === 'remove'}
+            onChange={handleRadioSelection}
+          />
+          <label htmlFor="remove">Remove All</label>
           <button type='submit'>Chips Ahoy!</button>
         </fieldset>
       </form>

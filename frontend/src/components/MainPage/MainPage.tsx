@@ -6,11 +6,13 @@ import styles from './MainPage.module.css'
 import axios from 'axios'
 import { Session } from '../../Types/index.ts'
 import SessionInfoBox from '../SessionInfoBox/SessionInfoBox.tsx';
+import { filterToday, filterYday, filterRange } from '../../utils/helpers.ts';
 
 function MainPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
   const [selectedSession, setSelectedSession] = React.useState<Session | null>(null);
-  const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<any[]>([])
+  const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<any[]>([]);
+  const [filteredSessions, setFilteredSessions] = React.useState<Session[] | null>(null);
 
   const handleSessionSelect = async function(session: Session) {
     setSelectedSession(session)
@@ -32,9 +34,22 @@ function MainPage() {
     })
   }
 
+  const filterSessions = function(filterType: string, range=null) {
+    if (filterType === 'today') {
+      setFilteredSessions(filterToday(allSessions));
+    } else if (filterType === 'yesterday') {
+      setFilteredSessions(filterYday(allSessions));
+    } else if (filterType === 'range' && range) {
+      setFilteredSessions(filterRange(allSessions, range))
+    } else {
+      setFilteredSessions(null)
+    }
+
+    setSelectedSession(null)
+  }
+
   const fetchSessionEvents = async function(session: Session) {
     try {
-      // const response = await axios.get(`https://conduit.jjjones.dev/api/events/${session.file_name}`);
       const response = await axios.get(`http://localhost:5001/api/events/${session.file_name}`);
       setSelectedSessionEvents(JSON.parse(response.data));
     } catch (error) {
@@ -62,10 +77,10 @@ function MainPage() {
         <Header project='Providence'/>
       </div>
       <div className={styles.sidebar}>
-        <SessionSidebar onSort={sortSessions} onSessionSelect={handleSessionSelect} sessions={allSessions}/>
+        <SessionSidebar onFilter={filterSessions} onSort={sortSessions} onSessionSelect={handleSessionSelect} sessions={filteredSessions || allSessions}/>
       </div>
       <div className={styles.player}>
-        <Player session={selectedSessionEvents}/>
+        {selectedSession && <Player session={selectedSessionEvents}/>}
         {selectedSession && <SessionInfoBox session={selectedSession}/>}
       </div>
     </div>
