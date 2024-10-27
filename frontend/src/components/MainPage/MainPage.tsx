@@ -6,7 +6,7 @@ import styles from './MainPage.module.css'
 import axios from 'axios'
 import { Session } from '../../Types/index.ts'
 import SessionInfoBox from '../SessionInfoBox/SessionInfoBox.tsx';
-import { filterToday, filterYday, filterRange } from '../../utils/helpers.ts';
+import { filterToday, filterYday, filterRange, sorter } from '../../utils/helpers.ts';
 
 function MainPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
@@ -20,21 +20,15 @@ function MainPage() {
   }
 
   const sortSessions = function(sortType: string) {
-    setAllSessions((sessions) => {
-      return sessions.slice().sort((a, b) => {
-        switch (sortType) {
-          case 'Time Ascending':
-            return new Date(a.session_start) - new Date(b.session_start);
-          case 'Time Descending':
-            return new Date(b.session_start) - new Date(a.session_start);
-          default:
-            return 0;
-        }
-      })
-    })
+    if (filteredSessions) {
+      setFilteredSessions(sorter(filteredSessions, sortType));
+    } else {
+      setAllSessions(sorter(allSessions, sortType));
+    }
+    
   }
 
-  const filterSessions = function(filterType: string, range=null) {
+  const filterSessions = function(filterType: string, range: null | number=null) {
     if (filterType === 'today') {
       setFilteredSessions(filterToday(allSessions));
     } else if (filterType === 'yesterday') {

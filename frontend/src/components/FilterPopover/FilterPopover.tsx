@@ -3,12 +3,13 @@ import styles from './FilterPopover.module.css'
 
 interface FilterPopoverProp {
   onClosingClick: (e: any) => void
-  onFilter: (filterType: string, dayRange: number) => void
+  onFilter: (filterType: string, dayRange: number | null) => void
   onRadioSelect: (selection: string) => void
   radioChoice: string
+  onClosePopover: () => void
 }
 
-const FilterPopover = React.forwardRef<HTMLDivElement, FilterPopoverProp>(( {onClosingClick, onFilter, onRadioSelect, radioChoice}, ref) => {
+const FilterPopover = React.forwardRef<HTMLDivElement, FilterPopoverProp>(( {onClosingClick, onFilter, onRadioSelect, radioChoice, onClosePopover}, ref) => {
   const [dayRange, setDayRange] = React.useState<number>(1)
 
   const handleRadioSelection = function(e: React.ChangeEvent<HTMLInputElement>) {
@@ -30,6 +31,8 @@ const FilterPopover = React.forwardRef<HTMLDivElement, FilterPopoverProp>(( {onC
     if (radioChoice === 'remove') {
       onRadioSelect('')
     }
+
+    onClosePopover()
   }
 
   React.useEffect(() => {

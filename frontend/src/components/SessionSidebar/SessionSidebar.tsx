@@ -11,7 +11,7 @@ interface SessionSidebarProps {
   sessions: Session[]
   onSessionSelect: (session: Session) => void
   onSort: (sortType: string) => void
-  onFilter: (filterType: string, range?: null) => void
+  onFilter: (filterType: string, range?: null | number) => void
 }
 
 function SessionSidebar( { sessions, onSessionSelect, onSort, onFilter } : SessionSidebarProps) {
@@ -43,7 +43,16 @@ function SessionSidebar( { sessions, onSessionSelect, onSort, onFilter } : Sessi
     if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
       setShowFilterPopover(false)
     }  
-   }
+  }
+
+  const closePopover = function() {
+    setShowFilterPopover(false)
+  }
+
+  const closeDropdown = function() {
+    setShowSortDropdown(false)
+  }
+ 
   
   const dropdownRef = React.useRef<HTMLDivElement | null>(null);
   const popoverRef = React.useRef<HTMLDivElement | null>(null);
@@ -57,14 +66,14 @@ function SessionSidebar( { sessions, onSessionSelect, onSort, onFilter } : Sessi
             <image href={down} x='2' y='6'height='20'width='20' />
           </svg>
         </button>
-        {showSortDropdown && <SortDropdown onSort={onSort} onClosingClick={handleClosingClick} ref={dropdownRef}/>}
+        {showSortDropdown && <SortDropdown onCloseDropdown={closeDropdown} onSort={onSort} onClosingClick={handleClosingClick} ref={dropdownRef}/>}
         <button onClick={togglePopover} className={styles.sidebarButton}>
           Filter
           <svg width={30} height={30} xmlns="http://www.w3.org/2000/svg">
             <image href={down} x='2' y='6' height='20' width='20' />
           </svg>
         </button>
-        {showFilterPopover && <FilterPopover onRadioSelect={handleRadioSelect} radioChoice={radioChoice} onFilter={onFilter} onClosingClick={handleClosingClick} ref={popoverRef}/>}
+        {showFilterPopover && <FilterPopover onClosePopover={closePopover} onRadioSelect={handleRadioSelect} radioChoice={radioChoice} onFilter={onFilter} onClosingClick={handleClosingClick} ref={popoverRef}/>}
       </div>
       {sessions.map(session => {
         return <SessionCard key={session.session_id} onSessionSelect={onSessionSelect} session={session} />
