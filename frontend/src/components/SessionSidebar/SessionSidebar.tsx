@@ -10,12 +10,13 @@ import { Session } from '../../Types';
 interface SessionSidebarProps {
   sessions: Session[]
   onSessionSelect: (session: Session) => void
+  onSort: (sortType: string) => void
 }
 
-function SessionSidebar( { sessions, onSessionSelect } : SessionSidebarProps) {
-  const [showSortDropdown, setShowSortDropdown] = React.useState(false)
-  const [showFilterPopover, setShowFilterPopover] = React.useState(false)
-
+function SessionSidebar( { sessions, onSessionSelect, onSort } : SessionSidebarProps) {
+  const [showSortDropdown, setShowSortDropdown] = React.useState(false);
+  const [showFilterPopover, setShowFilterPopover] = React.useState(false);
+  
   const toggleDropdown = function(e: React.MouseEvent) {
     e.stopPropagation()
     setShowFilterPopover(false)
@@ -49,7 +50,7 @@ function SessionSidebar( { sessions, onSessionSelect } : SessionSidebarProps) {
             <image href={down} x='2' y='6'height='20'width='20' />
           </svg>
         </button>
-        {showSortDropdown && <SortDropdown onClosingClick={handleClosingClick} ref={dropdownRef}/>}
+        {showSortDropdown && <SortDropdown onSort={onSort} onClosingClick={handleClosingClick} ref={dropdownRef}/>}
         <button onClick={togglePopover} className={styles.sidebarButton}>
           Filter
           <svg width={30} height={30} xmlns="http://www.w3.org/2000/svg">
@@ -61,8 +62,6 @@ function SessionSidebar( { sessions, onSessionSelect } : SessionSidebarProps) {
       {sessions.map(session => {
         return <SessionCard onSessionSelect={onSessionSelect} session={session} />
       })}
-      {/* <SessionCard />
-      <SessionCard /> */}
     </div>
     
   );
