@@ -39,6 +39,7 @@ services:
       - S3_BUCKET_NAME
       - S3_REGION
       - API_PORT
+      - FINDIP_API_KEY
     command: sh -c "npm install && npm run dev"
     depends_on:
       - postgres

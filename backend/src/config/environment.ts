@@ -1,6 +1,7 @@
 const config = {
   PORT: process.env.API_PORT,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  FINDIP_API_KEY: process.env.FINDIP_API_KEY,
   
   REDIS: {
     URL: process.env.REDIS_URL,
