@@ -53,7 +53,6 @@ function SessionSidebar( { sessions, onSessionSelect, onSort, onFilter } : Sessi
     setShowSortDropdown(false)
   }
  
-  
   const dropdownRef = React.useRef<HTMLDivElement | null>(null);
   const popoverRef = React.useRef<HTMLDivElement | null>(null);
 

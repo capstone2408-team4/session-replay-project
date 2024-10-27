@@ -6,6 +6,7 @@ import styles from './MainPage.module.css'
 import axios from 'axios'
 import { Session } from '../../Types/index.ts'
 import SessionInfoBox from '../SessionInfoBox/SessionInfoBox.tsx';
+import EmptyPlayer from '../EmptyPlayer/EmptyPlayer.tsx';
 import { filterToday, filterYday, filterRange, sorter } from '../../utils/helpers.ts';
 
 function MainPage() {
@@ -25,7 +26,6 @@ function MainPage() {
     } else {
       setAllSessions(sorter(allSessions, sortType));
     }
-    
   }
 
   const filterSessions = function(filterType: string, range: null | number=null) {
@@ -74,6 +74,7 @@ function MainPage() {
         <SessionSidebar onFilter={filterSessions} onSort={sortSessions} onSessionSelect={handleSessionSelect} sessions={filteredSessions || allSessions}/>
       </div>
       <div className={styles.player}>
+        {!selectedSession && <EmptyPlayer />}
         {selectedSession && <Player session={selectedSessionEvents}/>}
         {selectedSession && <SessionInfoBox session={selectedSession}/>}
       </div>
