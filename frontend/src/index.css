@@ -91,3 +91,8 @@ html, body {
   width: 80%;
   justify-content: space-around;
 }
+
+.rr-player__frame {
+  width: 100% !important;
+  /* flex: 1 1 auto; Responsive sizing */
+}
