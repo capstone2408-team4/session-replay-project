@@ -7,7 +7,6 @@ import config from '../config/environment';
 export class OpenAIService extends AIParent {
   private connection: OpenAI;
   private model: string;
-  private maxTokens: number;
   protected maxPromptLength: number;
 
   constructor() {
@@ -16,7 +15,6 @@ export class OpenAIService extends AIParent {
       apiKey: config.OPENAI_API_KEY
     });
     this.model = AIConfig.OpenAIModel;
-    this.maxTokens = AIConfig.OpenAIMaxTokens;
     this.maxPromptLength = AIConfig.OpenAIMaxPromptLength;
   }
 
@@ -31,7 +29,6 @@ export class OpenAIService extends AIParent {
             content: `${prompt} ${data}`,
           }
         ],
-        max_tokens: this.maxTokens
       });
 
       return response.choices[0].message.content || '';
