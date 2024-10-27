@@ -60,7 +60,7 @@ function SessionSidebar( { sessions, onSessionSelect, onSort } : SessionSidebarP
         {showFilterPopover && <FilterPopover onClosingClick={handleClosingClick} ref={popoverRef}/>}
       </div>
       {sessions.map(session => {
-        return <SessionCard onSessionSelect={onSessionSelect} session={session} />
+        return <SessionCard key={session.session_id} onSessionSelect={onSessionSelect} session={session} />
       })}
     </div>
     
