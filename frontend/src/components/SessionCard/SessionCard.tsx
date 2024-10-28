@@ -5,22 +5,20 @@ import { millisToMinutesAndSeconds } from '../../utils/helpers';
 interface SessionCardProps {
   session: Session
   onSessionSelect: (session: Session) => void
+  isActive: boolean
 }
 
-function SessionCard( { session, onSessionSelect }: SessionCardProps) {
-  // duration to be replaced with something from backend
-  // location aslso
-  // behavior as well
-
+function SessionCard( { session, onSessionSelect, isActive }: SessionCardProps) {
+  console.log(isActive)
   return (
-    <div onClick={() => onSessionSelect(session)} role='button' aria-label="Click to select session." tabIndex={0} className={styles.sessionCard}>
+    <div onClick={() => onSessionSelect(session)} role='button' aria-label="Click to select session." tabIndex={0} className={`${styles.sessionCard} ${isActive && styles.activeSelection}`}>
       <div className={styles.cardContainer}>
         <ul>
           <li>Time: {new Date(session.session_start).toUTCString()}</li>
           <li>Session ID: <span className={styles.sessionID}>{session.session_id.slice(0, 18)}</span></li> 
           <li >Behavior Sentiment: 7/10</li>
           <li >Location: Gates of Hell</li>
-          <li>Duration: {millisToMinutesAndSeconds(new Date(session.session_end) - new Date(session.session_start))}</li> 
+          <li>Duration: {millisToMinutesAndSeconds(new Date(session.last_activity_at) - new Date(session.session_start))}</li> 
           <li>OS: </li>
         </ul>
       </div>

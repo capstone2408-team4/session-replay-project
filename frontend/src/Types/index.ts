@@ -8,4 +8,5 @@ export interface Session {
   session_end: string
   last_activity_at: string
   is_active: boolean
+  is_selected?: boolean
 }

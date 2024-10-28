@@ -4,7 +4,7 @@
   flex-direction: column;
   position: absolute;
   left: 100px;
-  top: 40px;
+  top: 32px;
   color: var(--providence-black);
   border: 3px solid var(--providence-black);
   text-align: left;

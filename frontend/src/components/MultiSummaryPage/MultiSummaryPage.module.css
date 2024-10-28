@@ -18,7 +18,7 @@
 
 @media (max-width: 1130px) {
   .mainPageWrapper {
-    grid-template-columns: minmax(824px, 1130px); /* Only two columns now */
+    grid-template-columns: minmax(824px, 1130px);
     grid-template-rows: 100px 1fr;
     grid-template-areas:
     'header'
@@ -26,27 +26,15 @@
   }
 
   .sidebar {
-    display: none; /* Hide the first column */
-  }
-
-  /* .headerContainer {
     display: none;
-  } */
+  }
 
   .player {
     grid-area: sidebar main;
   }
 }
 
-.player {
-  display: flex;
-  flex-direction: column;
-  padding: 50px;
-  padding-top: 0px;
-  padding-bottom: 4px;
-  grid-area: main;
-  overflow: scroll;
-}
+
 
 .sidebar {
   grid-area: sidebar;

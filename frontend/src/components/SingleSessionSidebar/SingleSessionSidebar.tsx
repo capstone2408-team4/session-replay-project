@@ -1,24 +1,25 @@
 import React from 'react';
 import SortDropdown from '../SortDropdown';
-import styles from './SessionSidebar.module.css'
+import styles from './SingleSessionSidebar.module.css'
 import down from '../../assets/down.png'
 import SessionCard from '../SessionCard';
 import FilterPopover from '../FilterPopover';
 import { Session } from '../../Types';
 
 
-interface SessionSidebarProps {
+interface SingleSessionSidebarProps {
   sessions: Session[]
   onSessionSelect: (session: Session) => void
   onSort: (sortType: string) => void
   onFilter: (filterType: string, range?: null | number) => void
+  selectedSession: Session | null
 }
 
-function SessionSidebar( { sessions, onSessionSelect, onSort, onFilter } : SessionSidebarProps) {
+function SingleSessionSidebar( { sessions, onSessionSelect, onSort, onFilter, selectedSession } : SingleSessionSidebarProps) {
   const [showSortDropdown, setShowSortDropdown] = React.useState(false);
   const [showFilterPopover, setShowFilterPopover] = React.useState(false);
   const [radioChoice, setRadioChoice] = React.useState('')
-
+  console.log('sidebar reloaded')
 
   const handleRadioSelect = function(selection: string) {
     setRadioChoice(selection)
@@ -75,11 +76,11 @@ function SessionSidebar( { sessions, onSessionSelect, onSort, onFilter } : Sessi
         {showFilterPopover && <FilterPopover onClosePopover={closePopover} onRadioSelect={handleRadioSelect} radioChoice={radioChoice} onFilter={onFilter} onClosingClick={handleClosingClick} ref={popoverRef}/>}
       </div>
       {sessions.map(session => {
-        return <SessionCard key={session.session_id} onSessionSelect={onSessionSelect} session={session} />
+        return <SessionCard isActive={!!selectedSession && session.id === selectedSession.id} key={session.session_id} onSessionSelect={onSessionSelect} session={session} />
       })}
     </div>
     
   );
 }
 
-export default SessionSidebar;
+export default SingleSessionSidebar;
