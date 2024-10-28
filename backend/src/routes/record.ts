@@ -1,6 +1,7 @@
 import express from 'express';
 import { RedisService } from '../services/redisService';
 import { PsqlService } from '../services/psqlService';
+import { time } from 'console';
 const router = express.Router();
 
 const redis = new RedisService();
@@ -8,7 +9,6 @@ const psql = new PsqlService();
 
 router.post('/', async (req, res) => {
   const { projectID, sessionID, events } = req.body;
-  const serverTimestamp = new Date().toISOString(); // UTC
 
   try {
     // Check for valid project in PSQL
@@ -26,11 +26,13 @@ router.post('/', async (req, res) => {
     const sessionMetadata = await psql.getActiveSession(sessionID);
     
     if (!sessionMetadata) {
+      const eventTimestamp = new Date(events[0].timestamp).toISOString();;
       console.log(`Active session not found in PSQL for ${sessionID}. Creating...`);
-      await psql.addSession(projectID, sessionID, serverTimestamp);
+      await psql.addSession(projectID, sessionID, eventTimestamp);
     } else {
+      const eventTimestamp = new Date(events[events.length - 1].timestamp).toISOString();;
       console.log(`Active session found in PSQL for ${sessionID}. Updating... `);
-      await psql.updateSessionLastActivity(sessionID, serverTimestamp);
+      await psql.updateSessionLastActivity(sessionID, eventTimestamp);
     }
     
     // Add session event data to Redis
