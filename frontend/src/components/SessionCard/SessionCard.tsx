@@ -8,10 +8,6 @@ interface SessionCardProps {
 }
 
 function SessionCard( { session, onSessionSelect }: SessionCardProps) {
-  // duration to be replaced with something from backend
-  // location aslso
-  // behavior as well
-
   return (
     <div onClick={() => onSessionSelect(session)} role='button' aria-label="Click to select session." tabIndex={0} className={styles.sessionCard}>
       <div className={styles.cardContainer}>
