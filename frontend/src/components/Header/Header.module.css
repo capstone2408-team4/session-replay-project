@@ -30,7 +30,7 @@
 }
 
 .infinity {
-  background-color: #f45c5c;
+  background-color: var(--providence-red);
   border-radius: 4px;
 }
 
