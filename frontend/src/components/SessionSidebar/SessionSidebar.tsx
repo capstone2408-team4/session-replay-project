@@ -10,12 +10,20 @@ import { Session } from '../../Types';
 interface SessionSidebarProps {
   sessions: Session[]
   onSessionSelect: (session: Session) => void
+  onSort: (sortType: string) => void
+  onFilter: (filterType: string, range?: null | number) => void
 }
 
-function SessionSidebar( { sessions, onSessionSelect } : SessionSidebarProps) {
-  const [showSortDropdown, setShowSortDropdown] = React.useState(false)
-  const [showFilterPopover, setShowFilterPopover] = React.useState(false)
+function SessionSidebar( { sessions, onSessionSelect, onSort, onFilter } : SessionSidebarProps) {
+  const [showSortDropdown, setShowSortDropdown] = React.useState(false);
+  const [showFilterPopover, setShowFilterPopover] = React.useState(false);
+  const [radioChoice, setRadioChoice] = React.useState('')
 
+
+  const handleRadioSelect = function(selection: string) {
+    setRadioChoice(selection)
+  }
+   
   const toggleDropdown = function(e: React.MouseEvent) {
     e.stopPropagation()
     setShowFilterPopover(false)
@@ -35,8 +43,16 @@ function SessionSidebar( { sessions, onSessionSelect } : SessionSidebarProps) {
     if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
       setShowFilterPopover(false)
     }  
-   }
-  
+  }
+
+  const closePopover = function() {
+    setShowFilterPopover(false)
+  }
+
+  const closeDropdown = function() {
+    setShowSortDropdown(false)
+  }
+ 
   const dropdownRef = React.useRef<HTMLDivElement | null>(null);
   const popoverRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -49,20 +65,18 @@ function SessionSidebar( { sessions, onSessionSelect } : SessionSidebarProps) {
             <image href={down} x='2' y='6'height='20'width='20' />
           </svg>
         </button>
-        {showSortDropdown && <SortDropdown onClosingClick={handleClosingClick} ref={dropdownRef}/>}
+        {showSortDropdown && <SortDropdown onCloseDropdown={closeDropdown} onSort={onSort} onClosingClick={handleClosingClick} ref={dropdownRef}/>}
         <button onClick={togglePopover} className={styles.sidebarButton}>
           Filter
           <svg width={30} height={30} xmlns="http://www.w3.org/2000/svg">
             <image href={down} x='2' y='6' height='20' width='20' />
           </svg>
         </button>
-        {showFilterPopover && <FilterPopover onClosingClick={handleClosingClick} ref={popoverRef}/>}
+        {showFilterPopover && <FilterPopover onClosePopover={closePopover} onRadioSelect={handleRadioSelect} radioChoice={radioChoice} onFilter={onFilter} onClosingClick={handleClosingClick} ref={popoverRef}/>}
       </div>
       {sessions.map(session => {
-        return <SessionCard onSessionSelect={onSessionSelect} session={session} />
+        return <SessionCard key={session.session_id} onSessionSelect={onSessionSelect} session={session} />
       })}
-      {/* <SessionCard />
-      <SessionCard /> */}
     </div>
     
   );

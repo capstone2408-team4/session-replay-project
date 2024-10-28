@@ -11,7 +11,7 @@ const Player = ({ session }: PlayerProps) => {
   React.useEffect(() => {
     const playerRoot = document.getElementById("replayer");
     let playerInstance: any;
-    console.log('player', session)
+
     const initializeWebPlayer = function() {
       if (playerRoot !== null && session.length > 1) {
         try {
@@ -23,11 +23,6 @@ const Player = ({ session }: PlayerProps) => {
               mouseTail: {
                 strokeStyle: "#ff842d",
               },
-              // plugins: [
-              //   getReplayConsolePlugin({
-              //     level: ['info', 'log', 'warn', 'error'],
-              //   }),
-              // ], 
             },
           });
         } catch (error) {

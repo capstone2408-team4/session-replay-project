@@ -72,6 +72,9 @@ html, body {
   border-radius: 5px; 
   box-shadow:0 4px 12px var(--providence-red);
   width: 100% !important;
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -90,4 +93,14 @@ html, body {
 .rr-controller__btns.svelte-19ke1iv.svelte-19ke1iv {
   width: 80%;
   justify-content: space-around;
+}
+
+.rr-player__frame {
+  width: 100% !important;
+  height: 100% !important;
+  position: relative;
+}
+
+.replayer-wrapper {
+  transform: scale(.45) translate(-50%, -50%) !important;
 }

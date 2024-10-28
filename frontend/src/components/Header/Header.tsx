@@ -1,5 +1,6 @@
-import styles from './Header.module.css'
-import providenceImg from '../../assets/providence-.png'
+import styles from './Header.module.css';
+import providenceImg from '../../assets/providence-.png';
+import infinityImg from '../../assets/infinity.png';
 
 interface HeaderProps {
   onLogin?: (e:any) => void
@@ -22,6 +23,14 @@ function Header({ onLogin, project }: HeaderProps) {
         <image href={providenceImg} x="-10" y="-17" height="100px" width="100px"/>
         <text fill="url(#gradient)" x="90" y="40" fontSize="30">Providence</text>
       </svg>
+
+      {project && <div className={styles.midpoint}>
+      <svg className={styles.infinity} width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+        <image href={infinityImg} x="-10" y="-17" height="40px" width="40px"/>
+      </svg>
+        <span>|</span>
+        <a>Multi Session</a>
+      </div>}
 
       {project && <div className={`${styles.projectName} ${styles.gradientText}`}>
         Logged in as project: {project}
