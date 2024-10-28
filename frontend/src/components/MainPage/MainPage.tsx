@@ -71,7 +71,7 @@ function MainPage() {
         <Header project='Providence'/>
       </div>
       <div className={styles.sidebar}>
-        <SessionSidebar onFilter={filterSessions} onSort={sortSessions} onSessionSelect={handleSessionSelect} sessions={filteredSessions || allSessions}/>
+        <SessionSidebar selectedSession={selectedSession} onFilter={filterSessions} onSort={sortSessions} onSessionSelect={handleSessionSelect} sessions={filteredSessions || allSessions}/>
       </div>
       <div className={styles.player}>
         {!selectedSession && <EmptyPlayer />}

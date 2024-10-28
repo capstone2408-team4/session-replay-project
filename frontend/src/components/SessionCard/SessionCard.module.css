@@ -12,7 +12,12 @@
   border-right: 3px solid #ffd85f;
 }
 
-.sessionCard:focus {
+/* .sessionCard:focus {
+  border-top: 3px solid var(--providence-red);
+  border-left: 3px solid var(--providence-red);
+} */
+
+.activeSelection {
   border-top: 3px solid var(--providence-red);
   border-left: 3px solid var(--providence-red);
 }

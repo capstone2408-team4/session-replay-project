@@ -5,11 +5,12 @@ import { millisToMinutesAndSeconds } from '../../utils/helpers';
 interface SessionCardProps {
   session: Session
   onSessionSelect: (session: Session) => void
+  isActive: boolean
 }
 
-function SessionCard( { session, onSessionSelect }: SessionCardProps) {
+function SessionCard( { session, onSessionSelect, isActive }: SessionCardProps) {
   return (
-    <div onClick={() => onSessionSelect(session)} role='button' aria-label="Click to select session." tabIndex={0} className={styles.sessionCard}>
+    <div onClick={() => onSessionSelect(session)} role='button' aria-label="Click to select session." tabIndex={0} className={`${styles.sessionCard} ${isActive && styles}`}>
       <div className={styles.cardContainer}>
         <ul>
           <li>Time: {new Date(session.session_start).toUTCString()}</li>
