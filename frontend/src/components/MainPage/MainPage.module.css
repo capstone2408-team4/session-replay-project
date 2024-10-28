@@ -6,7 +6,7 @@
   display: grid;
   height: 100svh;
   grid-template-columns: 310px minmax(310px, 1fr);
-  grid-template-rows: 100px minmax(500px, 1fr);
+  grid-template-rows: 80px minmax(500px, 1fr);
   grid-template-areas:
     'header header'
     'sidebar main';
@@ -42,7 +42,7 @@
   display: flex;
   flex-direction: column;
   padding: 50px;
-  padding-top: 16px;
+  padding-top: 0px;
   padding-bottom: 4px;
   grid-area: main;
   overflow: scroll;
