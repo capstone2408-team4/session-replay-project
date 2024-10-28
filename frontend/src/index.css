@@ -72,6 +72,9 @@ html, body {
   border-radius: 5px; 
   box-shadow:0 4px 12px var(--providence-red);
   width: 100% !important;
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -94,5 +97,10 @@ html, body {
 
 .rr-player__frame {
   width: 100% !important;
-  /* flex: 1 1 auto; Responsive sizing */
+  height: 100% !important;
+  position: relative;
+}
+
+.replayer-wrapper {
+  transform: scale(.45) translate(-50%, -50%) !important;
 }

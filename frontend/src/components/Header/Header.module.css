@@ -5,26 +5,18 @@
 }
 
 .header {
-  padding: 16px 24px;
+  padding: 8px 24px;
   display: flex;
   align-items: center;
 }
 
-.middleEye {
-  margin-left: 20px;
-  transition: transform 0.5s ease;
-  opacity: 0;
+.infinity {
+  background-color: #f45c5c;
 }
-
-.middleEye:hover {
-  opacity: 1;
-  transform: scale(5);
-}
-
 
 .login {
   margin-left: auto;
-  background-color: hsl(360, 88%, 66%);
+  background-color: var(--providence-red);
   padding: 8px;
   border-radius: 9999px;
   color: black;
@@ -40,10 +32,49 @@
   background-color: hsl(0, 70%, 44%);
 }
 
+.middleEye {
+  margin-left: 20px;
+  transition: transform 0.5s ease;
+  opacity: 0;
+}
+
+.middleEye:hover {
+  opacity: 1;
+  transform: scale(5);
+}
+
+.midpoint {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+}
+
+.midpoint span {
+  font-size: 2.5rem;
+  color: var(--providence-white);
+}
+
+.midpoint a {
+  white-space: nowrap;
+  margin-right: 8px;
+  margin-left: 8px;
+  cursor: pointer;
+  background-image: linear-gradient(to right bottom, #f45c5c, #ff8551, #ffaf50, #ffd85f, #f5ff80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.midpoint a:hover {
+  outline: 1px solid var(--providence-white);
+  border-radius: 4px;
+}
+
+
 .projectName {
   padding: 8px;
   border-radius: 8px;
-  margin-left: auto;
+  margin-left: 2%;
   white-space: nowrap;
   border: 1px solid var(--providence-white);
   overflow: hidden;
