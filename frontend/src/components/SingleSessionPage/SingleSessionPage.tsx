@@ -1,15 +1,15 @@
 import React from 'react';
-import Header from '../Header';
-import SessionSidebar from '../SessionSidebar';
+import Header from '../Header/index.ts';
+import SingleSessionSidebar from '../SingleSessionSidebar/SingleSessionSidebar.tsx';
 import Player from '../Player/Player.tsx';
-import styles from './MainPage.module.css'
+import styles from './SingleSessionPage.module.css'
 import axios from 'axios'
 import { Session } from '../../Types/index.ts'
 import SessionInfoBox from '../SessionInfoBox/SessionInfoBox.tsx';
 import EmptyPlayer from '../EmptyPlayer/EmptyPlayer.tsx';
 import { filterToday, filterYday, filterRange, sorter } from '../../utils/helpers.ts';
 
-function MainPage() {
+function SingleSessionPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
   const [selectedSession, setSelectedSession] = React.useState<Session | null>(null);
   const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<any[]>([]);
@@ -71,7 +71,7 @@ function MainPage() {
         <Header project='Providence'/>
       </div>
       <div className={styles.sidebar}>
-        <SessionSidebar selectedSession={selectedSession} onFilter={filterSessions} onSort={sortSessions} onSessionSelect={handleSessionSelect} sessions={filteredSessions || allSessions}/>
+        <SingleSessionSidebar selectedSession={selectedSession} onFilter={filterSessions} onSort={sortSessions} onSessionSelect={handleSessionSelect} sessions={filteredSessions || allSessions}/>
       </div>
       <div className={styles.player}>
         {!selectedSession && <EmptyPlayer />}
@@ -82,4 +82,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default SingleSessionPage;

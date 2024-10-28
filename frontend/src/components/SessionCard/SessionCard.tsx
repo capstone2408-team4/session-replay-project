@@ -9,8 +9,9 @@ interface SessionCardProps {
 }
 
 function SessionCard( { session, onSessionSelect, isActive }: SessionCardProps) {
+  console.log(isActive)
   return (
-    <div onClick={() => onSessionSelect(session)} role='button' aria-label="Click to select session." tabIndex={0} className={`${styles.sessionCard} ${isActive && styles}`}>
+    <div onClick={() => onSessionSelect(session)} role='button' aria-label="Click to select session." tabIndex={0} className={`${styles.sessionCard} ${isActive && styles.activeSelection}`}>
       <div className={styles.cardContainer}>
         <ul>
           <li>Time: {new Date(session.session_start).toUTCString()}</li>

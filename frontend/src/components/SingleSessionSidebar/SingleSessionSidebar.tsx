@@ -1,13 +1,13 @@
 import React from 'react';
 import SortDropdown from '../SortDropdown';
-import styles from './SessionSidebar.module.css'
+import styles from './SingleSessionSidebar.module.css'
 import down from '../../assets/down.png'
 import SessionCard from '../SessionCard';
 import FilterPopover from '../FilterPopover';
 import { Session } from '../../Types';
 
 
-interface SessionSidebarProps {
+interface SingleSessionSidebarProps {
   sessions: Session[]
   onSessionSelect: (session: Session) => void
   onSort: (sortType: string) => void
@@ -15,7 +15,7 @@ interface SessionSidebarProps {
   selectedSession: Session | null
 }
 
-function SessionSidebar( { sessions, onSessionSelect, onSort, onFilter, selectedSession } : SessionSidebarProps) {
+function SingleSessionSidebar( { sessions, onSessionSelect, onSort, onFilter, selectedSession } : SingleSessionSidebarProps) {
   const [showSortDropdown, setShowSortDropdown] = React.useState(false);
   const [showFilterPopover, setShowFilterPopover] = React.useState(false);
   const [radioChoice, setRadioChoice] = React.useState('')
@@ -83,4 +83,4 @@ function SessionSidebar( { sessions, onSessionSelect, onSort, onFilter, selected
   );
 }
 
-export default SessionSidebar;
+export default SingleSessionSidebar;

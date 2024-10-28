@@ -1,11 +1,13 @@
 import LandingPage from './components/LandingPage'
-import MainPage from './components/MainPage'
+import SingleSessionPage from './components/SingleSessionPage'
+import MultiSummaryPage from './components/MultiSummaryPage'
 
 function App() {
   return (
     <>
       {/* <LandingPage /> */}
-      <MainPage />
+      {/* <SingleSessionPage /> */}
+      <MultiSummaryPage />
     </>
   )
 }
