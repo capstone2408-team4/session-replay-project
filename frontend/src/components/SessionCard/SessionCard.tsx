@@ -20,7 +20,7 @@ function SessionCard( { session, onSessionSelect }: SessionCardProps) {
           <li>Session ID: <span className={styles.sessionID}>{session.session_id.slice(0, 18)}</span></li> 
           <li >Behavior Sentiment: 7/10</li>
           <li >Location: Gates of Hell</li>
-          <li>Duration: {millisToMinutesAndSeconds(new Date(session.session_end) - new Date(session.session_start))}</li> 
+          <li>Duration: {millisToMinutesAndSeconds(new Date(session.last_activity_at) - new Date(session.session_start))}</li> 
           <li>OS: </li>
         </ul>
       </div>

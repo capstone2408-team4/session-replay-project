@@ -6,7 +6,6 @@ interface SessionInfoBoxProps {
 }
 
 function SessionInfoBox({ session }: SessionInfoBoxProps) {
-  console.log('sessioninfobox', session)
   return (
     <div className={styles.sessionInfoBox}>
       <div className={styles.sessionTitle}>
