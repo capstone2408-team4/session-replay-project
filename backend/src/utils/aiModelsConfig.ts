@@ -1,4 +1,4 @@
-export const OpenAIMaxTokens = 7000;
+export const OpenAIMaxTokens = 100000;
 export const OpenAICharsPerToken = 4;
 export const OpenAIMaxPromptLength = OpenAIMaxTokens * OpenAICharsPerToken;
 export const OpenAIModel = 'gpt-4o-mini';
