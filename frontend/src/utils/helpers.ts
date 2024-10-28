@@ -36,9 +36,9 @@ export const sorter = function(sessions: Session[], sortType: string): Session[]
   return sessions.slice().sort((a, b) => {
     switch (sortType) {
       case 'Time Ascending':
-        return new Date(a.session_start) - new Date(b.session_start);
+        return (new Date(a.session_start).getTime() - new Date(b.session_start).getTime());
       case 'Time Descending':
-        return new Date(b.session_start) - new Date(a.session_start);
+        return (new Date(b.session_start).getTime() - new Date(a.session_start).getTime());
       default:
         return 0;
     }
