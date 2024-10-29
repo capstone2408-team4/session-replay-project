@@ -4,6 +4,11 @@ html, body {
 }
 
 :root {
+  /* font-family: "Gemunu Libre", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal; */
+
   font-family: "Roboto", "Arial", sans-serif;
   font-size: 16px;
   line-height: 1.5;

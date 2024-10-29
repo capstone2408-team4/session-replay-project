@@ -79,7 +79,7 @@ function MultiSummaryPage() {
         />
       </div>
       <div className={styles.player}>
-        <EmptyMultiSession isLoading={summaryIsLoading}/>
+        {!currentSummary && <EmptyMultiSession isLoading={summaryIsLoading}/>}
       </div>
     </div>
   );
