@@ -1,14 +1,12 @@
 import express from 'express';
 import { RedisService } from '../services/redisService';
 import { PsqlService } from '../services/psqlService';
-import { time } from 'console';
 const router = express.Router();
 
 interface RrwebEvent {
   type: number; // Event type enum
   timestamp: number;
-  data: Record<string, any>; // Varies per event type
-  id: number; // Unique identifier
+  data: any; // Varies per event type
 }
 
 interface SessionRequestBody {
@@ -22,6 +20,11 @@ const psql: PsqlService = new PsqlService();
 
 router.post('/', async (req: express.Request<{}, {}, SessionRequestBody>, res: express.Response) => {
   const { projectID, sessionID, events } = req.body;
+
+  // Early return
+  if (!projectID || !sessionID || !Array.isArray(events)) {
+    return res.status(400).send('Invalid request body');
+  }
 
   try {
     // Check for valid project in PSQL
