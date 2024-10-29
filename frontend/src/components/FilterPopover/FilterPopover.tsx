@@ -89,7 +89,7 @@ const FilterPopover = React.forwardRef<HTMLDivElement, FilterPopoverProp>(( {onC
             onChange={handleRadioSelection}
           />
           <label htmlFor="remove">Remove All</label>
-          <button type='submit'>Chips Ahoy!</button>
+          <button type='submit'>Filter</button>
         </fieldset>
       </form>
     </div>

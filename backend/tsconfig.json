@@ -113,6 +113,6 @@
     "experimentalSpecifierResolution": "node",
     "transpileOnly": true
   },
-  "include": ["src", "vitest.config.mts"],
+  "include": ["src", "src/vitest.config.mts"],
   "exclude": ["node_modules", "dist/**/*", "**/*.spec.ts"]
 }

@@ -1,0 +1,24 @@
+.error {
+  position: absolute;
+  width: 230px;
+  height: fit-content;
+  outline: 2px solid rgb(248, 99, 101);
+  background-color: var(--providence-light-red);
+  color: var(--providence-black);
+  text-align: center;
+  border-radius: 8px;
+  bottom: -90px;
+  font-size: .8rem;
+  padding: 8px;
+}
+
+.error::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent var(--providence-light-red) transparent;
+}
