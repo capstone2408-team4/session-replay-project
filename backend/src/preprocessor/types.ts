@@ -1,5 +1,3 @@
-import { Session } from "inspector";
-
 // Basic event types from rrweb
 export interface RRWebEvent {
   type: number;
