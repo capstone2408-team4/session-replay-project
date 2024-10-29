@@ -2,6 +2,9 @@ import pkg from 'pg';
 const { Pool } = pkg;
 import config from '../config/environment';
 
+interface SummaryRow {
+  session_summary: string;
+}
 // Provides functionality to interact with the PSQL database.
 export class PsqlService {
   private connection: Pool;
@@ -115,6 +118,20 @@ export class PsqlService {
       console.log(`Successfully added a summary for ${sessionID} in PSQL`)
     } catch (error) {
       console.error(`Error adding session summary for ${sessionID} in PSQL`)
+      throw error;
+    }
+  }
+
+  async getSummaries(sessionIds): Promise<SummaryRow[]> {
+    console.log('TYPE OF FIRST SESSION ID:', typeof sessionIds[0]);
+    try {
+      const summaries = await this.connection.query(
+        'SELECT session_summary FROM sessions WHERE id = ANY($1);',
+        [sessionIds]
+      );
+      return summaries.rows;
+    } catch(error) {
+      console.error('Error fetching multi summaries:', error);
       throw error;
     }
   }

@@ -55,7 +55,17 @@ abstract class AIParent {
         return '';
       }
     });
-  } 
+  }
+
+  async summarizeMultipleSessions(summaries) {
+    let selectedSummaries = '';
+
+    for (const { session_summary } of summaries) {
+      selectedSummaries += `Individual Summary: ${session_summary}`;
+    }
+
+    return await this.query(AIConfig.MultiSessionSummaryPrompt, selectedSummaries);
+  }
 }
 
 export default AIParent;
