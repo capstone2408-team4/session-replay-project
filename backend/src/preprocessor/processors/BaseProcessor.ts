@@ -32,7 +32,7 @@ export abstract class BaseProcessor implements EventProcessor {
     details: string,
     impact?: string
   ): void {
-    session.events.signiificant.push({
+    session.events.significant.push({
       timestamp: this.formatTimestamp(event.timestamp),
       type: event.type,
       details,
