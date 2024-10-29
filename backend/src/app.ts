@@ -5,6 +5,7 @@ const { json, urlencoded } = pkg;
 import recordRouter from './routes/record';
 import projectsRouter from './routes/projects';
 import eventsRouter from './routes/events';
+import geoRouter from './routes/geo';
 import path from 'path';
 import { fork } from 'child_process';
 import { fileURLToPath } from 'url';
@@ -29,6 +30,7 @@ app.use('/api/record', (req, res, next) => {
 app.use('/api/record', recordRouter);
 app.use('/api/projects', projectsRouter);
 app.use('/api/events', eventsRouter);
+app.use('/api/geo', geoRouter);
 
 // Spawn worker process
 const __filename = fileURLToPath(import.meta.url);
