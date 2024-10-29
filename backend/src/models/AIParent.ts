@@ -8,25 +8,17 @@ abstract class AIParent {
     let startIndex = 0;
 
     while (startIndex < data.length) {
-      // Find the next chunk ending point without breaking JSON events
       let endIndex = startIndex + this.maxPromptLength;
       
-      // If the end index goes beyond the data length, set it to the data length
       if (endIndex >= data.length) {
         chunks.push(data.slice(startIndex));
         break;
       }
+      
+      const breakpoint = data.lastIndexOf('{\"type\":', endIndex);
 
-      // Move the end index backwards to a point that keeps JSON structure intact
-      const lastComma = data.lastIndexOf('},{', endIndex);
-      const lastBrace = data.lastIndexOf('}{', endIndex);
-
-      // Choose the latest natural breakpoint
-      const breakpoint = Math.max(lastComma, lastBrace);
-
-      // If a breakpoint is found within bounds, adjust endIndex to it
       if (breakpoint > startIndex) {
-        endIndex = breakpoint + 1; // Include the comma or brace in the chunk
+        endIndex = breakpoint;
       }
 
       chunks.push(data.slice(startIndex, endIndex));
