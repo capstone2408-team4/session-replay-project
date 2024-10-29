@@ -6,8 +6,8 @@ function App() {
   return (
     <>
       {/* <LandingPage /> */}
-      <SingleSessionPage />
-      {/* <MultiSummaryPage /> */}
+      {/* <SingleSessionPage /> */}
+      <MultiSummaryPage />
     </>
   )
 }

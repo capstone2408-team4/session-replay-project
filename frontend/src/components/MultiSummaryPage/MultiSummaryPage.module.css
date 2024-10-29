@@ -34,8 +34,6 @@
   }
 }
 
-
-
 .sidebar {
   grid-area: sidebar;
   overflow: scroll;

@@ -28,7 +28,9 @@
   margin-bottom: 8px;
   display: flex;
   justify-content: space-around;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .sidebarMain {

@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../Header';
 import MultiSessionSidebar from '../MultiSessionSidebar';
-import EmptyPlayer from '../EmptyPlayer/EmptyPlayer.tsx';
+import EmptyMultiSession from '../EmptyMultiSession/EmptyMultiSession.tsx';
 import styles from './MultiSummaryPage.module.css'
 import axios from 'axios'
 import { Session } from '../../Types/index.ts'
@@ -9,17 +9,27 @@ import { Session } from '../../Types/index.ts'
 function MultiSummaryPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
   const [selectedSessions, setSelectedSessions] = React.useState<Session[]>([]);
+  const [summaryIsLoading, setSummaryIsLoading] = React.useState(false)
+  const [showSessionCountError, setShowSessionCountError] = React.useState(false)
 
   const handleSessionSelect = async function(session: Session) {
     if (!session.is_selected) {
-      session.is_selected = true
-      setSelectedSessions((currentSessions) => currentSessions.slice().concat([session]))
+      if (selectedSessions.length >= 10) {
+        setShowSessionCountError(true)
+        setTimeout(() => {
+          setShowSessionCountError(false)
+        }, 3000)
+      } else {
+        session.is_selected = true
+        setSelectedSessions((currentSessions) => currentSessions.slice().concat([session]))
+      }
     } else {
       session.is_selected = false
       const newSelectedSession = selectedSessions.filter(selectedSession => selectedSession.id !== session.id )
       setSelectedSessions(newSelectedSession)
     }
   }
+
 
   React.useEffect(() => {
     const fetchSessions = async function() {
@@ -41,10 +51,10 @@ function MultiSummaryPage() {
         <Header project='Providence'/>
       </div>
       <div className={styles.sidebar}>
-        <MultiSessionSidebar onSessionSelect={handleSessionSelect} sessions={allSessions}/>
+        <MultiSessionSidebar showSessionCountError={showSessionCountError} onSessionSelect={handleSessionSelect} sessions={allSessions}/>
       </div>
       <div className={styles.player}>
-        <EmptyPlayer />
+        <EmptyMultiSession isLoading={summaryIsLoading}/>
       </div>
     </div>
   );
