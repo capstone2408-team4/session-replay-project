@@ -9,7 +9,6 @@ import { Session } from '../../Types/index.ts'
 function MultiSummaryPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
   const [selectedSessions, setSelectedSessions] = React.useState<Session[]>([]);
-  const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<any[]>([]);
 
   const handleSessionSelect = async function(session: Session) {
     if (!session.is_selected) {
@@ -19,15 +18,6 @@ function MultiSummaryPage() {
       session.is_selected = false
       const newSelectedSession = selectedSessions.filter(selectedSession => selectedSession.id !== session.id )
       setSelectedSessions(newSelectedSession)
-    }
-  }
-
-  const fetchSessionEvents = async function(session: Session) {
-    try {
-      const response = await axios.get(`http://localhost:5001/api/events/${session.file_name}`);
-      setSelectedSessionEvents(JSON.parse(response.data));
-    } catch (error) {
-      console.log('error fetching single session', error)
     }
   }
 
