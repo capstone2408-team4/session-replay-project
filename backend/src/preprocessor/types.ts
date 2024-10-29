@@ -41,7 +41,7 @@ export interface EventSummary {
   total: number;
   byType: Record<number, number>;
   bySource: Record<number, number>;
-  signiificant: SignificantEvent[];
+  significant: SignificantEvent[];
 }
 
 export interface SignificantEvent {
