@@ -23,7 +23,7 @@
 }
 
 .headerChoice:hover {
-  transform: scale(1.2)
+  transform: scale(1.1)
 }
 
 .infinity {
@@ -69,7 +69,7 @@
 }
 
 .pageSelected {
-  transform: scale(1.2)
+  transform: scale(1.1)
 }
 
 .projectName {
