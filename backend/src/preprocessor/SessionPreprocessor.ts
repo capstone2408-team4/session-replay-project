@@ -19,7 +19,7 @@ export class SessionPreprocessor {
         total: 0,
         byType: {},
         bySource: {},
-        signiificant: []
+        significant: []
       },
       technical: {
         errors: [],
