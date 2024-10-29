@@ -22,11 +22,7 @@
 }
 
 .headerChoice:hover {
-  transform: translateY(-5px);
-}
-
-.headerChoice:focus {
-  transform: scale(1.2);
+  transform: scale(1.2)
 }
 
 .infinity {
@@ -69,6 +65,10 @@
   margin-right: auto;
   justify-content: center; 
   width: 30%;
+}
+
+.pageSelected {
+  transform: scale(1.2)
 }
 
 .projectName {

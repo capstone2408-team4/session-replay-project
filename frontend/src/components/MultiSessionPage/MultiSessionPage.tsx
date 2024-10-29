@@ -1,12 +1,12 @@
 import React from 'react';
-import Header from '../Header';
-import MultiSessionSidebar from '../MultiSessionSidebar';
+import Header from '../Header/index.ts';
+import MultiSessionSidebar from '../MultiSessionSidebar/index.ts';
 import EmptyMultiSession from '../EmptyMultiSession/EmptyMultiSession.tsx';
-import styles from './MultiSummaryPage.module.css'
+import styles from './MultiSessionPage.module.css'
 import axios from 'axios'
 import { Session } from '../../Types/index.ts'
 
-function MultiSummaryPage() {
+function MultiSessionPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
   const [selectedSessions, setSelectedSessions] = React.useState<Session[]>([]);
   const [summaryIsLoading, setSummaryIsLoading] = React.useState(false);
@@ -67,7 +67,7 @@ function MultiSummaryPage() {
   return (
     <div className={styles.mainPageWrapper}>
       <div className={styles.headerContainer}>
-        <Header project='Providence'/>
+        <Header selectedPage={'multi'} project='Providence'/>
       </div>
       <div className={styles.sidebar}>
         <MultiSessionSidebar 
@@ -85,4 +85,4 @@ function MultiSummaryPage() {
   );
 }
 
-export default MultiSummaryPage;
+export default MultiSessionPage;
