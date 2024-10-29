@@ -11,9 +11,13 @@
   font-weight: bold;
 }
 
+.sidebarButton:disabled {
+  background-color: var(--providence-red);
+  cursor: not-allowed;
+}
+
 .sidebarButton svg {
   margin-left: 5px;
-
 }
 
 .sidebarButton:hover {

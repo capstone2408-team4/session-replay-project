@@ -9,8 +9,10 @@ import { Session } from '../../Types/index.ts'
 function MultiSummaryPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
   const [selectedSessions, setSelectedSessions] = React.useState<Session[]>([]);
-  const [summaryIsLoading, setSummaryIsLoading] = React.useState(false)
-  const [showSessionCountError, setShowSessionCountError] = React.useState(false)
+  const [summaryIsLoading, setSummaryIsLoading] = React.useState(false);
+  const [showSessionCountError, setShowSessionCountError] = React.useState(false);
+  const [summarizeButtonDisabled, setSummarizeButtonDisabled] = React.useState(false);
+  const [currentSummary, setCurrentSummary] = React.useState<null | string>(null)
 
   const handleSessionSelect = async function(session: Session) {
     if (!session.is_selected) {
@@ -30,6 +32,23 @@ function MultiSummaryPage() {
     }
   }
 
+  const handleSummarizeSession = async function() {
+    setSummaryIsLoading(true)
+    setSummarizeButtonDisabled(true)
+
+    try {
+      const ids = selectedSessions.map(session => session.id);
+      const response = await axios.post('/api/summarize', ids);
+      console.log('summary response from back end was:', response.data)
+      setCurrentSummary(response.data)
+    } catch (error) {
+      console.error('Error sending ids to to backend API')
+      throw error
+    } finally {
+      setSummaryIsLoading(false)
+      setSummarizeButtonDisabled(false)
+    }
+  }
 
   React.useEffect(() => {
     const fetchSessions = async function() {
@@ -51,7 +70,13 @@ function MultiSummaryPage() {
         <Header project='Providence'/>
       </div>
       <div className={styles.sidebar}>
-        <MultiSessionSidebar showSessionCountError={showSessionCountError} onSessionSelect={handleSessionSelect} sessions={allSessions}/>
+        <MultiSessionSidebar 
+          onSummarizeSession={handleSummarizeSession} 
+          showSessionCountError={showSessionCountError} 
+          onSessionSelect={handleSessionSelect} 
+          sessions={allSessions}
+          buttonDisabled={summarizeButtonDisabled}
+        />
       </div>
       <div className={styles.player}>
         <EmptyMultiSession isLoading={summaryIsLoading}/>
