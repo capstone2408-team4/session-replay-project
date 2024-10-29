@@ -68,7 +68,7 @@ function SingleSessionPage() {
   return (
     <div className={styles.mainPageWrapper}>
       <div className={styles.headerContainer}>
-        <Header project='Providence'/>
+        <Header selectedPage={'single'} project='Providence'/>
       </div>
       <div className={styles.sidebar}>
         <SingleSessionSidebar selectedSession={selectedSession} onFilter={filterSessions} onSort={sortSessions} onSessionSelect={handleSessionSelect} sessions={filteredSessions || allSessions}/>

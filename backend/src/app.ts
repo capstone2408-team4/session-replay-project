@@ -6,6 +6,7 @@ import recordRouter from './routes/record';
 import projectsRouter from './routes/projects';
 import eventsRouter from './routes/events';
 import geoRouter from './routes/geo';
+import multiSummaryRouter from './routes/multi-summary';
 import path from 'path';
 import { fork } from 'child_process';
 import { fileURLToPath } from 'url';
@@ -31,6 +32,7 @@ app.use('/api/record', recordRouter);
 app.use('/api/projects', projectsRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/geo', geoRouter);
+app.use('/api/multi-summary', multiSummaryRouter);
 
 // Spawn worker process
 const __filename = fileURLToPath(import.meta.url);

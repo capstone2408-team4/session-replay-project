@@ -9,7 +9,6 @@ interface SessionCardProps {
 }
 
 function SessionCard( { session, onSessionSelect, isActive }: SessionCardProps) {
-  console.log(isActive)
   return (
     <div onClick={() => onSessionSelect(session)} role='button' aria-label="Click to select session." tabIndex={0} className={`${styles.sessionCard} ${isActive && styles.activeSelection}`}>
       <div className={styles.cardContainer}>
@@ -18,7 +17,7 @@ function SessionCard( { session, onSessionSelect, isActive }: SessionCardProps) 
           <li>Session ID: <span className={styles.sessionID}>{session.session_id.slice(0, 18)}</span></li> 
           <li >Behavior Sentiment: 7/10</li>
           <li >Location: Gates of Hell</li>
-          <li>Duration: {millisToMinutesAndSeconds(new Date(session.last_activity_at) - new Date(session.session_start))}</li> 
+          <li>Duration: {millisToMinutesAndSeconds(new Date(session.last_activity_at).getTime() - new Date(session.session_start).getTime())}</li> 
           <li>OS: </li>
         </ul>
       </div>
