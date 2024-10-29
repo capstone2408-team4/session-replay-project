@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './MultiSessionSidebar.module.css'
 import SessionCard from '../SessionCard';
 import SessionCountError from '../SessionCountError';

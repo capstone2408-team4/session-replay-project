@@ -38,7 +38,7 @@ function MultiSessionPage() {
 
     try {
       const ids = selectedSessions.map(session => session.id);
-      const response = await axios.post('/api/summarize', ids);
+      const response = await axios.post('http://localhost:5001/api/multi-summary', {ids: ids});
       console.log('summary response from back end was:', response.data)
       setCurrentSummary(response.data)
     } catch (error) {
