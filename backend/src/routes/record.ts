@@ -4,10 +4,23 @@ import { PsqlService } from '../services/psqlService';
 import { time } from 'console';
 const router = express.Router();
 
-const redis = new RedisService();
-const psql = new PsqlService();
+interface RrwebEvent {
+  type: number; // Event type enum
+  timestamp: number;
+  data: Record<string, any>; // Varies per event type
+  id: number; // Unique identifier
+}
 
-router.post('/', async (req, res) => {
+interface SessionRequestBody {
+  projectID: string;
+  sessionID: string;
+  events: RrwebEvent[];
+}
+
+const redis: RedisService = new RedisService();
+const psql: PsqlService = new PsqlService();
+
+router.post('/', async (req: express.Request<{}, {}, SessionRequestBody>, res: express.Response) => {
   const { projectID, sessionID, events } = req.body;
 
   try {
