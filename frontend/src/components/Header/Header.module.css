@@ -1,6 +1,7 @@
 .gradientText {
   background-image: linear-gradient(to right bottom, #f45c5c, #ff8551, #ffaf50, #ffd85f, #f5ff80);
   -webkit-background-clip: text;
+  background-clip: text;  
   -webkit-text-fill-color: transparent;
 }
 
@@ -22,11 +23,7 @@
 }
 
 .headerChoice:hover {
-  transform: translateY(-5px);
-}
-
-.headerChoice:focus {
-  transform: scale(1.2);
+  transform: scale(1.2)
 }
 
 .infinity {
@@ -69,6 +66,10 @@
   margin-right: auto;
   justify-content: center; 
   width: 30%;
+}
+
+.pageSelected {
+  transform: scale(1.2)
 }
 
 .projectName {
