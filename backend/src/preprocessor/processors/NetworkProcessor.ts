@@ -102,6 +102,11 @@ export class NetworkProcessor extends BaseProcessor {
     // Update performance metrics for WebSockets events
     session.technical.performance.networkRequests += 1;
 
+    // Count all WebSocket events that represent communication
+    if (wsEvent === 'open' || wsEvent === 'message' || wsEvent === 'send') {
+      this.incrementMapCount(this.requestCounts, urlPath);
+    }
+
     switch (wsEvent) {
       case 'open':
         this.addSignificantEvent(
@@ -150,7 +155,7 @@ export class NetworkProcessor extends BaseProcessor {
       failures: totalFailures,
       // Only calculate if 1 or more requests have valid latency data
       averageResponseTime: this.validRequestCount > 0 ?
-        totalLatency / totalRequests :
+        totalLatency / this.validRequestCount :
         undefined
     };
   }
