@@ -24,6 +24,7 @@ export class NetworkProcessor extends BaseProcessor {
   private requestCounts: Map<string, number> = new Map();
   private failureCounts: Map<string, number> = new Map();
   private latencyTotals: Map<string, number> = new Map();
+  private validRequestCount: number = 0;
 
   process(event: RRWebEvent, session: ProcessedSession): void {
     if (!this.isNetworkEvent(event)) return;
@@ -55,6 +56,9 @@ export class NetworkProcessor extends BaseProcessor {
 
     // Update request counts
     this.incrementMapCount(this.requestCounts, urlPath);
+
+    // Update performance metrics
+    session.technical.performance.networkRequests += 1;
     
     if (error || (status && status >= 400)) {
       this.incrementMapCount(this.failureCounts, urlPath);
@@ -74,7 +78,8 @@ export class NetworkProcessor extends BaseProcessor {
     }
 
     // Track latency for performance metrics
-    if (latency) {
+    if (latency !== undefined && !isNaN(latency)) {
+      this.validRequestCount += 1;
       const currentTotal = this.latencyTotals.get(urlPath) || 0;
       this.latencyTotals.set(urlPath, currentTotal + latency);
     }
@@ -93,6 +98,9 @@ export class NetworkProcessor extends BaseProcessor {
   private processWebSocket(event: RRWebNetworkEvent, session: ProcessedSession): void {
     const { url, event: wsEvent, code, reason } = event.data;
     const urlPath = this.getUrlPath(url);
+
+    // Update performance metrics for WebSockets events
+    session.technical.performance.networkRequests += 1;
 
     switch (wsEvent) {
       case 'open':
@@ -140,7 +148,10 @@ export class NetworkProcessor extends BaseProcessor {
     session.technical.network = {
       requests: totalRequests,
       failures: totalFailures,
-      averageResponseTime: totalRequests ? totalLatency / totalRequests : undefined
+      // Only calculate if 1 or more requests have valid latency data
+      averageResponseTime: this.validRequestCount > 0 ?
+        totalLatency / totalRequests :
+        undefined
     };
   }
 
@@ -151,9 +162,14 @@ export class NetworkProcessor extends BaseProcessor {
   private getUrlPath(url: string): string {
     try {
       const urlObj = new URL(url);
-      return urlObj.pathname;
+      // Preserve query parameters
+      return this.isSignificantEndpoint(urlObj.pathname) ?
+        urlObj.pathname + urlObj.search :
+        urlObj.pathname;
     } catch {
-      return url; // Return original if parsing fails
+      // Try to extract path
+      const pathMatch = url.match(/^(?:https?:\/\/[^\/]+)?([^?#]+)/);
+      return pathMatch ? pathMatch[1] : url;
     }
   }
 
