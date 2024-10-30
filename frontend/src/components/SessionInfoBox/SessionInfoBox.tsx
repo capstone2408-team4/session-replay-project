@@ -9,7 +9,7 @@ function SessionInfoBox({ session }: SessionInfoBoxProps) {
   return (
     <div className={styles.sessionInfoBox}>
       <div className={styles.sessionTitle}>
-        Sesssion: {session.session_id}
+        Session: {session.session_id}
       </div>
       Summary (provided generously by the Providence Team API):
       <p>{session.session_summary}</p> 
