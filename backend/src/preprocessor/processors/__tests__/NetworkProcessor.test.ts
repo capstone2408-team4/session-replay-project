@@ -35,7 +35,7 @@ describe('NetworkProcessor', () => {
     };
   });
 
-  test('processes successful HTTP fetch request', () => {
+  test('processes successful HTTP fetch request with proper metrics', () => {
     const fetchEvent = {
       type: 50,
       data: {
@@ -60,6 +60,9 @@ describe('NetworkProcessor', () => {
     expect(mockSession.technical.network.requests).toBe(1);
     expect(mockSession.technical.network.failures).toBe(0);
     expect(mockSession.technical.network.averageResponseTime).toBe(69);
+    
+    // Test performance metrics
+    expect(mockSession.technical.performance.networkRequests).toBe(1);
 
     // Non-significant endpoint shouldn't create significant event
     expect(mockSession.events.significant).toHaveLength(0);
@@ -85,9 +88,10 @@ describe('NetworkProcessor', () => {
     expect(mockSession.technical.network.requests).toBe(1);
     expect(mockSession.technical.network.averageResponseTime).toBe(139);
     expect(mockSession.technical.errors).toHaveLength(0);
+    expect(mockSession.technical.performance.networkRequests).toBe(1);
   });
 
-  test('processes WebSocket lifecycle events', () => {
+  test('processes complete WebSocket lifecycle with proper metrics', () => {
     const wsEvents = [
       {
         type: 50,
@@ -127,6 +131,9 @@ describe('NetworkProcessor', () => {
     expect(mockSession.events.total).toBe(3);
     expect(mockSession.events.byType['Network']).toBe(3);
 
+    // Test performance metrics
+    expect(mockSession.technical.performance.networkRequests).toBe(3);
+
     // Test significant events (open should be significant)
     expect(mockSession.events.significant).toHaveLength(1);
     expect(mockSession.events.significant[0]).toMatchObject({
@@ -137,9 +144,14 @@ describe('NetworkProcessor', () => {
 
     // Normal close (1000) shouldn't create an error
     expect(mockSession.technical.errors).toHaveLength(0);
+
+    // WebSocket events shouldn't affect average response time
+    expect(mockSession.technical.network.averageResponseTime).toBeUndefined();
+
+    console.log(JSON.stringify(mockSession));
   });
 
-  test('processes failed WebSocket events', () => {
+  test('processes failed WebSocket events with proper error handling', () => {
     const failedWsEvent = {
       type: 50,
       timestamp: 1730135778962,
@@ -153,6 +165,9 @@ describe('NetworkProcessor', () => {
     };
 
     processor.process(failedWsEvent, mockSession);
+
+    // Test performance metrics
+    expect(mockSession.technical.performance.networkRequests).toBe(1);
 
     // Should record error and significant event
     expect(mockSession.technical.errors).toHaveLength(1);
@@ -168,7 +183,7 @@ describe('NetworkProcessor', () => {
     });
   });
 
-  test('processes API endpoint requests', () => {
+  test('processes significant API endpoint requests', () => {
     const apiEvent = {
       type: 50,
       data: {
@@ -185,6 +200,9 @@ describe('NetworkProcessor', () => {
 
     processor.process(apiEvent, mockSession);
 
+    // Test performance metrics
+    expect(mockSession.technical.performance.networkRequests).toBe(1);
+
     // Should be marked as significant due to being an auth endpoint
     expect(mockSession.events.significant).toHaveLength(1);
     expect(mockSession.events.significant[0]).toMatchObject({
@@ -193,7 +211,7 @@ describe('NetworkProcessor', () => {
     });
   });
 
-  test('processes failed network requests', () => {
+  test('processes failed network requests with proper error handling', () => {
     const failedRequest = {
       type: 50,
       data: {
@@ -208,6 +226,9 @@ describe('NetworkProcessor', () => {
     };
 
     processor.process(failedRequest, mockSession);
+
+    // Test performance metrics
+    expect(mockSession.technical.performance.networkRequests).toBe(1);
 
     // Should increment failure count
     expect(mockSession.technical.network.failures).toBe(1);
@@ -225,12 +246,14 @@ describe('NetworkProcessor', () => {
       details: expect.stringContaining('Failed GET request'),
       impact: 'Network request failure may impact functionality'
     });
-    
-    console.log(JSON.stringify(mockSession));
+
+    // Failed request shouldn't affect average response time
+    expect(mockSession.technical.network.averageResponseTime).toBeUndefined();
   });
 
-  test('calculates correct average response time with multiple requests', () => {
-    const requests = [
+  test('calculates correct average response time excluding requests without latency', () => {
+    const events = [
+      // Request with latency
       {
         type: 50,
         data: {
@@ -242,22 +265,97 @@ describe('NetworkProcessor', () => {
         },
         timestamp: 1000
       },
+      // Failed request without latency
       {
         type: 50,
         data: {
           url: "/api/data/2",
           type: "FETCH",
           method: "GET",
-          latency: 200,
-          status: 200
+          error: "Failed to fetch",
+          status: 404
         },
         timestamp: 2000
+      },
+      // WebSocket event (no latency)
+      {
+        type: 50,
+        data: {
+          url: "ws://example.com",
+          type: "WebSocket",
+          event: "open"
+        },
+        timestamp: 3000
+      },
+      // Another request with latency
+      {
+        type: 50,
+        data: {
+          url: "/api/data/3",
+          type: "FETCH",
+          method: "GET",
+          latency: 300,
+          status: 200
+        },
+        timestamp: 4000
       }
     ];
 
-    requests.forEach(request => processor.process(request, mockSession));
+    events.forEach(event => processor.process(event, mockSession));
 
-    expect(mockSession.technical.network.requests).toBe(2);
-    expect(mockSession.technical.network.averageResponseTime).toBe(150); // (100 + 200) / 2
+    // Should have 4 total requests
+    expect(mockSession.technical.network.requests).toBe(4);
+    
+    // But average should only consider the 2 requests with latency
+    expect(mockSession.technical.network.averageResponseTime).toBe(200); // (100 + 300) / 2
+    
+    // Verify other metrics
+    expect(mockSession.technical.network.failures).toBe(1);
+    expect(mockSession.technical.performance.networkRequests).toBe(4);
+  });
+
+  test('properly handles URL parsing and path extraction', () => {
+    const events = [
+      // Full URL with query parameters
+      {
+        type: 50,
+        data: {
+          url: "https://api.example.com/api/v1/auth/login?redirect=dashboard",
+          type: "FETCH",
+          method: "GET",
+          status: 200
+        },
+        timestamp: 1000
+      },
+      // Relative URL
+      {
+        type: 50,
+        data: {
+          url: "/api/v1/users",
+          type: "FETCH",
+          method: "GET",
+          status: 200
+        },
+        timestamp: 2000
+      },
+      // Malformed URL
+      {
+        type: 50,
+        data: {
+          url: "not-a-url",
+          type: "FETCH",
+          method: "GET",
+          status: 200
+        },
+        timestamp: 3000
+      }
+    ];
+
+    events.forEach(event => processor.process(event, mockSession));
+
+    // Check significant events for proper URL handling
+    expect(mockSession.events.significant).toHaveLength(2); // Only API endpoints
+    expect(mockSession.events.significant[0].details).toContain('/api/v1/auth/login?redirect=dashboard');
+    expect(mockSession.events.significant[1].details).toContain('/api/v1/users');
   });
 });
