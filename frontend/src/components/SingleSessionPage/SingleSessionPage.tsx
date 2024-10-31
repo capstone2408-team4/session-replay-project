@@ -75,8 +75,10 @@ function SingleSessionPage() {
       </div>
       <div className={styles.player}>
         {!selectedSession && <EmptyPlayer />}
-        {selectedSession && <Player session={selectedSessionEvents}/>}
-        {selectedSession && <SessionInfoBox session={selectedSession}/>}
+        {selectedSession && <>
+          <Player session={selectedSessionEvents}/>
+          <SessionInfoBox session={selectedSession}/>
+        </>}
       </div>
     </div>
   );

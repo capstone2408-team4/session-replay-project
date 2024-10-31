@@ -34,6 +34,13 @@
   }
 }
 
+.sessionSummary {
+  border: 1px dotted var(--providence-red);
+  border-radius: 8px;
+  padding: 24px;
+  overflow: scroll;
+}
+
 .sessionSummaryContainer {
   height: 100%;
   display: flex;
@@ -41,7 +48,6 @@
   padding-left: 24px;
   padding-right: 24px;
   flex-direction: column;
-  margin-top: 100px;
   color: var(--providence-light-white)
 }
 
@@ -58,12 +64,7 @@
   -webkit-background-clip: text;
   background-clip: text;  
   -webkit-text-fill-color: transparent;
-}
-
-.sessionSummary {
-  border: 1px dotted var(--providence-red);
-  border-radius: 8px;
-  padding: 24px;
+  margin-top: 0px;
 }
 
 .sidebar {

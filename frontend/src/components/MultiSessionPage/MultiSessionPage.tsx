@@ -38,6 +38,12 @@ function MultiSessionPage() {
     setSummaryIsLoading(true)
     setSummarizeButtonDisabled(true)
     setCurrentSummary(null)
+    
+    if (selectedSessions.length === 0) {
+      setSummaryIsLoading(false)
+      setSummarizeButtonDisabled(false)
+      return
+    } 
 
     try {
       const ids = selectedSessions.map(session => session.id);
