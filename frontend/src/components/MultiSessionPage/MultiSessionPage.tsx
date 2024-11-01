@@ -14,6 +14,8 @@ function MultiSessionPage() {
   const [summarizeButtonDisabled, setSummarizeButtonDisabled] = React.useState(false);
   const [currentSummary, setCurrentSummary] = React.useState<null | string>(null)
 
+  const summarizedIds = React.useRef<number[]>()
+
   const handleSessionSelect = async function(session: Session) {
     if (!session.is_selected) {
       if (selectedSessions.length >= 10) {
@@ -35,11 +37,19 @@ function MultiSessionPage() {
   const handleSummarizeSession = async function() {
     setSummaryIsLoading(true)
     setSummarizeButtonDisabled(true)
+    setCurrentSummary(null)
+    
+    if (selectedSessions.length === 0) {
+      setSummaryIsLoading(false)
+      setSummarizeButtonDisabled(false)
+      return
+    } 
 
     try {
       const ids = selectedSessions.map(session => session.id);
       const response = await axios.post('http://localhost:5001/api/multi-summary', {ids: ids});
       console.log('summary response from back end was:', response.data)
+      summarizedIds.current = ids;
       setCurrentSummary(response.data)
     } catch (error) {
       console.error('Error sending ids to to backend API')
@@ -80,6 +90,15 @@ function MultiSessionPage() {
       </div>
       <div className={styles.player}>
         {!currentSummary && <EmptyMultiSession isLoading={summaryIsLoading}/>}
+        {currentSummary && 
+          <div className={styles.sessionSummaryContainer}>
+            <h1>Multi Session Summary</h1>
+            <h2>{`For session IDs: ${summarizedIds.current?.join(', ')}`}</h2>
+            <div className={styles.sessionSummary}>
+              {currentSummary}
+            </div>
+          </div>
+        }
       </div>
     </div>
   );

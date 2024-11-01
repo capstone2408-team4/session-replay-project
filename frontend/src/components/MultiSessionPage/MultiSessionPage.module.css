@@ -34,6 +34,39 @@
   }
 }
 
+.sessionSummary {
+  border: 1px dotted var(--providence-red);
+  border-radius: 8px;
+  padding: 24px;
+  overflow: scroll;
+}
+
+.sessionSummaryContainer {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  padding-right: 24px;
+  flex-direction: column;
+  color: var(--providence-light-white)
+}
+
+.sessionSummaryContainer h1 {
+  background-image: linear-gradient(to right bottom, #f5ff80, #ffd85f, #ffaf50, #ff8551, #f45c5c);
+  -webkit-background-clip: text;
+  background-clip: text;  
+  -webkit-text-fill-color: transparent;
+  border-bottom: 1px dotted var(--providence-red)
+}
+
+.sessionSummaryContainer h2 {
+  background-image: linear-gradient(to right bottom, #f5ff80, #ffd85f, #ffaf50, #ff8551, #f45c5c);
+  -webkit-background-clip: text;
+  background-clip: text;  
+  -webkit-text-fill-color: transparent;
+  margin-top: 0px;
+}
+
 .sidebar {
   grid-area: sidebar;
   overflow: scroll;

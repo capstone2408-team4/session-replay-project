@@ -13,11 +13,10 @@ include a behavior sentiment score from 1-10. Where 1 is the worst imaginable
 experience and 10 being the best imaginable.`
 
 export const SessionChunkPrompt = `
-Summarize the following rrweb data into bullet points of categories: sucessful
-achievements, user frustration, and key takeways. Provide only the most pertinent
-insights and 3 bullet points maximum per category. If you do not think there is any
-data to support a bullet point, dont do arbitrarily create one. Tailor the response
-to a product manager or UX design manager looking for insights on their product.`
+Here are some rrweb events. 
+Did the user leave the site wit items left in cart?
+Can you surmise why if they did?
+`
 
 export const MultiSessionSummaryPrompt = `
 Interperet this group of session summaries. Consider if there are trends in how users are interacting with the application. Are there any outliers? If there is a trend, explain that, if there are outliers explain those. Make sure your answer is rooted in these summaries.

@@ -12,4 +12,5 @@
   padding: 24px;
   border-radius: 8px;
   background-color: var(--providence-red);
+  color: var(--providence-black)
 }
