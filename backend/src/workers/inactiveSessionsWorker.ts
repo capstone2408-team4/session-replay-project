@@ -2,11 +2,13 @@ import { PsqlService } from '../services/psqlService';
 import { RedisService } from '../services/redisService';
 import { S3Service } from '../services/s3Service';
 import { OpenAIService } from '../services/openAIService';
+import { QdrantService } from '../services/qdrantService';  
 
 const psql = new PsqlService();
 const redis = new RedisService();
 const s3 = new S3Service();
 const openAI = new OpenAIService();
+const qdrant = new QdrantService();
 
 // Configuration (this could be moved elsewhere like environment or config.ts)
 const INACTIVITY_THRESHOLD = 1 * 60 * 1000; // 1 minute in milliseconds
@@ -42,7 +44,10 @@ async function handleSessionEnd(sessionID: string, fileName: string) {
       });
       
       const summary = await openAI.summarizeSession(JSON.stringify(events));
-      console.log('yo dog i here you like summarized sessions', summary);
+      const embedding = await openAI.embeddingQuery(summary);
+      await qdrant.addVector(embedding, sessionID);
+      
+      console.log(summary);
       
       // Add session summary to PSQL
       await psql.addSessionSummary(sessionID, summary);

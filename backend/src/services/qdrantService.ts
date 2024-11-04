@@ -18,8 +18,8 @@ export class QdrantService {
   
   async createCollection(name: string, dimensionality: number, algorithm="Dot") {
     try {
-      const exists = await this.connection.collectionExists(this.collection);
-      if (exists) {
+      const response = await this.connection.collectionExists(this.collection);
+      if (response.exists) {
         console.log(`Collection ${this.collection} already exists`);
       } else {
         await this.connection.createCollection(name, {vectors: {size: dimensionality, distance: algorithm}});
@@ -30,13 +30,13 @@ export class QdrantService {
     }
   }
 
-  async addVector(vector: number[], payload) {
+  async addVector(vector: number[], id, payload=null) {
     await this.connection.upsert(
       this.collection,
       {
         wait: true,
         // amend id below
-        points: [{id: 1, vector: vector, payload: payload}]
+        points: [{id: id, vector: vector, payload: payload}]
     })
   }
   
