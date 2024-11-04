@@ -154,8 +154,6 @@ describe('ConsoleProcessor', () => {
       type: 'Console',
       details: expect.stringContaining('Performance warning'),
     });
-
-    console.log(JSON.stringify(mockSession));
   });
 
   test('ignores non-significant console logs', () => {
