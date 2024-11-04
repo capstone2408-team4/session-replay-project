@@ -7,6 +7,7 @@ import config from '../config/environment';
 export class OpenAIService extends AIParent {
   private connection: OpenAI;
   private model: string;
+  private embeddingModel: string;
   protected maxPromptLength: number;
 
   constructor() {
@@ -16,6 +17,7 @@ export class OpenAIService extends AIParent {
     });
     this.model = AIConfig.OpenAIModel;
     this.maxPromptLength = AIConfig.OpenAIMaxPromptLength;
+    this.embeddingModel = AIConfig.EmbeddingModel;
   }
 
   // query the model
@@ -36,5 +38,10 @@ export class OpenAIService extends AIParent {
       console.error('OpenAI query error:', error);
       return '';
     }
+  }
+
+  async embeddingQuery(text: string) {
+    const response = await this.connection.embeddings.create({ model: this.embeddingModel, input: text, encoding_format: 'float' });
+    return response.data[0].embedding;
   }
 }

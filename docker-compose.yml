@@ -40,11 +40,15 @@ services:
       - S3_REGION
       - API_PORT
       - FINDIP_API_KEY
+      - QDRANT_HOST
+      - QDRANT_PORT
+      - QDRANT_API_KEY
     command: sh -c "npm install && npm run dev"
     depends_on:
       - postgres
       - redis
       - minio
+      - qdrant
 
   # PostgreSQL database
   postgres:
@@ -84,8 +88,25 @@ services:
     volumes:
       - minio_data:/data  # Persists MinIO data
 
+  # Qdrant Vector Database Service
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: always
+    ports:
+      - "${QDRANT_PORT}:${QDRANT_PORT}"  # Maps port 6333 on the host to port 6333 in the container
+    volumes:
+      - qdrant_data:/qdrant/storage  # Persists Qdrant data (optional)
+    environment:
+      - QDRANT__SERVICE__API_KEY=${QDRANT_API_KEY}
+    healthcheck:
+      test: ["CMD", "curl", "-H", "api-key: ${QDRANT_API_KEY}", "-f", "http://localhost:${QDRANT_PORT}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 # Named volumes for persisting data
 volumes:
   postgres_data:
   redis_data:
   minio_data:
+  qdrant_data:

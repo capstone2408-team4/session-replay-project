@@ -2,6 +2,12 @@ const config = {
   PORT: process.env.API_PORT,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   FINDIP_API_KEY: process.env.FINDIP_API_KEY,
+
+  QDRANT: {
+    HOST: process.env.QDRANT_HOST,
+    PORT: process.env.QDRANT_PORT,
+    QDRANT_API_KEY: process.env.QDRANT_API_KEY
+  },
   
   REDIS: {
     URL: process.env.REDIS_URL,
