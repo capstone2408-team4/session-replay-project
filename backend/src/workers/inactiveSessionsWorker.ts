@@ -8,7 +8,7 @@ const psql = new PsqlService();
 const redis = new RedisService();
 const s3 = new S3Service();
 const openAI = new OpenAIService();
-const preprocessor = new SessionPreprocessor();
+// const preprocessor = new SessionPreprocessor();
 
 // Configuration (this could be moved elsewhere like environment or config.ts)
 const INACTIVITY_THRESHOLD = 1 * 60 * 1000; // 1 minute in milliseconds
@@ -44,16 +44,16 @@ async function handleSessionEnd(sessionID: string, fileName: string) {
       });
 
       // Preprocess the session events
-      const processedSession = preprocessor.process(events);
+      // const processedSession = preprocessor.process(events);
 
       // Store processed events in S3
-      await s3.addFile(`processed-${fileName}`, processedSession).catch(error => {
-        console.error(`[worker] Error adding processed session ${sessionID} to S3:`, error);
-        throw new Error('Failed to add processed session to S3. Session will not be removed from Redis.');
-      });
+      // await s3.addFile(`processed-${fileName}`, processedSession).catch(error => {
+      //   console.error(`[worker] Error adding processed session ${sessionID} to S3:`, error);
+      //   throw new Error('Failed to add processed session to S3. Session will not be removed from Redis.');
+      // });
       
       // Get AI summary
-      const summary = await openAI.summarizeSession(JSON.stringify(processedSession));
+      const summary = await openAI.summarizeSession(JSON.stringify(events));
       console.log(`[worker] Generated summary for ${sessionID}`, summary);
       
       // Add session summary to PSQL

@@ -11,15 +11,6 @@ interface RRWebConsoleEvent extends RRWebEvent {
       payload: string[];
     };
   };
-  timestamp: number;
-}
-
-interface ProcessedConsoleEvent {
-  timestamp: string;
-  level: 'log' | 'info' | 'warn' | 'error';
-  message: string;
-  trace: string[];
-  source?: string;
 }
 
 export class ConsoleProcessor extends BaseProcessor {
@@ -27,20 +18,24 @@ export class ConsoleProcessor extends BaseProcessor {
     if (!this.isConsoleEvent(event)) return;
 
     this.updateEventCounts(event, session);
-
+    
     const processedEvent = this.processConsoleEvent(event);
+    
+    // Add as significant event with semantic meaning
+    this.addSignificantEvent(
+      event,
+      session,
+      `Console ${processedEvent.level}: ${processedEvent.message}`,
+      this.deriveImpact(processedEvent)
+    );
 
-    switch (processedEvent.level) {
-      case 'error':
-        this.processError(processedEvent, session);
-        break;
-      case 'warn':
-        this.processWarning(processedEvent, session);
-        break;
-      case 'log':
-      case 'info':
-        this.processInfo(processedEvent, session);
-        break;
+    // Track errors in technical metrics
+    if (processedEvent.level === 'error') {
+      session.technical.errors.push({
+        timestamp: processedEvent.timestamp,
+        type: 'console',
+        message: processedEvent.message
+      });
     }
   }
 
@@ -52,125 +47,117 @@ export class ConsoleProcessor extends BaseProcessor {
     );
   }
 
-  private processConsoleEvent(event: RRWebConsoleEvent): ProcessedConsoleEvent {
+  private processConsoleEvent(event: RRWebConsoleEvent) {
     const { level, trace, payload } = event.data.payload;
     
     return {
       timestamp: this.formatTimestamp(event.timestamp),
       level,
-      message: this.cleanPayload(payload[0]),
-      trace: trace,
-      source: this.extractSourceFromTrace(trace)
+      message: this.assembleMessage(payload),
+      location: this.extractLocation(trace)
     };
   }
 
-  private processError(
-    consoleEvent: ProcessedConsoleEvent,
-    session: ProcessedSession
-  ): void {
-    session.technical.errors.push({
-      timestamp: consoleEvent.timestamp,
-      type: 'console',
-      message: consoleEvent.message,
-      trace: consoleEvent.trace
-    });
-
-    this.addSignificantEvent(
-      { type: 6, timestamp: new Date(consoleEvent.timestamp).getTime() },
-      session,
-      `Console Error: ${consoleEvent.message}`,
-      `Technical error${consoleEvent.source ? ` at ${consoleEvent.source}` : ''}`
-    );
-  }
-
-  private processWarning(
-    consoleEvent: ProcessedConsoleEvent,
-    session: ProcessedSession
-  ): void {
-    if (this.isSignificantWarning(consoleEvent.message)) {
-      this.addSignificantEvent(
-        { type: 6, timestamp: new Date(consoleEvent.timestamp).getTime() },
-        session,
-        `Console Warning: ${consoleEvent.message}`,
-        `Warning${consoleEvent.source ? ` at ${consoleEvent.source}` : ''}`
-      );
-    }
-  }
-
-  private processInfo(
-    consoleEvent: ProcessedConsoleEvent,
-    session: ProcessedSession
-  ): void {
-    if (this.isSignificantInfo(consoleEvent.message)) {
-      this.addSignificantEvent(
-        { type: 6, timestamp: new Date(consoleEvent.timestamp).getTime() },
-        session,
-        `Info: ${consoleEvent.message}`,
-        this.getInfoImpact(consoleEvent.message)
-      );
-    }
-  }
-
-  private extractSourceFromTrace(trace: string[]): string | undefined {
-    if (!trace || trace.length === 0) return undefined;
+  private assembleMessage(payload: string[]): string {
+    if (payload.length === 0) return '';
     
-    // Get the first trace entry that's not from a library
-    const relevantTrace = trace.find(line => !line.includes('node_modules'));
-    if (!relevantTrace) return undefined;
+    // Remove quotes from all payload items
+    const cleanedPayload = payload.map(item => 
+      item.replace(/^["']|["']$/g, '').trim()
+    );
 
-    const match = relevantTrace.match(/\((.*?):(\d+):(\d+)\)/);
-    if (match) {
-      const [_, file, line, col] = match;
-      return `${file.split('/').pop()}:${line}`;
+    if (cleanedPayload.length === 1) {
+      return cleanedPayload[0];
     }
-    return undefined;
+
+    // Handle format string messages (like React warnings)
+    let message = cleanedPayload[0];
+    let substitutionIndex = 1;
+
+    return message.replace(/%s/g, () => {
+      const substitution = cleanedPayload[substitutionIndex];
+      substitutionIndex++;
+      return substitution || '';
+    });
   }
 
-  private cleanPayload(payload: string): string {
-    return payload.replace(/^["']|["']$/g, '').trim();
+  private extractLocation(trace: string[]): string | undefined {
+    if (!trace || trace.length === 0) return undefined;
+
+    // Find the first non-library trace entry
+    const appTrace = trace.find(line => 
+      !line.includes('node_modules') && 
+      !line.includes('webpack-internal')
+    );
+
+    if (!appTrace) return undefined;
+
+    // Extract file and line information
+    const match = appTrace.match(/(?:\((.*?):(\d+):(\d+)\))|(?:at\s+(?:.*?\s+)?\(?([^:]+):(\d+):(\d+))$/);
+    if (!match) return undefined;
+
+    const [_full, file1, line1, _groups, file2, line2] = match;
+    const file = file1 || file2;
+    const line = line1 || line2;
+
+    if (!file) return undefined;
+
+    // Extract just the filename from the path
+    const fileName = file.split('/').pop();
+    return `${fileName}:${line}`;
   }
 
-  private isSignificantWarning(message: string): boolean {
-    const significantPatterns = [
-      /performance/i,
-      /deprecated/i,
-      /memory/i,
-      /timeout/i,
-      /failed to load/i,
-      /error/i,
-      /invalid/i,
-      /warning/i
+  private deriveImpact(event: { level: string; message: string; location?: string }): string {
+    const locationContext = event.location ? ` at ${event.location}` : '';
+
+    switch (event.level) {
+      case 'error':
+        if (event.message.includes('Warning:')) {
+          return `React development warning detected${locationContext} that may indicate potential issues`;
+        }
+        return `Application error occurred${locationContext} that requires investigation`;
+
+      case 'warn':
+        return `Warning logged${locationContext} that may need attention`;
+
+      case 'info':
+      case 'log':
+        // Network related
+        if (event.message.toLowerCase().includes('network')) {
+          return `Network-related activity logged${locationContext}`;
+        }
+        // State changes
+        if (this.isStateChange(event.message)) {
+          return `Application state change recorded${locationContext}`;
+        }
+        // Tests or checks
+        if (this.isTestOrCheck(event.message)) {
+          return `System test or check executed${locationContext}`;
+        }
+        // Default for other logs
+        return `Application activity recorded${locationContext}`;
+
+      default:
+        return `Console activity detected${locationContext}`;
+    }
+  }
+
+  private isStateChange(message: string): boolean {
+    const statePatterns = [
+      /completed|finished|done|ended/i,
+      /started|beginning|initializing/i,
+      /changed|updated|modified/i,
+      /state|status/i
     ];
-
-    return significantPatterns.some(pattern => pattern.test(message));
+    return statePatterns.some(pattern => pattern.test(message));
   }
 
-  private isSignificantInfo(message: string): boolean {
-    const significantPatterns = [
-      /initialized/i,
-      /loaded/i,
-      /complete/i,
-      /success/i,
-      /started/i,
-      /running/i,
-      /test/i,
-      /checking/i,
-      /verified/i
+  private isTestOrCheck(message: string): boolean {
+    const testPatterns = [
+      /test|check|verify|validate/i,
+      /running|executing/i,
+      /success|failed|completed/i
     ];
-
-    return significantPatterns.some(pattern => pattern.test(message));
-  }
-
-  private getInfoImpact(message: string): string {
-    if (message.match(/test|running|checking/i)) {
-      return 'System diagnostic activity';
-    }
-    if (message.match(/initialized|started/i)) {
-      return 'System initialization event';
-    }
-    if (message.match(/complete|success/i)) {
-      return 'Operation completed successfully';
-    }
-    return 'System state information';
+    return testPatterns.some(pattern => pattern.test(message));
   }
 }
