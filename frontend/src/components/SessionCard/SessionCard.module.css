@@ -17,12 +17,12 @@
 
 .sessionCard li {
   width: fit-content;
-  border: 1px solid white;
   border-radius: 5px;
   margin-top: 4px;
   background-color: #ffd85f;
-  background-color: var(--providence-white);
-  color: var(--providence-gray);
+  background-color: var(--providence-blue);
+  color: black;
+  padding: 2px;
 }
 
 .sessionCard:hover {
@@ -35,7 +35,6 @@
   flex-direction: column;
   font-size: .8rem;
   height: 100%;
-  /* background-color: var(--providence-red); */
 }
 
 .cardContainer ul {
