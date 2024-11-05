@@ -34,8 +34,17 @@
   }
 }
 
+.player {
+  border-bottom: 1px solid var(--providence-blue);
+  background-image: url('/providence.ico');
+  background-size: 10px 10px;
+  border-radius: 5px;
+  border-right: 1px solid var(--providence-blue);
+}
+
 .sessionSummary {
-  border: 1px dotted var(--providence-red);
+  background-color: var(--providence-blue);
+  color: black;
   border-radius: 8px;
   padding: 24px;
   overflow: scroll;
@@ -48,22 +57,17 @@
   padding-left: 24px;
   padding-right: 24px;
   flex-direction: column;
-  color: var(--providence-light-white)
+  color: var(--providence-light-white);
+  margin-top: 32px;
 }
 
 .sessionSummaryContainer h1 {
-  background-image: linear-gradient(to right bottom, #f5ff80, #ffd85f, #ffaf50, #ff8551, #f45c5c);
-  -webkit-background-clip: text;
-  background-clip: text;  
-  -webkit-text-fill-color: transparent;
-  border-bottom: 1px dotted var(--providence-red)
+  color: black;
+  border-bottom: 1px solid black;
 }
 
 .sessionSummaryContainer h2 {
-  background-image: linear-gradient(to right bottom, #f5ff80, #ffd85f, #ffaf50, #ff8551, #f45c5c);
-  -webkit-background-clip: text;
-  background-clip: text;  
-  -webkit-text-fill-color: transparent;
+  color: black;
   margin-top: 0px;
 }
 
@@ -73,4 +77,6 @@
   border-radius: 8px;
   scrollbar-width: thin;
   scrollbar-color: var(--providence-red) var(--providence-black);
+  border: 1px solid var(--providence-blue);
+  border-top: none;
 }

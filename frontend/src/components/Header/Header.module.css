@@ -1,14 +1,8 @@
-.gradientText {
-  background-image: linear-gradient(to right bottom, #f45c5c, #ff8551, #ffaf50, #ffd85f, #f5ff80);
-  -webkit-background-clip: text;
-  background-clip: text;  
-  -webkit-text-fill-color: transparent;
-}
-
 .header {
   padding: 8px 24px;
   display: flex;
   align-items: center;
+  border-bottom: 1px solid var(--providence-blue);
 }
 
 .headerChoice {
@@ -22,18 +16,22 @@
   margin-right: 16px;
 }
 
+.headerChoice span {
+  color: var(--providence-medium-blue);
+  text-decoration: none;
+}
+
 .headerChoice:hover {
   transform: scale(1.1)
 }
 
 .infinity {
-  background-color: var(--providence-red);
   border-radius: 4px;
 }
 
 .login {
   margin-left: auto;
-  background-color: var(--providence-red);
+  background-color: var(--providence-blue);
   padding: 8px;
   border-radius: 9999px;
   color: black;
@@ -77,6 +75,8 @@
   border-radius: 8px;
   margin-left: 2%;
   white-space: nowrap;
-  border: 1px solid var(--providence-white);
+  background-color: var(--providence-blue);
+  color: black;
   overflow: hidden;
+  cursor: pointer;
 }

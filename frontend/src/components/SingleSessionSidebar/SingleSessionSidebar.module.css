@@ -2,7 +2,8 @@
   background: transparent;
   border: none;
   height: 100%;
-  color: var(--providence-white);
+  color: var(--providence-gray);
+  font-style: bold;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -11,13 +12,12 @@
 
 .sidebarButton svg {
   margin-left: 5px;
-
 }
 
 .sidebarButton:hover {
-  background-color: var(--providence-red);
+  box-shadow: 1.2px 2.2px 12px var(--providence-blue), 
+  0px 0.6px 1.8px 0px var(--providence-blue);
 }
-
 
 .sidebarHeader {
   text-align: center;
@@ -28,6 +28,8 @@
   display: flex;
   justify-content: space-around;
   position: relative;
+  border-bottom: 1px solid var(--providence-blue);
+  padding-bottom: 8px;
 }
 
 .sidebarMain {
@@ -36,12 +38,14 @@
   justify-content: center;
   align-items: flex-start;
   padding: 4px;
+  border-right: 1px solid var(--providence-blue);
 }
 
 .sessionCard {
   width: 280px;
   height: 200px;
   background-color: var(--providence-white);
+  color: var(--providence-gray);
   margin: auto;
   margin-bottom: 8px;
   border-radius: 8px;
@@ -49,10 +53,10 @@
 }
 
 .sessionCard:focus {
-  outline: 3px solid var(--providence-red);
+  outline: 2px solid var(--providence-blue);
 }
 
 .sessionCard:hover {
-  box-shadow: 1.2px 2.2px 12px var(--providence-red), 
-  0px 0.6px 1.8px 0px var(--providence-red);
+  box-shadow: 1.2px 2.2px 12px var(--providence-blue), 
+  0px 0.6px 1.8px 0px var(--providence-blue);
 }
