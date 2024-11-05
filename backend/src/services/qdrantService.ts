@@ -30,7 +30,7 @@ export class QdrantService {
     }
   }
 
-  async addVector(vector: number[], id, payload=null) {
+  async addVector(vector: number[], id, payload) {
     await this.connection.upsert(
       this.collection,
       {
@@ -41,11 +41,11 @@ export class QdrantService {
   }
   
   //  can decide to add filters here if we want
-  async retrieveContext(vector: number[], limit: number) {
+  async retrieveContext(vector: number[], limit: number = 100) {
     const context = await this.connection.query(
       this.collection,
       { query: vector,
-        limit: limit,
+        // limit: limit,
         with_payload: true
       });
     return context;

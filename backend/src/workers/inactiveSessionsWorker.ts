@@ -57,11 +57,17 @@ async function handleSessionEnd(sessionID: string, fileName: string) {
       
       // Get AI summary
       const summary = await openAI.summarizeSession(processedSession);
-      // const embedding = await openAI.embeddingQuery(summary);
-      // await qdrant.addVector(embedding, sessionID);
-
       console.log(`[worker] Generated summary for ${sessionID}`, summary);
+
+      // Turn summary into embedding
+      const embedding = await openAI.embeddingQuery(summary);
+
+      // Inject the summary into processedSession.metadata
+      processedSession.metadata.summary = summary;
       
+      // Embed vectors in vector DB
+      await qdrant.addVector(embedding, sessionID, processedSession.metadata);
+
       // Add session summary to PSQL
       await psql.addSessionSummary(sessionID, summary);
 
