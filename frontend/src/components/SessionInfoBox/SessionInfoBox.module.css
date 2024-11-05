@@ -1,7 +1,8 @@
 .sessionInfoBox {
   margin-top: 16px;
-  background-color: var(--providence-light-blue);
-  color: var(--providence-gray);
+  background-color: var(--providence-blue);
+  /* color: var(--providence-black); */
+  color: black;
   flex: 0.3 0.3 0%;
   border-radius: 8px;
 }

@@ -12,5 +12,6 @@
   padding: 24px;
   border-radius: 8px;
   background-color: var(--providence-light-blue);
-  color: var(--providence-gray)
+  color: var(--providence-black);
+  background-color: var(--providence-blue);
 }

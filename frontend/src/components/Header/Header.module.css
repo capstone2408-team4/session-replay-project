@@ -75,8 +75,8 @@
   border-radius: 8px;
   margin-left: 2%;
   white-space: nowrap;
-  /* border: 1px solid var(--providence-medium-blue); */
+  background-color: var(--providence-blue);
+  color: black;
   overflow: hidden;
-  color: #4980C1;
   cursor: pointer;
 }

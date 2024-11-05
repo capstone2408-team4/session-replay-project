@@ -29,6 +29,7 @@
   justify-content: space-around;
   position: relative;
   border-bottom: 1px solid var(--providence-blue);
+  padding-bottom: 8px;
 }
 
 .sidebarMain {

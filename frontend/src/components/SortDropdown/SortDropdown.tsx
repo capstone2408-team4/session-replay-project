@@ -26,8 +26,6 @@ const SortDropdown = React.forwardRef<HTMLDivElement, SortDropdownProp>(( {onClo
       <ul>
         <li><button onClick={() => handleSortChoice('Time Ascending')}>Time Ascending ↑</button></li>
         <li><button onClick={() => handleSortChoice('Time Descending')}>Time Descending ↓</button></li>
-        <li><button>Sentiment Ascending ↑</button></li>
-        <li><button>Sentiment Descending ↓</button></li>
       </ul>
     </div>
   );

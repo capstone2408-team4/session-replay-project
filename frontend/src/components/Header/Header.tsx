@@ -37,7 +37,7 @@ function Header({ onLogin, project, selectedPage }: HeaderProps) {
         </Link>
       </div>}
 
-      {project && <div className={`${styles.projectName} ${styles.gradientText}`}>
+      {project && <div className={`${styles.projectName}`}>
         Logged in as project: {project}
       </div>}
 

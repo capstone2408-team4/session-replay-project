@@ -2,13 +2,14 @@
   background: var(--providence-white);
   border: none;
   height: 100%;
-  color: var(--providence-black);
+  color: black;
   cursor: pointer;
   display: flex;
   align-items: center;
   border-radius: 8px;
   outline: 1px solid var(--providence-red);
   font-weight: bold;
+  background-color: var(--providence-red);
 }
 
 .sidebarButton:disabled {
