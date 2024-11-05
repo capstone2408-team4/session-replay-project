@@ -30,7 +30,7 @@ export class QdrantService {
     }
   }
 
-  async addVector(vector: number[], id, payload=null) {
+  async addVector(vector: number[], id, payload) {
     await this.connection.upsert(
       this.collection,
       {
