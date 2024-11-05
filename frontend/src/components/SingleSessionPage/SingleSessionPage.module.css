@@ -34,6 +34,10 @@
   }
 }
 
+.mainPageWrapper {
+  margin-bottom: 8px;
+}
+
 .player {
   display: flex;
   flex-direction: column;
@@ -42,6 +46,7 @@
   padding-bottom: 4px;
   grid-area: main;
   overflow: scroll;
+  border-bottom: 1px solid var(--providence-blue);
 }
 
 .sidebar {
@@ -50,4 +55,5 @@
   border-radius: 8px;
   scrollbar-width: thin;
   scrollbar-color: var(--providence-red) var(--providence-black);
+  border-bottom: 1px solid var(--providence-blue);
 }

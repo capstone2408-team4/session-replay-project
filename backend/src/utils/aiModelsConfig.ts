@@ -14,9 +14,7 @@ experience and 10 being the best imaginable.`
 
 export const SessionChunkPrompt = `
 Here are some rrweb events. 
-Did the user leave the site wit items left in cart?
-Can you surmise why if they did?
-`
+Can you summarize what the user did? Please dont give me any extraneous explanations about rrweb. Just tell me what the user did.`
 
 export const MultiSessionSummaryPrompt = `
 Interperet this group of session summaries. Consider if there are trends in how users are interacting with the application. Are there any outliers? If there is a trend, explain that, if there are outliers explain those. Make sure your answer is rooted in these summaries.
