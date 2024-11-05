@@ -6,28 +6,28 @@
   border-radius: 8px;
   cursor: pointer;
   color: var(--providence-white);
-  border-bottom: 3px solid #ffd85f;
-  border-right: 3px solid #ffd85f;
+  border-bottom: 1px solid var(--providence-blue);
 }
 
 .activeSelection {
-  border-top: 3px solid var(--providence-red);
-  border-left: 3px solid var(--providence-red);
+  box-shadow: 1.2px 2.2px 12px var(--providence-blue), 
+  0px 0.6px 1.8px 0px var(--providence-blue);
+  border-bottom: none;
 }
 
 .sessionCard li {
   width: fit-content;
-  border: 1px solid white;
   border-radius: 5px;
   margin-top: 4px;
   background-color: #ffd85f;
-  background-color: var(--providence-white);
-  color: var(--providence-black);
+  background-color: var(--providence-blue);
+  color: black;
+  padding: 2px;
 }
 
 .sessionCard:hover {
-  box-shadow: 1.2px 2.2px 12px var(--providence-red), 
-  0px 0.6px 1.8px 0px var(--providence-red);
+  box-shadow: 1.2px 2.2px 12px var(--providence-blue), 
+  0px 0.6px 1.8px 0px var(--providence-blue);
 }
 
 .cardContainer {

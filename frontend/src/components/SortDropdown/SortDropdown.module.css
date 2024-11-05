@@ -2,8 +2,8 @@
   background-color: var(--providence-white);
   position: absolute;
   left: 30px;
-  bottom: -130px;
-  color: var(--providence-black);
+  bottom: -80px;
+  color: var(--providence-gray);
   border: 3px solid var(--providence-black);
   text-align: left;
   padding-right: 8px;
@@ -24,5 +24,5 @@
 }
 
 .dropdownContainer li:hover {
-  background-color: var(--providence-red);
+  background-color: var(--providence-light-blue);
 }

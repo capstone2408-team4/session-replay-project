@@ -21,7 +21,7 @@ Analyze this portion of a user session recording. The portion provided is a JSON
 - Key interactions and state changes
 - DOM modifications and their significance
 
-Provide a clear narrative of what happened in this part of the session. Derive your narrative from data or best guess. Try not to create false statements. Keep your summary in plaintext.
+Provide a clear narrative of what happened in this part of the session. Derive your narrative from data or best guess. Try not to create false statements. Keep your summary in plaintext with only line breaks between paragraphs and cap it at a maximum of 250 words. Do not apply any other formatting.
 `;
 
 export const FinalSummaryPrompt = `
@@ -38,7 +38,7 @@ Synthesize these into a single, flowing narrative that captures:
 5. Final outcome of the session
 
 Focus on telling the story of what the user was trying to achieve and their experience along the way.
-Maintain chronological flow while highlighting important patterns across the entire session. Keept your summary in plaintext.
+Maintain chronological flow while highlighting important patterns across the entire session. Keep your summary in plaintext with only line breaks between paragraphs and cap it at a maximum of 250 words. Do not apply any other formatting.
 `;
 
 // export const MultiSessionSummaryPrompt = `
