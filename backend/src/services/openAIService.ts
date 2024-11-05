@@ -21,7 +21,7 @@ export class OpenAIService extends AIParent {
   }
 
   // query the model
-  protected async query(prompt: string, data: string): Promise<string> {
+  async query(prompt: string, data: string): Promise<string> {
     try {
       const response = await this.connection.chat.completions.create({
         model: this.model,

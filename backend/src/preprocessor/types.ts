@@ -89,6 +89,7 @@ export interface SessionMetadata {
     };
   };
   url?: string;
+  summary?: string;
 }
 
 export interface EventSummary {
