@@ -1,6 +1,7 @@
 import styles from './Header.module.css';
 import providenceImg from '../../assets/providence.png';
 import infinityImg from '../../assets/infinity.png';
+import chatbot from '../../assets/chatbot.png'
 import playButton from '../../assets/playbutton.png'
 import { Link } from 'react-router-dom';
 
@@ -33,6 +34,14 @@ function Header({ onLogin, project, selectedPage }: HeaderProps) {
               <image href={infinityImg} x="0" y="0" height="40px" width="40px"/>
             </svg>
             <span>Multi Session</span>
+          </div>
+        </Link>
+        <Link to='/chatbot'>
+          <div tabIndex={0} className={`${styles.headerChoice} ${styles.gradientText} ${selectedPage === 'chatbot' && styles.pageSelected}`}>
+            <svg className={styles.infinity} width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+              <image href={chatbot} x="0" y="0" height="40px" width="40px"/>
+            </svg>
+            <span>Chatbot</span>
           </div>
         </Link>
       </div>}
