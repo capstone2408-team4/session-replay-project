@@ -20,7 +20,7 @@ const MessageParser = ({ children, actions }) => {
     } else if (REGEX.test(message)) {
       actions.handleNonsense()
     } else {
-      actions.handleValidQuery()
+      actions.handleValidQuery(message)
     }
 
     setLastMessageTime(Date.now())
