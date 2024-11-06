@@ -40,9 +40,13 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
 
   const handleValidQuery = async function(message) {
     try {
-      const response = await axios.post('http://localhost:5001/api/chatbot-query', message);
+      const response = await axios.post('http://localhost:5001/api/chatbot-query', { query: message }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       
-      const botMessage = createChatBotMessage(response);
+      const botMessage = createChatBotMessage(response.data);
       setState((prev) => ({
         ...prev,
         messages: [...prev.messages, botMessage],
