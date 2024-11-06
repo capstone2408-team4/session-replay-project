@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './RegisterOverlay.module.css';
 import xButton from '../../assets/x.png';
+import BadLoginAlert from '../BadLoginAlert';
 
 interface RegisterOverlayProps {
   onClose: (e: any) => void;
@@ -10,6 +11,7 @@ function RegisterOverlay( { onClose }: RegisterOverlayProps) {
   const [projectName, setProjectName] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [passwordRepeat, setPasswordRepeat] = React.useState('');
+  const [showError, setShowError] = React.useState(false);
 
   const handleNameInput = function(e: React.ChangeEvent<HTMLInputElement>) {
     setProjectName(e.target.value)
@@ -26,7 +28,7 @@ function RegisterOverlay( { onClose }: RegisterOverlayProps) {
   const handleRegister = function(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (password !== passwordRepeat) {
-      alert('Incorret password dum dum')
+      setShowError(true)
     } else {
       alert('Looks good')
     }
@@ -35,6 +37,7 @@ function RegisterOverlay( { onClose }: RegisterOverlayProps) {
   return (
     <div className={styles.overlayContainer}>
       <div id='backdrop' onClick={onClose} className={styles.overlay}>
+      {showError && <BadLoginAlert register={true}/>}
         <div className={styles.overlayBox}>
           <div className={styles.gradientBox}>
             <p>Register:</p>

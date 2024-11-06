@@ -1,9 +1,13 @@
 import styles from './BadLoginAlert.module.css'
 
-function BadLoginAlert() {
+interface BadLoginAlertProps {
+  register?: boolean
+}
+
+function BadLoginAlert({ register }: BadLoginAlertProps) {
   return (
     <div className={styles.alertContainer}>
-      Incorrect credentials. Please try again.
+      {!register ? 'Incorrect credentials. Please try again.' : 'Passwords do not match.'}
     </div>
   );
 }
