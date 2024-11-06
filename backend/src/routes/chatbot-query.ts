@@ -1,6 +1,7 @@
 import express from 'express';
 import { QdrantService } from '../services/qdrantService';
 import { OpenAIService } from '../services/openAIService';
+import { ChatbotSystemPrompt, ChatbotUserPrompt } from '../utils/aiModelsConfig';
 
 const router = express.Router();
 
@@ -20,14 +21,18 @@ router.post('/', async (req, res) => {
   // piece the summaries together summaries together
   let relevantSummaries = qdrantContext.points
     .filter(point => point.score > 0.20)
-    .map(point => point.payload && point.payload.summary) // take out after cleaning the db
-    .join('\n---SUMMARY DELINEATOR---\n');
+    .map(point => {
+      return `---SESSION START (ID: ${point.id})---\n` +
+             `Similarity Score: ${point.score.toFixed(3)}\n` +
+             `Summary: ${point.payload.summary}\n` +
+             `---SESSION END---`;
+    })
+    .join('\n\n');
 
   // send relevant summaries + new prompt to openAI
-  const prompt = `Based only on the session summaries provided below, answer the user's question in a concise manner.\n\n`;
-  const data = `User's question: ${query}\nSession summaries:\n${relevantSummaries}`;
+  const data = `Question: "${query}"\n\nSummaries:\n\n${relevantSummaries}`;
 
-  const queryResponse = await openAI.query(prompt, data);
+  const queryResponse = await openAI.query(ChatbotSystemPrompt, ChatbotUserPrompt, data);
   res.status(200).json(queryResponse);
 });
 
