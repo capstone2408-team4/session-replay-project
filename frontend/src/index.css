@@ -14,7 +14,6 @@ html, body {
   --providence-gray: #58595B;
   --providence-black: #c8cccd;
   --providence-red: #4980C1;
-  /* --providence-blue: #2c337d; */
   --providence-blue: #4980C1;
   --providence-medium-blue: #4980C1;
   --providence-light-blue: #80D1E8;
@@ -246,11 +245,13 @@ html, body {
 
 .react-chatbot-kit-chat-container {
   position: relative;
-  width: 400px;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .react-chatbot-kit-chat-inner-container {
-  height: 500px;
+  height: 700px;
   background-color: #fff;
   border-radius: 3px;
   border-radius: 5px;
