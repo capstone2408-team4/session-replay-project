@@ -47,8 +47,8 @@
   grid-area: main;
   overflow: scroll;
   border-bottom: 1px solid var(--providence-blue);
-  background-image: url('/providence.ico');
-  background-size: 10px 10px;
+  /* background-image: url('/providence.ico');
+  background-size: 10px 10px; */
   border-radius: 5px;
   border-right: 1px solid var(--providence-blue);
 }

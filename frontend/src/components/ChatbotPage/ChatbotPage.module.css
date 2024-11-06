@@ -1,0 +1,17 @@
+.chatbotContainer {
+  display: flex;
+  flex: 1 1 0;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  
+}
+
+
+
+.mainPageWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  min-width: 900px;
+}

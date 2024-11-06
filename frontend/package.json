@@ -14,6 +14,7 @@
     "@rrweb/rrweb-plugin-console-replay": "^2.0.0-alpha.17",
     "axios": "^1.7.7",
     "react": "^18.3.1",
+    "react-chatbot-kit": "^2.2.2",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
     "rrweb": "^2.0.0-alpha.4",
