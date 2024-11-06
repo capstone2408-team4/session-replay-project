@@ -4,6 +4,7 @@ import { S3Service } from '../services/s3Service';
 import { OpenAIService } from '../services/openAIService';
 import { QdrantService } from '../services/qdrantService';  
 import { SessionPreprocessor } from '../preprocessor/SessionPreprocessor';
+import { ProcessedSession } from '../preprocessor/types';
 
 const psql = new PsqlService();
 const redis = new RedisService();
@@ -55,13 +56,18 @@ async function handleSessionEnd(sessionID: string, fileName: string) {
       });
       
       // Get AI summary
-      const summary = await openAI.summarizeSession(JSON.stringify(processedSession));
-      const embedding = await openAI.embeddingQuery(summary);
-      await qdrant.addVector(embedding, sessionID);
-      
-      console.log(summary);
+      const summary = await openAI.summarizeSession(processedSession);
       console.log(`[worker] Generated summary for ${sessionID}`, summary);
+
+      // Turn summary into embedding
+      const embedding = await openAI.embeddingQuery(summary);
+
+      // Inject the summary into processedSession.metadata
+      processedSession.metadata.summary = summary;
       
+      // Embed vectors in vector DB
+      await qdrant.addVector(embedding, sessionID, processedSession.metadata);
+
       // Add session summary to PSQL
       await psql.addSessionSummary(sessionID, summary);
 

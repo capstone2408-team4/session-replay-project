@@ -65,7 +65,7 @@ export class SessionPreprocessor {
     }
 
     const downsampledEvents = this.downsampler.downsample(events);
-    console.log(`Downsampled from ${events.length} to ${downsampledEvents.length} events`);
+    console.log(`[preprocessor] Downsampled from ${events.length} to ${downsampledEvents.length} events`);
 
     const processed = this.initializeProcessedSession();
 
