@@ -13,7 +13,6 @@ html, body {
   height: 100svh;
   --providence-gray: #58595B;
   --providence-black: #c8cccd;
-  --providence-red: #4980C1;
   --providence-blue: #4980C1;
   --providence-medium-blue: #4980C1;
   --providence-light-blue: #80D1E8;
@@ -25,7 +24,7 @@ html, body {
 }
 
 .sessionSelected {
-  outline: 3px solid var(--providence-red);
+  outline: 3px solid var(--providence-blue);
 }
 
 .replayer-mouse {
@@ -82,7 +81,7 @@ html, body {
   background: var(--providence-white);
   float:left;
   border-radius: 5px; 
-  box-shadow:0 4px 12px var(--providence-red);
+  box-shadow:0 4px 12px var(--providence-blue);
   width: 100% !important;
   height: 100% !important;
   display: flex;

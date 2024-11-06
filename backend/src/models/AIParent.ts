@@ -124,15 +124,15 @@ abstract class AIParent {
       .filter(Boolean);
   }
 
-  // async summarizeMultipleSessions(summaries) {
-  //   let selectedSummaries = '';
+  async summarizeMultipleSessions(summaries) {
+    let selectedSummaries = '';
 
-  //   for (const { session_summary } of summaries) {
-  //     selectedSummaries += `Individual Summary: ${session_summary}`;
-  //   }
+    for (const { session_summary } of summaries) {
+      selectedSummaries += `Individual Summary: ${session_summary}`;
+    }
 
-  //   return await this.query(AIConfig.MultiSessionSummaryPrompt, selectedSummaries);
-  // }
+    return await this.query(AIConfig.MultiSessionSummaryPrompt, selectedSummaries);
+  }
 }
 
 export default AIParent;

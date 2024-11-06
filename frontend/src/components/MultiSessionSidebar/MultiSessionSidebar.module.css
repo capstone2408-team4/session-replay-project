@@ -7,13 +7,14 @@
   display: flex;
   align-items: center;
   border-radius: 8px;
-  outline: 1px solid var(--providence-red);
+  outline: 1px solid var(--providence-blue);
   font-weight: bold;
-  background-color: var(--providence-red);
+  background-color: var(--providence-blue);
 }
 
 .sidebarButton:disabled {
-  background-color: var(--providence-red);
+  background-color: var(--providence-blue);
+  background-color: var(--providence-light-blue);
   cursor: not-allowed;
 }
 
@@ -22,7 +23,8 @@
 }
 
 .sidebarButton:hover {
-  background-color: var(--providence-red);
+  background-color: var(--providence-light-blue);
+  outline: none;
 }
 
 .sidebarHeader {
@@ -58,10 +60,10 @@
 }
 
 .sessionCard:focus {
-  outline: 3px solid var(--providence-red);
+  outline: 3px solid var(--providence-blue);
 }
 
 .sessionCard:hover {
-  box-shadow: 1.2px 2.2px 12px var(--providence-red), 
-  0px 0.6px 1.8px 0px var(--providence-red);
+  box-shadow: 1.2px 2.2px 12px var(--providence-blue), 
+  0px 0.6px 1.8px 0px var(--providence-blue);
 }
