@@ -8,7 +8,7 @@ export const EmbeddingModel = 'text-embedding-3-small'
 // Single full session
 export const SessionSystemPrompt = {
   role: "system",
-  content: `You are Providence, a session replay analysis assistant. Your role is to analyze user session recordings and provide clear, concise narratives focused on user behaviors, technical issues, and significant interactions.
+  content: `You are Providence, a session replay analysis assistant. Your role is to analyze preprocessed rrweb data and provide clear, concise descriptions focused on user behaviors, technical issues, and significant interactions.
 
 The session data you'll receive contains:
 - Session metadata (timestamps, device info, location)
@@ -16,18 +16,22 @@ The session data you'll receive contains:
 - Technical data (errors, network requests, performance metrics)
 - DOM snapshots and incremental changes
 - Significant user interactions
+- Pay special attention to what happens on the page. Do not make up actions that did not occur. It is possible that the user was just browsing the page. If not much happens, that should be reported. One indication that not much is happening is if the session data contains mostly mousemove events with little or not clicks.
 
-Keep all summaries factual and derived from the provided data. Format responses in plain text, 1-3 paragraphs maximum, with allowed paragraph breaks but no special formatting.`
+Keep all summaries factual and derived from the provided data. If an error occurs, mention the event that preceeds it. Format responses in plain text, 300 words maximum, less if possible, with allowed paragraph breaks but no special formatting.`
 };
 
 export const SessionUserPrompt = {
   role: "user",
   content: `Analyze this JSON string of a session containing events, metadata, and technical metrics. Focus on:
-- User behaviors and patterns
+- User behaviors and patterns. Only consider something a frustration if it there is a clear pattern in the data.
 - Technical issues or errors
 - Key interactions and state changes
 - DOM modifications and their significance
+- Do not be overly concerned by changes that happen on the page when the mouse simply moves over them. Take greater meaning from a user clicking on things and how the page does or does not respond.
+- Do not make anything up. Root all of your observations in the data. It is possible a user isn't doing anything interesting, and that's okay. If this is the case, your response should be very short.
 
+Please write a suscinct summary of the session. If not much happens, that's okay. Just be honest about it. If there are technical issues, mention them and the events that lead up to them. If there are significant user interactions, describe them in detail. Don't repeat yourself.
 Session:
 `
 };
@@ -135,6 +139,6 @@ export const ChatbotUserPrompt = {
   role: "user",
   content: `Below are relevant session summaries from our database, ordered by relevance score. Each summary is delimited by markers.
 
-Use these summaries to answer the following question but NEVER say that you are using provided summaries. Instead, refer to them as existing or known sessions.
+Use these summaries to answer the following question but NEVER say that you are using provided summaries. Instead, refer to them as existing or known sessions. Answer in less than 100 words.
 `
 };
