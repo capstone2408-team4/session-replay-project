@@ -1,6 +1,7 @@
 import express from 'express';
 import { QdrantService } from '../services/qdrantService';
 import { OpenAIService } from '../services/openAIService';
+import { ChatbotSystemPrompt, ChatbotUserPrompt } from '../utils/aiModelsConfig';
 
 const router = express.Router();
 
@@ -66,12 +67,12 @@ router.post('/', async (req: express.Request<{}, {}, ChatbotQueryRequest>, res: 
         return isRelevant;
       })
       .map(point => {
-        if (!point.payload?.summary) {
-          console.warn('Found point without summary in payload:', point);
-        }
-        return point.payload?.summary;
+        return `---SESSION START (ID: ${point.id})---\n` +
+               `Similarity Score: ${point.score.toFixed(3)}\n` +
+               `Summary: ${point.payload.summary}\n` +
+               `---SESSION END---`;
       })
-      .join('\n---SUMMARY DELINEATOR---\n');
+      .join('\n\n');
 
     if (!relevantSummaries) {
       console.log('No relevant summaries found for query');
@@ -81,12 +82,11 @@ router.post('/', async (req: express.Request<{}, {}, ChatbotQueryRequest>, res: 
     }
 
     // Generate final response
-    const prompt = `Based only on the session summaries provided below, answer the user's question in a concise manner.\n\n`;
-    const data = `User's question: ${query}\nSession summaries:\n${relevantSummaries}`;
+    const data = `Question: "${query}"\n\nSummaries:\n\n${relevantSummaries}`;
 
     let queryResponse;
     try {
-      queryResponse = await openAI.query(prompt, data);
+      queryResponse = await openAI.query(ChatbotSystemPrompt, ChatbotUserPrompt, data);
       console.log('Generated response successfully');
     } catch (error) {
       console.error('Error generating response:', error);
