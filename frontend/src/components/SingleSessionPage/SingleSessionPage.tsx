@@ -8,12 +8,16 @@ import { Session } from '../../Types/index.ts'
 import SessionInfoBox from '../SessionInfoBox/SessionInfoBox.tsx';
 import EmptyPlayer from '../EmptyPlayer/EmptyPlayer.tsx';
 import { filterToday, filterYday, filterRange, sorter } from '../../utils/helpers.ts';
+import { useAuth } from '../AuthProvider/AuthProvider.tsx';
+import { useNavigate } from 'react-router-dom';
 
 function SingleSessionPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
   const [selectedSession, setSelectedSession] = React.useState<Session | null>(null);
   const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<any[]>([]);
   const [filteredSessions, setFilteredSessions] = React.useState<Session[] | null>(null);
+  const { projectName } = useAuth();
+  const navigate = useNavigate();
 
   const handleSessionSelect = async function(session: Session) {
     setSelectedSession(session)
@@ -50,6 +54,16 @@ function SingleSessionPage() {
       console.log('error fetching single session', error)
     }
   }
+
+  React.useEffect(() => {
+    console.log('useeffect in single trigger')
+    console.log(projectName)
+    if (!projectName) {
+      alert('Please log in');
+      navigate('/');
+    }
+
+  }, [projectName])
 
   React.useEffect(() => {
     const fetchSessions = async function() {

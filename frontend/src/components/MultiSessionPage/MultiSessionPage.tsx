@@ -5,6 +5,8 @@ import EmptyMultiSession from '../EmptyMultiSession/EmptyMultiSession.tsx';
 import styles from './MultiSessionPage.module.css'
 import axios from 'axios'
 import { Session } from '../../Types/index.ts'
+import { useAuth } from '../AuthProvider/AuthProvider.tsx';
+import { useNavigate } from 'react-router-dom';
 
 function MultiSessionPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
@@ -13,6 +15,8 @@ function MultiSessionPage() {
   const [showSessionCountError, setShowSessionCountError] = React.useState(false);
   const [summarizeButtonDisabled, setSummarizeButtonDisabled] = React.useState(false);
   const [currentSummary, setCurrentSummary] = React.useState<null | string>(null)
+  const { projectName } = useAuth();
+  const navigate = useNavigate();
 
   const summarizedIds = React.useRef<number[]>()
 
@@ -59,6 +63,14 @@ function MultiSessionPage() {
       setSummarizeButtonDisabled(false)
     }
   }
+
+  React.useEffect(() => {
+    if (!projectName) {
+      alert('Please log in');
+      navigate('/');
+    }
+
+  }, [projectName])
 
   React.useEffect(() => {
     const fetchSessions = async function() {

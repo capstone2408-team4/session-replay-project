@@ -9,6 +9,7 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [projectName, setProjectName] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     checkAuthStatus();
@@ -16,28 +17,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
   
   const checkAuthStatus = async () => {
     try {
-      const response = await axios.get('/api/XXXXX', { withCredentials: true});
+      const response = await axios.get('/api/auth/me', { withCredentials: true});
       setProjectName(response.data.projectName);
     } catch (error) {
-      setProjectName(null)
+      setProjectName(null);
+    } finally {
+      setIsLoading(false);
     }
   }
   
   const login = async (projectName: string, password: string) => {
     try {
-      const response = await axios.post('api/login', { projectName: projectName, password: password }, { withCredentials: true, headers: {'Content-Type': 'application/json'} });
-      setProjectName(response.data.projectID);
+      const response = await axios.post('api/auth/login', { projectName: projectName, password: password }, { withCredentials: true, headers: {'Content-Type': 'application/json'} });
+      setProjectName(response.data.projectName);
       return response.data
     } catch (error) {
       throw error
     }
   }
 
+  const logout = async () => {
+    try {
+      await axios.post('/api/auth/logout', {}, { withCredentials: true });
+      setProjectName(null);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   return (
     <AuthContext.Provider value={{
       projectName,
       login,
-      isAuthenticated: !!projectName
+      isAuthenticated: !!projectName,
+      logout,
+      isLoading
     }}>
       {children}
     </AuthContext.Provider>
