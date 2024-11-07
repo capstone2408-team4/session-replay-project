@@ -9,8 +9,7 @@ import eventsRouter from './routes/events';
 import geoRouter from './routes/geo';
 import multiSummaryRouter from './routes/multi-summary';
 import chatbotQueryRouter from './routes/chatbot-query';
-import loginRouter from './routes/login';
-import logoutRouter from './routes/logout';
+import dashAuthRouter from './routes/auth';
 import { authenticateToken } from './middleware/dashboardAuth';
 import path from 'path';
 import { fork } from 'child_process';
@@ -42,8 +41,7 @@ app.use('/api/record', (req, res, next) => {
 // Public routes
 app.use('/api/record', recordRouter);
 app.use('/api/geo', geoRouter);
-app.use('/api/login', loginRouter);
-app.use('/api/logout', logoutRouter);
+app.use('/api/auth', dashAuthRouter);
 
 // Protected routes -- dashboard
 app.use('/api/projects', authenticateToken, projectsRouter);

@@ -7,7 +7,7 @@ interface JWTPayload {
   projectName: string;
 }
 
-interface AuthRequest extends Request {
+export interface AuthRequest extends Request {
   project?: {
     id: string;
     name: string;
