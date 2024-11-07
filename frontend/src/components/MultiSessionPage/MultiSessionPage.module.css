@@ -54,9 +54,10 @@
   align-items: center;
   padding-left: 24px;
   padding-right: 24px;
+  padding-bottom: 8px;
   flex-direction: column;
   color: var(--providence-light-white);
-  margin-top: 32px;
+  overflow: scroll;
 }
 
 .sessionSummaryContainer h1 {
@@ -74,7 +75,7 @@
   overflow: scroll;
   border-radius: 8px;
   scrollbar-width: thin;
-  scrollbar-color: var(--providence-red) var(--providence-black);
+  scrollbar-color: var(--providence-blue) var(--providence-black);
   border: 1px solid var(--providence-blue);
   border-top: none;
 }

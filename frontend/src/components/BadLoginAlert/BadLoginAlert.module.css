@@ -1,9 +1,9 @@
 .alertContainer {
-  width: 300px;
+  width: 400px;
   height: 40px;
   outline: 2px solid rgb(248, 99, 101);
   background-color: var(--providence-light-red);
-  color: var(--providence-black);
+  color: black;
   text-align: center;
   padding-top: 20px;
   margin: auto;

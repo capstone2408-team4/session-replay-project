@@ -58,7 +58,7 @@
   overflow: scroll;
   border-radius: 8px;
   scrollbar-width: thin;
-  scrollbar-color: var(--providence-red) var(--providence-black);
+  scrollbar-color: var(--providence-blue) var(--providence-black);
   border-bottom: 1px solid var(--providence-blue);
   border-left: 1px solid var(--providence-blue);
 }

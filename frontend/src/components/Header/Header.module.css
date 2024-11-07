@@ -4,7 +4,6 @@
   align-items: center;
   border-radius: 8px;
   min-width: 900px;
-  /* border-bottom: 1px solid var(--providence-blue); */
 }
 
 .headerChoice {
@@ -18,13 +17,13 @@
   margin-right: 16px;
 }
 
+.headerChoice:hover {
+  transform: scale(1.1)
+}
+
 .headerChoice span {
   color: var(--providence-medium-blue);
   text-decoration: none;
-}
-
-.headerChoice:hover {
-  transform: scale(1.1)
 }
 
 .infinity {
@@ -46,7 +45,7 @@
 }
 
 .login:hover {
-  background-color: hsl(0, 70%, 44%);
+  background-color: var(--providence-light-blue);
 }
 
 .middleEye {

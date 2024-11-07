@@ -9,11 +9,6 @@
   padding-right: 8px;
 }
 
-.dropdownContainer ul {
-  list-style: none;
-  padding-left: 4px;
-}
-
 .dropdownContainer li {
   margin-bottom: 5px;
   cursor: pointer;
@@ -25,4 +20,9 @@
 
 .dropdownContainer li:hover {
   background-color: var(--providence-light-blue);
+}
+
+.dropdownContainer ul {
+  list-style: none;
+  padding-left: 4px;
 }
