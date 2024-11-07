@@ -3,6 +3,11 @@ import AIParent from '../models/AIParent';
 import * as AIConfig from '../utils/aiModelsConfig'; // Import configuration values for OpenAI LLM.
 import config from '../config/environment';
 
+interface Message {
+  role: string;
+  content: string;
+}
+
 // Provides functionality to interact with Open AI
 export class OpenAIService extends AIParent {
   private connection: OpenAI;
@@ -21,14 +26,16 @@ export class OpenAIService extends AIParent {
   }
 
   // query the model
-  async query(prompt: string, data: string): Promise<string> {
+  async query(systemPrompt: Message, userPrompt: Message, data: string): Promise<string> {
     try {
       const response = await this.connection.chat.completions.create({
         model: this.model,
         messages: [
+          systemPrompt,
+          userPrompt,
           {
             role: "user",
-            content: `${prompt} ${data}`,
+            content: data,
           }
         ],
       });

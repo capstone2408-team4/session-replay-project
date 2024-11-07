@@ -4,7 +4,6 @@ import { S3Service } from '../services/s3Service';
 import { OpenAIService } from '../services/openAIService';
 import { QdrantService } from '../services/qdrantService';  
 import { SessionPreprocessor } from '../preprocessor/SessionPreprocessor';
-import { ProcessedSession } from '../preprocessor/types';
 
 const psql = new PsqlService();
 const redis = new RedisService();
@@ -35,6 +34,7 @@ async function checkInactiveSessions() {
 async function handleSessionEnd(sessionID: string, fileName: string) {
   try {
     console.log(`[worker] ending session ${sessionID}...`)
+    const timestamp = new Date().toISOString(); // UTC
 
     // Get session events from Redis
     const events = await redis.getRecording(sessionID);
@@ -59,6 +59,12 @@ async function handleSessionEnd(sessionID: string, fileName: string) {
       const summary = await openAI.summarizeSession(processedSession);
       console.log(`[worker] Generated summary for ${sessionID}`, summary);
 
+      // Add session summary to PSQL
+      await psql.addSessionSummary(sessionID, summary);
+
+      // Update session metadata PSQL
+      await psql.endSession(sessionID, timestamp);
+
       // Turn summary into embedding
       const embedding = await openAI.embeddingQuery(summary);
 
@@ -67,13 +73,6 @@ async function handleSessionEnd(sessionID: string, fileName: string) {
       
       // Embed vectors in vector DB
       await qdrant.addVector(embedding, sessionID, processedSession.metadata);
-
-      // Add session summary to PSQL
-      await psql.addSessionSummary(sessionID, summary);
-
-      // Update session metadata PSQL
-      const timestamp = new Date().toISOString(); // UTC
-      await psql.endSession(sessionID, timestamp);
 
       // Delete session event data from Redis
       await redis.deleteRecording(sessionID);
