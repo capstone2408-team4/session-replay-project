@@ -3,6 +3,11 @@ const config = {
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   FINDIP_API_KEY: process.env.FINDIP_API_KEY,
 
+  JWT: {
+    SECRET: process.env.JWT_SECRET,
+    EXPIRES_IN: '24h'
+  },
+
   QDRANT: {
     HOST: process.env.QDRANT_HOST,
     PORT: process.env.QDRANT_PORT,

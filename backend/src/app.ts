@@ -8,6 +8,8 @@ import eventsRouter from './routes/events';
 import geoRouter from './routes/geo';
 import multiSummaryRouter from './routes/multi-summary';
 import chatbotQueryRouter from './routes/chatbot-query';
+import loginRouter from './routes/login';
+import { authenticateToken } from './middleware/dashboardAuth';
 import path from 'path';
 import { fork } from 'child_process';
 import { fileURLToPath } from 'url';
@@ -29,12 +31,16 @@ app.use('/api/record', (req, res, next) => {
   next();
 });
 
+// Public routes
 app.use('/api/record', recordRouter);
-app.use('/api/projects', projectsRouter);
-app.use('/api/events', eventsRouter);
 app.use('/api/geo', geoRouter);
-app.use('/api/multi-summary', multiSummaryRouter);
-app.use('/api/chatbot-query', chatbotQueryRouter);
+app.use('/api/login', loginRouter);
+
+// Protected routes -- dashboard
+app.use('/api/projects', authenticateToken, projectsRouter);
+app.use('/api/events', authenticateToken, eventsRouter);
+app.use('/api/multi-summary', authenticateToken, multiSummaryRouter);
+app.use('/api/chatbot-query', authenticateToken, chatbotQueryRouter);
 
 // Spawn worker process
 const __filename = fileURLToPath(import.meta.url);
