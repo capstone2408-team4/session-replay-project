@@ -2,6 +2,8 @@ import React from 'react';
 import styles from './LoginOverlay.module.css';
 import xButton from '../../assets/x.png';
 import BadLoginAlert from '../BadLoginAlert';
+import { useAuth } from '../AuthProvider/AuthProvider'
+import { useNavigate } from 'react-router-dom';
 
 interface LoginOverlayProps {
   onClose: (e: any) => void;
@@ -10,7 +12,11 @@ interface LoginOverlayProps {
 function LoginOverlay( { onClose }: LoginOverlayProps) {
   const [projectName, setProjectName] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [showBadLoginAlert, setShowBadLoginAlert] = React.useState<boolean>(false)
+  const [showBadLoginAlert, setShowBadLoginAlert] = React.useState<boolean>(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  console.log(login)
 
   const handleNameInput = function(e: any) {
     setProjectName(e.target.value)
@@ -20,13 +26,19 @@ function LoginOverlay( { onClose }: LoginOverlayProps) {
     setPassword(e.target.value)
   }
 
-  const handleLogin = function(e: React.FormEvent<HTMLFormElement>) {
+  const handleLogin = async function(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // replace to when password is wrong
-    if (true) {
+    try {
+      await login(projectName, password);
+      navigate('/single')
+    } catch {
       setShowBadLoginAlert(true)
     }
   }
+
+  React.useEffect(() => {
+    setShowBadLoginAlert(false)
+  }, [])
 
   return (
     <div className={styles.overlayContainer}>
