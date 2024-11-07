@@ -11,7 +11,7 @@ interface LoginRequest {
   password: string;
 }
 
-router.post('/login', async (req: express.Request<{}, {}, LoginRequest>, res: express.Response) => {
+router.post('/', async (req: express.Request<{}, {}, LoginRequest>, res: express.Response) => {
   try {
     const { projectName, password } = req.body;
 
