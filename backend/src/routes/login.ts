@@ -29,6 +29,7 @@ router.post('/', async (req: express.Request<{}, {}, LoginRequest>, res: express
       });
     }
 
+    // Generate JWT token
     const token = jwt.sign(
       { projectID,
         projectName
@@ -37,7 +38,16 @@ router.post('/', async (req: express.Request<{}, {}, LoginRequest>, res: express
       { expiresIn: config.JWT.EXPIRES_IN }
     );
 
-    res.status(200).json({token, projectID, projectName});
+    // Set httpOnly cookie
+    res.cookie(config.COOKIE.NAME, token, {
+      httpOnly: config.COOKIE.HTTP_ONLY,
+      secure: config.COOKIE.SECURE,
+      maxAge: config.COOKIE.MAX_AGE,
+      domain: config.COOKIE.DOMAIN,
+      sameSite: config.COOKIE.SAME_SITE,
+    })
+
+    res.status(200).json({projectID, projectName});
 
   } catch (error) {
     console.error('Login error:', error);

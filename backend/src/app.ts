@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pkg from 'body-parser';
 const { json, urlencoded } = pkg;
+import cookieParser from 'cookie-parser';
 import recordRouter from './routes/record';
 import projectsRouter from './routes/projects';
 import eventsRouter from './routes/events';
@@ -9,6 +10,7 @@ import geoRouter from './routes/geo';
 import multiSummaryRouter from './routes/multi-summary';
 import chatbotQueryRouter from './routes/chatbot-query';
 import loginRouter from './routes/login';
+import logoutRouter from './routes/logout';
 import { authenticateToken } from './middleware/dashboardAuth';
 import path from 'path';
 import { fork } from 'child_process';
@@ -18,11 +20,17 @@ import { fileURLToPath } from 'url';
 const app = express();
 
 // Middleware
+app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
 app.use(json({
   limit: '10mb' // Increase JSON payload limit
 }));
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production'
+    ? 'https://yourdomain.com'
+    : 'http://localhost:5173',
+  credentials: true
+}));
 
 // Log request payload size
 app.use('/api/record', (req, res, next) => {
@@ -35,6 +43,7 @@ app.use('/api/record', (req, res, next) => {
 app.use('/api/record', recordRouter);
 app.use('/api/geo', geoRouter);
 app.use('/api/login', loginRouter);
+app.use('/api/logout', logoutRouter);
 
 // Protected routes -- dashboard
 app.use('/api/projects', authenticateToken, projectsRouter);
