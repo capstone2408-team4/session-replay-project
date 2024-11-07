@@ -57,7 +57,6 @@
   padding-bottom: 8px;
   flex-direction: column;
   color: var(--providence-light-white);
-  /* margin-top: 32px; */
   overflow: scroll;
 }
 

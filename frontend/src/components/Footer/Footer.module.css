@@ -9,17 +9,17 @@
   flex-direction: column;
 }
 
-.maxWidthWrapper {
-  max-width: 904px;
-  margin: auto;
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
 .footerP {
   margin-top: 4px;
   margin-bottom: 4px;
   width: fit-content;
   margin: auto;
   font-size: 12px;
+}
+
+.maxWidthWrapper {
+  max-width: 904px;
+  margin: auto;
+  margin-top: 0;
+  margin-bottom: 0;
 }

@@ -1,3 +1,22 @@
+.sessionCard {
+  width: 280px;
+  height: 200px;
+  background-color: var(--providence-white);
+  margin: auto;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sessionCard:focus {
+  outline: 3px solid var(--providence-blue);
+}
+
+.sessionCard:hover {
+  box-shadow: 1.2px 2.2px 12px var(--providence-blue), 
+  0px 0.6px 1.8px 0px var(--providence-blue);
+}
+
 .sidebarButton {
   background: var(--providence-white);
   border: none;
@@ -18,13 +37,13 @@
   cursor: not-allowed;
 }
 
-.sidebarButton svg {
-  margin-left: 5px;
-}
-
 .sidebarButton:hover {
   background-color: var(--providence-light-blue);
   outline: none;
+}
+
+.sidebarButton svg {
+  margin-left: 5px;
 }
 
 .sidebarHeader {
@@ -47,23 +66,4 @@
   align-items: flex-start;
   padding: 4px;
   margin-top: 8px;
-}
-
-.sessionCard {
-  width: 280px;
-  height: 200px;
-  background-color: var(--providence-white);
-  margin: auto;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.sessionCard:focus {
-  outline: 3px solid var(--providence-blue);
-}
-
-.sessionCard:hover {
-  box-shadow: 1.2px 2.2px 12px var(--providence-blue), 
-  0px 0.6px 1.8px 0px var(--providence-blue);
 }
