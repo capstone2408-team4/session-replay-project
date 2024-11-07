@@ -1,5 +1,6 @@
 import pkg from 'pg';
 const { Pool } = pkg;
+import bcrypt from 'bcrypt';
 import config from '../config/environment';
 
 interface SummaryRow {
@@ -132,6 +133,30 @@ export class PsqlService {
       return summaries.rows;
     } catch(error) {
       console.error('Error fetching multi summaries:', error);
+      throw error;
+    }
+  }
+
+  async validateProjectLogin(projectName: string, password: string): Promise<{ valid: boolean; projectID?: string }> {
+    try {
+      const result = await this.connection.query(
+        'SELECT id, password_hash FROM projects WHERE name = $1',
+        [projectName]
+      );
+
+      if (result.rows.length === 0) {
+        return { valid: false };
+      }
+
+      const { id, password_hash } = result.rows[0];
+      const passwordValid = await bcrypt.compare(password, password_hash);
+
+      return {
+        valid: passwordValid,
+        projectID: passwordValid ? id : undefined
+      };
+    } catch (error) {
+      console.error('Error validating project login:', error);
       throw error;
     }
   }
