@@ -15,7 +15,7 @@ function MultiSessionPage() {
   const [showSessionCountError, setShowSessionCountError] = React.useState(false);
   const [summarizeButtonDisabled, setSummarizeButtonDisabled] = React.useState(false);
   const [currentSummary, setCurrentSummary] = React.useState<null | string>(null)
-  const { projectName } = useAuth();
+  const { projectName, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const summarizedIds = React.useRef<number[]>()
@@ -65,12 +65,12 @@ function MultiSessionPage() {
   }
 
   React.useEffect(() => {
-    if (!projectName) {
+    if (!projectName && !isLoading) {
       alert('Please log in');
       navigate('/');
     }
 
-  }, [projectName])
+  }, [projectName, isLoading])
 
   React.useEffect(() => {
     const fetchSessions = async function() {

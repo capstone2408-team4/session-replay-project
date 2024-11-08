@@ -12,6 +12,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
+    console.log('checking auth status...')
     checkAuthStatus();
   }, [])
   
@@ -51,7 +52,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       login,
       isAuthenticated: !!projectName,
       logout,
-      isLoading
+      isLoading,
+      checkAuthStatus
     }}>
       {children}
     </AuthContext.Provider>
@@ -62,6 +64,7 @@ export const useAuth = () => {
   const context = React.useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
-  }
+  } 
+
   return context;
 };
