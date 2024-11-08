@@ -4,6 +4,7 @@ import infinityImg from '../../assets/infinity.png';
 import chatbot from '../../assets/chatbot.png'
 import playButton from '../../assets/playbutton.png'
 import { Link } from 'react-router-dom';
+import { useAuth } from '../AuthProvider/AuthProvider';
 
 interface HeaderProps {
   onLogin?: (e:any) => void
@@ -12,6 +13,8 @@ interface HeaderProps {
 }
 
 function Header({ onLogin, project, selectedPage }: HeaderProps) {
+  const { logout, projectName } = useAuth();
+
   return (
     <header className={styles.header}>
       <svg width="280" height="60" xmlns="http://www.w3.org/2000/svg">
@@ -46,9 +49,12 @@ function Header({ onLogin, project, selectedPage }: HeaderProps) {
         </Link>
       </div>}
 
-      {project && <div className={`${styles.projectName}`}>
-        Logged in as project: {project}
-      </div>}
+      {project && <>
+        <button onClick={logout} className={`${styles.projectName}`}>
+        Logout
+      </button>
+      <div>{projectName}</div>
+      </>}
 
       {!project && <button onClick={onLogin} className={styles.login}>
         Login

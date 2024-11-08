@@ -43,7 +43,10 @@ services:
       - QDRANT_HOST
       - QDRANT_PORT
       - QDRANT_API_KEY
-    command: sh -c "npm install && npm run dev"
+      - PROVIDENCE_ROOT_USERNAME
+      - PROVIDENCE_ROOT_PASSWORD
+      - JWT_SECRET
+    command: sh -c "npm install && node src/migrations/initPostgres.js && npm run dev"
     depends_on:
       - postgres
       - redis

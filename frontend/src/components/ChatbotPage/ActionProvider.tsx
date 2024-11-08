@@ -46,7 +46,8 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
       const response = await axios.post('http://localhost:5001/api/chatbot-query', { query: message }, {
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        withCredentials: true
       });
       
       const botMessage = createChatBotMessage(response.data);

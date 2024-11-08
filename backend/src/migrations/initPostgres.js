@@ -1,7 +1,7 @@
 import pkg from 'pg';
 const { Pool } = pkg;
+import bcrypt from 'bcrypt';
 
-// Configure your database connection
 const pool = new Pool({
   user: process.env.PSQL_USER,
   host: process.env.PSQL_HOST,
@@ -10,22 +10,19 @@ const pool = new Pool({
   port: process.env.PSQL_PORT
 });
 
-// Function to initalize the database
 async function initalizeDatabase() {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
 
-    // create projects table
     await client.query(`
       CREATE TABLE IF NOT EXISTS projects (
         id VARCHAR(255) PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        password_hash VARCHAR(255)
+        name VARCHAR(255) NOT NULL UNIQUE,
+        password_hash VARCHAR(255) NOT NULL
       );
     `);
 
-    // Create sessions table
     await client.query(`
       CREATE TABLE IF NOT EXISTS sessions (
         id SERIAL PRIMARY KEY,
@@ -41,6 +38,32 @@ async function initalizeDatabase() {
       );
     `);
 
+    // Root project setup
+    const rootName = process.env.PROVIDENCE_ROOT_USERNAME;
+    const rootPassword = process.env.PROVIDENCE_ROOT_PASSWORD;
+
+    if (!rootName || !rootPassword) {
+      throw new Error('Root project credentials not found in environment variables');
+    }
+
+    const existingRoot = await client.query(
+      'SELECT * FROM projects WHERE name = $1',
+      [rootName]
+    );
+
+    if (existingRoot.rows.length === 0) {
+      const saltRounds = 10;
+      const passwordHash = await bcrypt.hash(rootPassword, saltRounds);
+      const rootId = crypto.randomUUID();
+
+      await client.query(
+        'INSERT INTO projects (id, name, password_hash) VALUES ($1, $2, $3)',
+        [rootId, rootName, passwordHash]
+      );
+
+      console.log(`Root project initialized with name:`, rootName);
+    }
+
     await client.query('COMMIT');
     console.log('Database initialized successfully.');
   } catch (error) {
@@ -51,6 +74,5 @@ async function initalizeDatabase() {
   }
 }
 
-// Run the initialization
 initalizeDatabase().catch(err => console.error(err))
   .finally(() => pool.end());

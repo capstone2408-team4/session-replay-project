@@ -8,12 +8,16 @@ import { Session } from '../../Types/index.ts'
 import SessionInfoBox from '../SessionInfoBox/SessionInfoBox.tsx';
 import EmptyPlayer from '../EmptyPlayer/EmptyPlayer.tsx';
 import { filterToday, filterYday, filterRange, sorter } from '../../utils/helpers.ts';
+import { useAuth } from '../AuthProvider/AuthProvider.tsx';
+import { useNavigate } from 'react-router-dom';
 
 function SingleSessionPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
   const [selectedSession, setSelectedSession] = React.useState<Session | null>(null);
   const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<any[]>([]);
   const [filteredSessions, setFilteredSessions] = React.useState<Session[] | null>(null);
+  const { projectName } = useAuth();
+  const navigate = useNavigate();
 
   const handleSessionSelect = async function(session: Session) {
     setSelectedSession(session)
@@ -44,7 +48,7 @@ function SingleSessionPage() {
 
   const fetchSessionEvents = async function(session: Session) {
     try {
-      const response = await axios.get(`http://localhost:5001/api/events/${session.file_name}`);
+      const response = await axios.get(`http://localhost:5001/api/events/${session.file_name}`, { withCredentials: true});
       setSelectedSessionEvents(JSON.parse(response.data));
     } catch (error) {
       console.log('error fetching single session', error)
@@ -52,9 +56,17 @@ function SingleSessionPage() {
   }
 
   React.useEffect(() => {
+    if (!projectName) {
+      alert('Please log in');
+      navigate('/');
+    }
+
+  }, [projectName])
+
+  React.useEffect(() => {
     const fetchSessions = async function() {
       try {
-        const sessions = await axios.get('http://localhost:5001/api/projects/cfc15e83-970b-42cd-989f-b87b785a1fd4');
+        const sessions = await axios.get(`http://localhost:5001/api/projects/cfc15e83-970b-42cd-989f-b87b785a1fd4`, { withCredentials: true});
         setAllSessions(sessions.data);
       } catch (error) {
         console.error('Error fecthing sessions', error);

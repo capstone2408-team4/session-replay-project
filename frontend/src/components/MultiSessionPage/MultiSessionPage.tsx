@@ -5,6 +5,8 @@ import EmptyMultiSession from '../EmptyMultiSession/EmptyMultiSession.tsx';
 import styles from './MultiSessionPage.module.css'
 import axios from 'axios'
 import { Session } from '../../Types/index.ts'
+import { useAuth } from '../AuthProvider/AuthProvider.tsx';
+import { useNavigate } from 'react-router-dom';
 
 function MultiSessionPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
@@ -13,6 +15,8 @@ function MultiSessionPage() {
   const [showSessionCountError, setShowSessionCountError] = React.useState(false);
   const [summarizeButtonDisabled, setSummarizeButtonDisabled] = React.useState(false);
   const [currentSummary, setCurrentSummary] = React.useState<null | string>(null)
+  const { projectName } = useAuth();
+  const navigate = useNavigate();
 
   const summarizedIds = React.useRef<number[]>()
 
@@ -47,7 +51,7 @@ function MultiSessionPage() {
 
     try {
       const ids = selectedSessions.map(session => session.id);
-      const response = await axios.post('http://localhost:5001/api/multi-summary', {ids: ids});
+      const response = await axios.post('http://localhost:5001/api/multi-summary', {ids: ids}, { withCredentials: true});
       console.log('summary response from back end was:', response.data)
       summarizedIds.current = ids;
       setCurrentSummary(response.data)
@@ -61,9 +65,17 @@ function MultiSessionPage() {
   }
 
   React.useEffect(() => {
+    if (!projectName) {
+      alert('Please log in');
+      navigate('/');
+    }
+
+  }, [projectName])
+
+  React.useEffect(() => {
     const fetchSessions = async function() {
       try {
-        const sessions = await axios.get('http://localhost:5001/api/projects/cfc15e83-970b-42cd-989f-b87b785a1fd4');
+        const sessions = await axios.get('http://localhost:5001/api/projects/cfc15e83-970b-42cd-989f-b87b785a1fd4', { withCredentials: true});
         setAllSessions(sessions.data);
       } catch (error) {
         console.error('Error fecthing sessions', error);

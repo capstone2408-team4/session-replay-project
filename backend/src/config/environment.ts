@@ -3,6 +3,20 @@ const config = {
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   FINDIP_API_KEY: process.env.FINDIP_API_KEY,
 
+  JWT: {
+    SECRET: process.env.JWT_SECRET,
+    EXPIRES_IN: '24h'
+  },
+
+  COOKIE: {
+    NAME: 'providence_auth',
+    SECURE: process.env.NODE_ENV === 'production',
+    MAX_AGE: 24 * 60 * 60 * 1000, // 24 hours in ms
+    // DOMAIN: process.env.NODE_ENV === 'production' ? '.yourdomain.com' : 'localhost',
+    SAME_SITE: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+    HTTP_ONLY: true
+  },
+
   QDRANT: {
     HOST: process.env.QDRANT_HOST,
     PORT: process.env.QDRANT_PORT,
