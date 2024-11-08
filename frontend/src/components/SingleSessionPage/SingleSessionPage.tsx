@@ -78,10 +78,6 @@ function SingleSessionPage() {
     fetchSessions();
   }, [])
 
-  if (isLoading) {
-    return <></>
-  }
-
   return (
     <div className={styles.mainPageWrapper}>
       <div className={styles.headerContainer}>

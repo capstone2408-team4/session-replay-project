@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 function LandingPage() {
   const [showLoginModal, setShowLoginModal] = React.useState(false)
-  const { projectName } = useAuth();
+  const { projectName, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const toggleLoginModal = function(e: any) {
@@ -25,7 +25,11 @@ function LandingPage() {
     if (projectName) {
       navigate('/single')
     }
-  }, [])
+  }, [projectName, isLoading])
+
+  if (isLoading) {
+    return <></>
+  }
 
   return (
     <div className={styles.landingPageWrapper}>

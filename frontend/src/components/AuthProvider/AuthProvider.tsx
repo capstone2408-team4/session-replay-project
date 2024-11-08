@@ -19,7 +19,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const checkAuthStatus = async () => {
     try {
       const response = await axios.get('/api/auth/me', { withCredentials: true});
-      setProjectName(response.data.user.projectName);
+      setProjectName(response.data.projectName);
     } catch (error) {
       setProjectName(null);
     } finally {
