@@ -16,8 +16,6 @@ function LoginOverlay( { onClose }: LoginOverlayProps) {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  console.log(login)
-
   const handleNameInput = function(e: any) {
     setProjectName(e.target.value)
   }

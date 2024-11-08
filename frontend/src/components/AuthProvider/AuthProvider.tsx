@@ -12,13 +12,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
+    console.log('checking auth status...')
     checkAuthStatus();
   }, [])
   
   const checkAuthStatus = async () => {
     try {
       const response = await axios.get('/api/auth/me', { withCredentials: true});
-      setProjectName(response.data.projectName);
+      setProjectName(response.data.user.projectName);
     } catch (error) {
       setProjectName(null);
     } finally {
@@ -51,7 +52,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       login,
       isAuthenticated: !!projectName,
       logout,
-      isLoading
+      isLoading,
+      checkAuthStatus
     }}>
       {children}
     </AuthContext.Provider>
@@ -62,6 +64,7 @@ export const useAuth = () => {
   const context = React.useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
-  }
+  } 
+
   return context;
 };

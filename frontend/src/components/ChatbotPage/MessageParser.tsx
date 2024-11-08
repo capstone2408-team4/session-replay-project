@@ -1,5 +1,6 @@
+// @ts-nocheck
+// types not provided as part of npm package
 import React from 'react';
-
 
 const MessageParser = ({ children, actions }) => {
   const FIVE_SECONDS = 5000;
