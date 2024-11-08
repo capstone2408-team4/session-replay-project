@@ -1,33 +1,7 @@
-.sessionCard {
-  width: 280px;
-  height: 200px;
-  margin: auto;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--providence-white);
-  border-bottom: 1px solid var(--providence-blue);
-}
-
 .activeSelection {
   box-shadow: 1.2px 2.2px 12px var(--providence-blue), 
   0px 0.6px 1.8px 0px var(--providence-blue);
   border-bottom: none;
-}
-
-.sessionCard li {
-  width: fit-content;
-  border-radius: 5px;
-  margin-top: 4px;
-  background-color: #ffd85f;
-  background-color: var(--providence-blue);
-  color: black;
-  padding: 2px;
-}
-
-.sessionCard:hover {
-  box-shadow: 1.2px 2.2px 12px var(--providence-blue), 
-  0px 0.6px 1.8px 0px var(--providence-blue);
 }
 
 .cardContainer {
@@ -47,6 +21,32 @@
   align-items: center;
   justify-content: center;
   height: 100%;
+}
+
+.sessionCard {
+  width: 280px;
+  height: 200px;
+  margin: auto;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--providence-white);
+  border-bottom: 1px solid var(--providence-blue);
+}
+
+.sessionCard:hover {
+  box-shadow: 1.2px 2.2px 12px var(--providence-blue), 
+  0px 0.6px 1.8px 0px var(--providence-blue);
+}
+
+.sessionCard li {
+  width: fit-content;
+  border-radius: 5px;
+  margin-top: 4px;
+  background-color: #ffd85f;
+  background-color: var(--providence-blue);
+  color: black;
+  padding: 2px;
 }
 
 .sessionID {

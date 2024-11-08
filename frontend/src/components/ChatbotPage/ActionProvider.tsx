@@ -1,5 +1,8 @@
+// @ts-nocheck
+// types not provided as part of npm package
 import React from 'react';
 import axios from 'axios';
+
 
 const ActionProvider = ({ createChatBotMessage, setState, children }) => {
   const handleShortMessage = () => {
@@ -38,7 +41,7 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
     }));
   }
 
-  const handleValidQuery = async function(message) {
+  const handleValidQuery = async function(message: string) {
     try {
       const response = await axios.post('http://localhost:5001/api/chatbot-query', { query: message }, {
         headers: {
