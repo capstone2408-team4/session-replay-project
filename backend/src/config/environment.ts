@@ -12,7 +12,7 @@ const config = {
     NAME: 'providence_auth',
     SECURE: process.env.NODE_ENV === 'production',
     MAX_AGE: 24 * 60 * 60 * 1000, // 24 hours in ms
-    DOMAIN: process.env.NODE_ENV === 'production' ? '.yourdomain.com' : 'localhost',
+    // DOMAIN: process.env.NODE_ENV === 'production' ? '.yourdomain.com' : 'localhost',
     SAME_SITE: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     HTTP_ONLY: true
   },

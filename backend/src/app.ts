@@ -25,9 +25,7 @@ app.use(json({
   limit: '10mb' // Increase JSON payload limit
 }));
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? 'https://yourdomain.com'
-    : 'http://localhost:5173',
+  origin: true,
   credentials: true
 }));
 
