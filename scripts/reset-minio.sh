@@ -6,7 +6,7 @@ echo "Stopping MinIO container..."
 docker-compose stop minio
 
 echo "Removing MinIO volume..."
-docker volume rm session-replay-project_minio_data
+docker volume rm providence_minio_data
 
 echo "Restarting MinIO container..."
 docker-compose up -d minio
