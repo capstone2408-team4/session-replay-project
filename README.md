@@ -12,8 +12,8 @@
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-organization/session-replay-project.git
-   cd session-replay-project
+   git clone https://github.com/providence-replay/providence.git
+   cd providence
    ```
 
 2. Copy the example environment file:

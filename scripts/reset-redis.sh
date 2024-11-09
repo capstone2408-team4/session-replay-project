@@ -6,7 +6,7 @@ echo "Stopping Redis container..."
 docker-compose stop redis
 
 echo "Removing Redis volume..."
-docker volume rm session-replay-project_redis_data
+docker volume rm providence_redis_data
 
 echo "Restarting Redis container..."
 docker-compose up -d redis
