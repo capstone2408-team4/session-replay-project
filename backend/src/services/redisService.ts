@@ -1,5 +1,5 @@
 import Redis from 'ioredis'; // NPM package providing redis functionality
-import config from '../config/environment';
+import config from '../config/environment.js';
 
 // Provides functionality to interact with the redis database.
 export class RedisService {

@@ -1,9 +1,9 @@
-import { PsqlService } from '../services/psqlService';
-import { RedisService } from '../services/redisService';
-import { S3Service } from '../services/s3Service';
-import { OpenAIService } from '../services/openAIService';
-import { QdrantService } from '../services/qdrantService';  
-import { SessionPreprocessor } from '../preprocessor/SessionPreprocessor';
+import { PsqlService } from '../services/psqlService.js';
+import { RedisService } from '../services/redisService.js';
+import { S3Service } from '../services/s3Service.js';
+import { OpenAIService } from '../services/openAIService.js';
+import { QdrantService } from '../services/qdrantService.js';  
+import { SessionPreprocessor } from '../preprocessor/SessionPreprocessor.js';
 
 const psql = new PsqlService();
 const redis = new RedisService();

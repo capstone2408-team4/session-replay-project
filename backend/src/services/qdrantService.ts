@@ -1,6 +1,6 @@
-import config from '../config/environment';
+import config from '../config/environment.js';
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { EmbeddingDimensions } from '../utils/aiModelsConfig';
+import { EmbeddingDimensions } from '../utils/aiModelsConfig.js';
 
 export class QdrantService {
   private connection: QdrantClient

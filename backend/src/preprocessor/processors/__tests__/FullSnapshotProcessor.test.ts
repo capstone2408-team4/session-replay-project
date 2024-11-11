@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { FullSnapshotProcessor } from "../FullSnapshotProcessor";
-import { ProcessedSession, RRWebEvent, RRWebNode, NodeType } from "../../types";
+import { FullSnapshotProcessor } from "../FullSnapshotProcessor.js";
+import { ProcessedSession, RRWebEvent, RRWebNode, NodeType } from "../../types.js";
 
 describe("FullSnapshotProcessor", () => {
   let processor: FullSnapshotProcessor;

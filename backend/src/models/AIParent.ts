@@ -1,5 +1,5 @@
-import * as AIConfig from '../utils/aiModelsConfig';
-import { ProcessedSession } from '../preprocessor/types';
+import * as AIConfig from '../utils/aiModelsConfig.js';
+import { ProcessedSession } from '../preprocessor/types.js';
 
 abstract class AIParent {
   protected abstract maxPromptLength: number;

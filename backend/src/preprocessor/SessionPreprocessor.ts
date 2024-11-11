@@ -1,17 +1,17 @@
-import { RRWebEvent, ProcessedSession, NodeType } from './types';
-import { EventDownsampler } from './EventDownsampler';
-import { MetaProcessor } from './processors/MetaProcessor';
-import { FullSnapshotProcessor } from './processors/FullSnapshotProcessor';
-import { IncrementalSnapshotProcessor } from './processors/IncrementalSnapshotProcessor';
-import { ContextProcessor } from './processors/ContextProcessor';
-import { NetworkProcessor } from './processors/NetworkProcessor';
-import { ConsoleProcessor } from './processors/ConsoleProcessor';
-import { MouseProcessor } from './processors/MouseProcessor';
+import { RRWebEvent, ProcessedSession, NodeType } from './types.js';
+import { EventDownsampler } from './EventDownsampler.js';
+import { MetaProcessor } from './processors/MetaProcessor.js';
+import { FullSnapshotProcessor } from './processors/FullSnapshotProcessor.js';
+import { IncrementalSnapshotProcessor } from './processors/IncrementalSnapshotProcessor.js';
+import { ContextProcessor } from './processors/ContextProcessor.js';
+import { NetworkProcessor } from './processors/NetworkProcessor.js';
+import { ConsoleProcessor } from './processors/ConsoleProcessor.js';
+import { MouseProcessor } from './processors/MouseProcessor.js';
 
 import {
   EVENT_TYPE_NAMES,
   INCREMENTAL_SOURCE_NAMES,
-} from "./types";
+} from "./types.js";
 
 export class SessionPreprocessor {
   private downsampler = new EventDownsampler();

@@ -5,7 +5,7 @@ import {
   INCREMENTAL_SOURCE_NAMES,
   RRWebNode,
   NodeType
-} from "../types";
+} from "../types.js";
 
 interface EventProcessor {
   process?(event: RRWebEvent, session: ProcessedSession): void;

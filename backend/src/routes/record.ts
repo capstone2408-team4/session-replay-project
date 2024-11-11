@@ -1,6 +1,6 @@
 import express from 'express';
-import { RedisService } from '../services/redisService';
-import { PsqlService } from '../services/psqlService';
+import { RedisService } from '../services/redisService.js';
+import { PsqlService } from '../services/psqlService.js';
 const router = express.Router();
 
 interface RrwebEvent {

@@ -1,6 +1,6 @@
 import { S3Client, PutObjectCommand, GetObjectCommand, HeadBucketCommand, CreateBucketCommand } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
-import config from '../config/environment';
+import config from '../config/environment.js';
 
 export class S3Service {
   private connection: S3Client;

@@ -1,5 +1,5 @@
-import { RRWebEvent, ProcessedSession } from '../types';
-import { BaseProcessor } from './BaseProcessor';
+import { RRWebEvent, ProcessedSession } from '../types.js';
+import { BaseProcessor } from './BaseProcessor.js';
 
 interface RRWebConsoleEvent extends RRWebEvent {
   type: 6;

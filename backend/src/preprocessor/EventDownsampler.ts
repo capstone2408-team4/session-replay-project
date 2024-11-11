@@ -1,4 +1,4 @@
-import { RRWebEvent } from './types';
+import { RRWebEvent } from './types.js';
 
 export class EventDownsampler {
   private readonly SCROLL_THRESHOLD = 20;      // Minimum pixels scrolled

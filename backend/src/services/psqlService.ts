@@ -1,7 +1,7 @@
 import pkg from 'pg';
 const { Pool } = pkg;
 import bcrypt from 'bcrypt';
-import config from '../config/environment';
+import config from '../config/environment.js';
 
 interface SummaryRow {
   session_summary: string;

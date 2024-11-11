@@ -1,5 +1,5 @@
-import { RRWebEvent, ProcessedSession, RRWebNode, NodeType } from "../types";
-import { BaseProcessor } from "./BaseProcessor";
+import { RRWebEvent, ProcessedSession, RRWebNode, NodeType } from "../types.js";
+import { BaseProcessor } from "./BaseProcessor.js";
 
 interface RRWebFullSnapshotEvent extends RRWebEvent {
   type: 2;

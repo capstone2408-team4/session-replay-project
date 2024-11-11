@@ -1,7 +1,7 @@
 import OpenAI from 'openai'; // From OpenAI SDK
-import AIParent from '../models/AIParent';
-import * as AIConfig from '../utils/aiModelsConfig'; // Import configuration values for OpenAI LLM.
-import config from '../config/environment';
+import AIParent from '../models/AIParent.js';
+import * as AIConfig from '../utils/aiModelsConfig.js'; // Import configuration values for OpenAI LLM.
+import config from '../config/environment.js';
 
 interface Message {
   role: string;
