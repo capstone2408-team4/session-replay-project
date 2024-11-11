@@ -15,7 +15,7 @@ button {
   display: flex;
   align-items: center;
   border-radius: 8px;
-  min-width: 900px;
+  min-width: 1160px;
 }
 
 .headerChoice {
@@ -60,17 +60,6 @@ button {
   background-color: var(--providence-light-blue);
 }
 
-.middleEye {
-  margin-left: 20px;
-  transition: transform 0.5s ease;
-  opacity: 0;
-}
-
-.middleEye:hover {
-  opacity: 1;
-  transform: scale(5);
-}
-
 .midpoint {
   display: flex;
   margin-left: auto;
@@ -92,4 +81,10 @@ button {
   color: black;
   overflow: hidden;
   cursor: pointer;
+}
+
+@media (max-width: 1130px) {
+  .midpoint {
+    display: none;
+  }
 }

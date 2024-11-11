@@ -69,10 +69,8 @@ router.post('/logout', (req, res) => {
 router.get('/me', authenticateToken, (req: AuthRequest, res) => {
   try {
     res.status(200).json({
-      user: {
-        projectId: req.project?.id,
-        projectName: req.project?.name
-      }
+      projectId: req.project?.id,
+      projectName: req.project?.name
     });
   } catch (error) {
     console.error('Error in /me route', error);

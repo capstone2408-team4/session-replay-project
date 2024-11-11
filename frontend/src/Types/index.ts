@@ -10,3 +10,12 @@ export interface Session {
   is_active: boolean
   is_selected?: boolean
 }
+
+export interface AuthContextType {
+  projectId: string | null
+  projectName: string | null
+  isLoading: boolean
+  login: (projectId: string, password: string) => Promise<void>
+  logout: () => Promise<void>
+  checkAuthStatus: () => Promise<void>
+ }

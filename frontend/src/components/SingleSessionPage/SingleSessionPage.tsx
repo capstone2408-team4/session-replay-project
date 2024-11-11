@@ -16,7 +16,7 @@ function SingleSessionPage() {
   const [selectedSession, setSelectedSession] = React.useState<Session | null>(null);
   const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<any[]>([]);
   const [filteredSessions, setFilteredSessions] = React.useState<Session[] | null>(null);
-  const { projectName } = useAuth();
+  const { projectName, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSessionSelect = async function(session: Session) {
@@ -56,12 +56,12 @@ function SingleSessionPage() {
   }
 
   React.useEffect(() => {
-    if (!projectName) {
-      alert('Please log in');
+    console.log('single session use effect running. here is current porject name:', projectName)
+    if (!isLoading && !projectName) {
       navigate('/');
     }
 
-  }, [projectName])
+  }, [projectName, isLoading])
 
   React.useEffect(() => {
     const fetchSessions = async function() {
