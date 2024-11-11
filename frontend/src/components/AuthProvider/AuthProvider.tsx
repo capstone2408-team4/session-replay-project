@@ -1,7 +1,8 @@
-import React, { Children } from 'react';
+import React from 'react';
 import axios from 'axios';
+import { AuthContextType } from '../../Types';
 
-const AuthContext = React.createContext({});
+const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
   children: any;
@@ -9,10 +10,10 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [projectName, setProjectName] = React.useState<string | null>(null);
+  const [projectId, setProjectId] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    console.log('checking auth status...')
     checkAuthStatus();
   }, [])
   
@@ -20,8 +21,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const response = await axios.get('/api/auth/me', { withCredentials: true});
       setProjectName(response.data.projectName);
+      setProjectId(response.data.projectId);
     } catch (error) {
       setProjectName(null);
+      setProjectId(null)
     } finally {
       setIsLoading(false);
     }
@@ -31,6 +34,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const response = await axios.post('api/auth/login', { projectName: projectName, password: password }, { withCredentials: true, headers: {'Content-Type': 'application/json'} });
       setProjectName(response.data.projectName);
+      setProjectId(response.data.projectID);
       return response.data
     } catch (error) {
       throw error
@@ -40,7 +44,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = async () => {
     try {
       await axios.post('/api/auth/logout', {}, { withCredentials: true });
-      setProjectName(null);
+      setProjectId(null);
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -50,17 +54,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider value={{
       projectName,
       login,
-      isAuthenticated: !!projectName,
       logout,
       isLoading,
-      checkAuthStatus
+      checkAuthStatus,
+      projectId
     }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = React.useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');

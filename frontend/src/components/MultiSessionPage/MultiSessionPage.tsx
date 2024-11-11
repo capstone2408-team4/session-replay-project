@@ -15,7 +15,7 @@ function MultiSessionPage() {
   const [showSessionCountError, setShowSessionCountError] = React.useState(false);
   const [summarizeButtonDisabled, setSummarizeButtonDisabled] = React.useState(false);
   const [currentSummary, setCurrentSummary] = React.useState<null | string>(null)
-  const { projectName, isLoading } = useAuth();
+  const { projectId, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const summarizedIds = React.useRef<number[]>()
@@ -65,17 +65,16 @@ function MultiSessionPage() {
   }
 
   React.useEffect(() => {
-    if (!projectName && !isLoading) {
-      alert('Please log in');
+    if (!projectId && !isLoading) {
       navigate('/');
     }
 
-  }, [projectName, isLoading])
+  }, [projectId, isLoading])
 
   React.useEffect(() => {
     const fetchSessions = async function() {
       try {
-        const sessions = await axios.get('http://localhost:5001/api/projects/cfc15e83-970b-42cd-989f-b87b785a1fd4', { withCredentials: true});
+        const sessions = await axios.get(`http://localhost:5001/api/projects/${projectId}`, { withCredentials: true});
         setAllSessions(sessions.data);
       } catch (error) {
         console.error('Error fecthing sessions', error);

@@ -27,7 +27,7 @@
   align-items: center;
   border-radius: 8px;
   outline: 1px solid var(--providence-blue);
-  font-weight: bold;
+  padding: 4px;
   background-color: var(--providence-blue);
 }
 

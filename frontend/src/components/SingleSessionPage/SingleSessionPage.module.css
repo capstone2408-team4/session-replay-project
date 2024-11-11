@@ -47,8 +47,6 @@
   grid-area: main;
   overflow: scroll;
   border-bottom: 1px solid var(--providence-blue);
-  /* background-image: url('/providence.ico');
-  background-size: 10px 10px; */
   border-radius: 5px;
   border-right: 1px solid var(--providence-blue);
 }
@@ -59,6 +57,6 @@
   border-radius: 8px;
   scrollbar-width: thin;
   scrollbar-color: var(--providence-blue) var(--providence-black);
-  border-bottom: 1px solid var(--providence-blue);
-  border-left: 1px solid var(--providence-blue);
+  border: 1px solid var(--providence-blue);
+  border-top: none
 }

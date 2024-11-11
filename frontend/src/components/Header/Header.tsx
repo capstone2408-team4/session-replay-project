@@ -13,7 +13,7 @@ interface HeaderProps {
 }
 
 function Header({ onLogin, project, selectedPage }: HeaderProps) {
-  const { logout, projectName } = useAuth();
+  const { logout, projectId } = useAuth();
 
   return (
     <header className={styles.header}>
@@ -50,10 +50,10 @@ function Header({ onLogin, project, selectedPage }: HeaderProps) {
       </div>}
 
       {project && <>
+        <div>Project: {projectId}</div>
         <button onClick={logout} className={`${styles.projectName}`}>
         Logout
       </button>
-      <div>{projectName}</div>
       </>}
 
       {!project && <button onClick={onLogin} className={styles.login}>

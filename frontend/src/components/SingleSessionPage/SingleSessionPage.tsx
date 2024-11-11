@@ -16,7 +16,7 @@ function SingleSessionPage() {
   const [selectedSession, setSelectedSession] = React.useState<Session | null>(null);
   const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<any[]>([]);
   const [filteredSessions, setFilteredSessions] = React.useState<Session[] | null>(null);
-  const { projectName, isLoading } = useAuth();
+  const { projectId, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSessionSelect = async function(session: Session) {
@@ -56,18 +56,16 @@ function SingleSessionPage() {
   }
 
   React.useEffect(() => {
-    console.log('single session use effect running. here is current porject name:', projectName)
-    if (!isLoading && !projectName) {
-      alert('Please log in');
+    if (!isLoading && !projectId) {
       navigate('/');
     }
 
-  }, [projectName, isLoading])
+  }, [projectId, isLoading])  
 
   React.useEffect(() => {
     const fetchSessions = async function() {
       try {
-        const sessions = await axios.get(`http://localhost:5001/api/projects/cfc15e83-970b-42cd-989f-b87b785a1fd4`, { withCredentials: true});
+        const sessions = await axios.get(`http://localhost:5001/api/projects/${projectId}`, { withCredentials: true});
         setAllSessions(sessions.data);
       } catch (error) {
         console.error('Error fecthing sessions', error);
