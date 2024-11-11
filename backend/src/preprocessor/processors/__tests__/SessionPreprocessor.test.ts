@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { SessionPreprocessor } from "../../SessionPreprocessor";
-import { RRWebEvent } from "../../types";
+import { SessionPreprocessor } from "../../SessionPreprocessor.js";
+import { RRWebEvent } from "../../types.js";
 
 describe("SessionPreprocessor", () => {
   let preprocessor: SessionPreprocessor;

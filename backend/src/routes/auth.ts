@@ -1,9 +1,9 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import { PsqlService } from '../services/psqlService';
-import config from '../config/environment';
-import { authenticateToken } from '../middleware/dashboardAuth';
-import { AuthRequest } from '../middleware/dashboardAuth';
+import { PsqlService } from '../services/psqlService.js';
+import config from '../config/environment.js';
+import { authenticateToken } from '../middleware/dashboardAuth.js';
+import { AuthRequest } from '../middleware/dashboardAuth.js';
 
 const router = express.Router();
 const psql = new PsqlService();
@@ -45,8 +45,8 @@ router.post('/login', async (req: express.Request<{}, {}, LoginRequest>, res: ex
       httpOnly: config.COOKIE.HTTP_ONLY,
       secure: config.COOKIE.SECURE,
       maxAge: config.COOKIE.MAX_AGE,
-      domain: config.COOKIE.DOMAIN,
-      sameSite: config.COOKIE.SAME_SITE,
+      // domain: config.COOKIE.DOMAIN,
+      sameSite: config.COOKIE.SAME_SITE as 'strict' | 'lax' | 'none'
     })
 
     res.status(200).json({projectID, projectName});
@@ -61,7 +61,7 @@ router.post('/logout', (req, res) => {
   res.clearCookie(config.COOKIE.NAME, {
     httpOnly: config.COOKIE.HTTP_ONLY,
     secure: config.COOKIE.SECURE,
-    domain: config.COOKIE.DOMAIN
+    // domain: config.COOKIE.DOMAIN
   });
   res.status(200).json({ message: 'Logged out successfully' });
 });

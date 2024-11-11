@@ -1,5 +1,5 @@
 import express from 'express';
-import { PsqlService } from '../services/psqlService';
+import { PsqlService } from '../services/psqlService.js';
 
 const router = express.Router();
 

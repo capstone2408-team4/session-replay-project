@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { ConsoleProcessor } from '../ConsoleProcessor';
-import { ProcessedSession, EVENT_TYPE_NAMES } from '../../types';
+import { ConsoleProcessor } from '../ConsoleProcessor.js';
+import { ProcessedSession, EVENT_TYPE_NAMES } from '../../types.js';
 
 describe('ConsoleProcessor', () => {
   let processor: ConsoleProcessor;
@@ -14,7 +14,7 @@ describe('ConsoleProcessor', () => {
         sessionId: 'test-session',
         startTime: '',
         endTime: '',
-        duration: 0
+        duration: '0'
       },
       events: {
         total: 0,
@@ -32,6 +32,10 @@ describe('ConsoleProcessor', () => {
           requests: 0,
           failures: 0
         }
+      },
+      dom: {
+        fullSnapshot: {},
+        incrementalSnapshots: SemanticIncrementalSnapshot[],
       }
     };
   });

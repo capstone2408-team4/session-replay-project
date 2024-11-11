@@ -1,5 +1,5 @@
 import express from 'express';
-import { S3Service } from '../services/s3Service';
+import { S3Service } from '../services/s3Service.js';
 
 const router = express.Router();
 

@@ -26,8 +26,8 @@ import {
   SemanticStyleDeclaration,
   SemanticSelection,
   SemanticAdoptedStyleSheet
-} from '../types';
-import { BaseProcessor } from './BaseProcessor';
+} from '../types.js';
+import { BaseProcessor } from './BaseProcessor.js';
 
 interface IncrementalSnapshotEvent extends RRWebEvent {
   type: 3;

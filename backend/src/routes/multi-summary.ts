@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { PsqlService } from '../services/psqlService';
-import { OpenAIService } from '../services/openAIService';
+import { PsqlService } from '../services/psqlService.js';
+import { OpenAIService } from '../services/openAIService.js';
 
 const psql: PsqlService = new PsqlService();
 const openAI = new OpenAIService();

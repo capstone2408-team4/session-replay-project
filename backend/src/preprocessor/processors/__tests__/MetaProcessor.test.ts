@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { MetaProcessor } from "../MetaProcessor";
-import { ProcessedSession, RRWebEvent } from "../../types";
+import { MetaProcessor } from "../MetaProcessor.js";
+import { ProcessedSession, RRWebEvent } from "../../types.js";
 
 describe("MetaProcessor", () => {
   let processor: MetaProcessor;

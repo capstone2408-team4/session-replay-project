@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { ContextProcessor } from "../ContextProcessor";
-import { ProcessedSession, RRWebEvent } from "../../types";
+import { ContextProcessor } from "../ContextProcessor.js";
+import { ProcessedSession, RRWebEvent } from "../../types.js";
 
 describe("ContextProcessor", () => {
   let processor: ContextProcessor;

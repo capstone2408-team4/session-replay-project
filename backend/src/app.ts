@@ -2,15 +2,15 @@ import express from 'express';
 import cors from 'cors';
 import pkg from 'body-parser';
 const { json, urlencoded } = pkg;
-import cookieParser from 'cookie-parser';
-import recordRouter from './routes/record';
-import projectsRouter from './routes/projects';
-import eventsRouter from './routes/events';
-import geoRouter from './routes/geo';
-import multiSummaryRouter from './routes/multi-summary';
-import chatbotQueryRouter from './routes/chatbot-query';
-import dashAuthRouter from './routes/auth';
-import { authenticateToken } from './middleware/dashboardAuth';
+import cookieParser from 'cookie-parser.js';
+import recordRouter from './routes/record.js';
+import projectsRouter from './routes/projects.js';
+import eventsRouter from './routes/events.js';
+import geoRouter from './routes/geo.js';
+import multiSummaryRouter from './routes/multi-summary.js';
+import chatbotQueryRouter from './routes/chatbot-query.js';
+import dashAuthRouter from './routes/auth.js';
+import { authenticateToken } from './middleware/dashboardAuth.js';
 import path from 'path';
 import { fork } from 'child_process';
 import { fileURLToPath } from 'url';
@@ -51,7 +51,7 @@ app.use('/api/chatbot-query', authenticateToken, chatbotQueryRouter);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const workerPath = path.join(__dirname, 'workers', 'inactiveSessionsWorker.ts');
+const workerPath = path.join(__dirname, 'workers', 'inactiveSessionsWorker.js');
 const worker = fork(workerPath);
 
 worker.on('error', (error) => {

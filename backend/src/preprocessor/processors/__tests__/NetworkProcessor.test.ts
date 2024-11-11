@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { NetworkProcessor } from '../NetworkProcessor';
-import { ProcessedSession } from '../../types';
+import { NetworkProcessor } from '../NetworkProcessor.js';
+import { ProcessedSession } from '../../types.js';
 
 describe('NetworkProcessor', () => {
   let processor: NetworkProcessor;

@@ -1,7 +1,7 @@
 import express from 'express';
-import { QdrantService } from '../services/qdrantService';
-import { OpenAIService } from '../services/openAIService';
-import { ChatbotSystemPrompt, ChatbotUserPrompt } from '../utils/aiModelsConfig';
+import { QdrantService } from '../services/qdrantService.js';
+import { OpenAIService } from '../services/openAIService.js';
+import { ChatbotSystemPrompt, ChatbotUserPrompt } from '../utils/aiModelsConfig.js';
 
 const router = express.Router();
 
