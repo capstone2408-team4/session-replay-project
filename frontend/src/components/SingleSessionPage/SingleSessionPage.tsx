@@ -58,7 +58,6 @@ function SingleSessionPage() {
   React.useEffect(() => {
     console.log('single session use effect running. here is current porject name:', projectName)
     if (!isLoading && !projectName) {
-      alert('Please log in');
       navigate('/');
     }
 

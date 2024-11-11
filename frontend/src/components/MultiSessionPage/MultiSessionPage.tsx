@@ -66,7 +66,6 @@ function MultiSessionPage() {
 
   React.useEffect(() => {
     if (!projectName && !isLoading) {
-      alert('Please log in');
       navigate('/');
     }
 
