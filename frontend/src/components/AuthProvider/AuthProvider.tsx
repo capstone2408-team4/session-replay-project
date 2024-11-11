@@ -14,7 +14,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    console.log('checking auth status...')
     checkAuthStatus();
   }, [])
   

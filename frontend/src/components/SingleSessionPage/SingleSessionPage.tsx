@@ -65,7 +65,7 @@ function SingleSessionPage() {
   React.useEffect(() => {
     const fetchSessions = async function() {
       try {
-        const sessions = await axios.get(`http://localhost:5001/api/projects/cfc15e83-970b-42cd-989f-b87b785a1fd4`, { withCredentials: true});
+        const sessions = await axios.get(`http://localhost:5001/api/projects/${projectId}`, { withCredentials: true});
         setAllSessions(sessions.data);
       } catch (error) {
         console.error('Error fecthing sessions', error);
