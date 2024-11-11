@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import LandingHeader from '../LandingHeader'
 import Login from '../Login/Login';
 import Footer from '../Footer';
@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 function LandingPage() {
   const [showLoginModal, setShowLoginModal] = React.useState(false)
-  const { projectName, isLoading } = useAuth();
+  const { projectId, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const toggleLoginModal = function(e: any) {
@@ -21,11 +21,10 @@ function LandingPage() {
   }
 
   React.useEffect(() => {
-    console.log('use effect in landing page', projectName)
-    if (projectName) {
+    if (projectId) {
       navigate('/single')
     }
-  }, [projectName, isLoading])
+  }, [projectId, isLoading])
 
   if (isLoading) {
     return <></>

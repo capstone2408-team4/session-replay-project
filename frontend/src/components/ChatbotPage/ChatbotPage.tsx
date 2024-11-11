@@ -9,15 +9,15 @@ import { useAuth } from '../AuthProvider/AuthProvider.tsx';
 import { useNavigate } from 'react-router-dom';
 
 function ChatbotPage() {
-  const { projectName, isLoading } = useAuth();
+  const { projectId, isLoading } = useAuth();
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (!projectName && !isLoading) {
+    if (!projectId && !isLoading) {
       navigate('/');
     }
 
-  }, [projectName, isLoading])
+  }, [projectId, isLoading])
 
   return (
     <div className={styles.mainPageWrapper}>

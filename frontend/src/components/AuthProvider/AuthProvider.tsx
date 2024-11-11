@@ -14,7 +14,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    console.log('checking auth status...')
     checkAuthStatus();
   }, [])
   
@@ -25,6 +24,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setProjectId(response.data.projectId);
     } catch (error) {
       setProjectName(null);
+      setProjectId(null)
     } finally {
       setIsLoading(false);
     }
@@ -34,7 +34,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const response = await axios.post('api/auth/login', { projectName: projectName, password: password }, { withCredentials: true, headers: {'Content-Type': 'application/json'} });
       setProjectName(response.data.projectName);
-      setProjectId(response.data.projectId);
+      setProjectId(response.data.projectID);
       return response.data
     } catch (error) {
       throw error
@@ -44,7 +44,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = async () => {
     try {
       await axios.post('/api/auth/logout', {}, { withCredentials: true });
-      setProjectName(null);
+      setProjectId(null);
     } catch (error) {
       console.error('Logout failed:', error);
     }

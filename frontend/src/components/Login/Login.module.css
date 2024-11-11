@@ -33,7 +33,7 @@
 }
 
 .notLoggedIn a {
-  color:hsl(0, 70%, 44%);
+  color: var(--providence-blue);
   cursor: pointer;
 }
 
