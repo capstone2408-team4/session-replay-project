@@ -4,7 +4,7 @@ import Login from '../Login/Login';
 import Footer from '../Footer';
 import LoginOverlay from '../LoginOverlay'
 import styles from './LandingPage.module.css'
-import { useAuth } from '../AuthProvider/AuthProvider';
+import { useAuth } from '../../hooks/authContext';
 import { useNavigate } from 'react-router-dom';
 
 function LandingPage() {
@@ -12,8 +12,10 @@ function LandingPage() {
   const { projectId, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  const toggleLoginModal = function(e: any) {
-    if (showLoginModal && ['backdrop', 'xButton'].includes(e.target.id)) {
+  const toggleLoginModal = function(e: React.MouseEvent) {
+    const targetId = (e.target as HTMLElement).id;
+
+    if (showLoginModal && ['backdrop', 'xButton'].includes(targetId)) {
       setShowLoginModal(!showLoginModal)
     } else if (!showLoginModal) {
       setShowLoginModal(true)
@@ -24,7 +26,7 @@ function LandingPage() {
     if (projectId) {
       navigate('/single')
     }
-  }, [projectId, isLoading])
+  }, [projectId, isLoading, navigate])
 
   if (isLoading) {
     return <></>
