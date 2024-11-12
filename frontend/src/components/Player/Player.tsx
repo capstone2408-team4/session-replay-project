@@ -1,16 +1,16 @@
 import React from "react";
 import rrwebPlayer from "rrweb-player";
 import styles from './Player.module.css'
-// import { getReplayConsolePlugin } from '@rrweb/rrweb-plugin-console-replay';
+import type { eventWithTime } from "@rrweb/types";
 
 interface PlayerProps {
-  session: any[]
+  session: eventWithTime[]
 }
 
 const Player = ({ session }: PlayerProps) => {
   React.useEffect(() => {
     const playerRoot = document.getElementById("replayer");
-    let playerInstance: any;
+    let playerInstance: rrwebPlayer | null = null;
 
     const initializeWebPlayer = function() {
       if (playerRoot !== null && session.length > 1) {

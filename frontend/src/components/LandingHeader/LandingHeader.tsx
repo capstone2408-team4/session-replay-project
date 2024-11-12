@@ -2,7 +2,7 @@ import styles from './LandingHeader.module.css'
 import Header from '../Header'
 
 interface HeaderProps {
-  onLogin?: (e: any) => void
+  onLogin?: (e: React.MouseEvent) => void
 }
 
 function LandingHeader({ onLogin }: HeaderProps) {

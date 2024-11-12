@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './FilterPopover.module.css'
 
 interface FilterPopoverProp {
-  onClosingClick: (e: any) => void
+  onClosingClick: (e: MouseEvent) => void
   onFilter: (filterType: string, dayRange: number | null) => void
   onRadioSelect: (selection: string) => void
   radioChoice: string
@@ -41,7 +41,7 @@ const FilterPopover = React.forwardRef<HTMLDivElement, FilterPopoverProp>(( {onC
     return (() => {
       document.removeEventListener('click', onClosingClick)
     })
-  }, [])
+  }, [onClosingClick])
 
   return (
     <div ref={ref} className={styles.popoverContainer}>

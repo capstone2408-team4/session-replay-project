@@ -5,7 +5,7 @@ import EmptyMultiSession from '../EmptyMultiSession/EmptyMultiSession.tsx';
 import styles from './MultiSessionPage.module.css'
 import axios from 'axios'
 import { Session } from '../../Types/index.ts'
-import { useAuth } from '../AuthProvider/AuthProvider.tsx';
+import { useAuth } from '../../hooks/authContext';
 import { useNavigate } from 'react-router-dom';
 
 function MultiSessionPage() {
@@ -69,7 +69,7 @@ function MultiSessionPage() {
       navigate('/');
     }
 
-  }, [projectId, isLoading])
+  }, [projectId, isLoading, navigate])
 
   React.useEffect(() => {
     const fetchSessions = async function() {
@@ -83,7 +83,7 @@ function MultiSessionPage() {
     }
 
     fetchSessions();
-  }, [])
+  }, [projectId])
 
   return (
     <div className={styles.mainPageWrapper}>

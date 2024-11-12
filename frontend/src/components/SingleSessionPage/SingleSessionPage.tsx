@@ -8,13 +8,14 @@ import { Session } from '../../Types/index.ts'
 import SessionInfoBox from '../SessionInfoBox/SessionInfoBox.tsx';
 import EmptyPlayer from '../EmptyPlayer/EmptyPlayer.tsx';
 import { filterToday, filterYday, filterRange, sorter } from '../../utils/helpers.ts';
-import { useAuth } from '../AuthProvider/AuthProvider.tsx';
+import { useAuth } from '../../hooks/authContext';
 import { useNavigate } from 'react-router-dom';
+import { eventWithTime } from 'rrweb';
 
 function SingleSessionPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
   const [selectedSession, setSelectedSession] = React.useState<Session | null>(null);
-  const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<any[]>([]);
+  const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<eventWithTime[]>([]);
   const [filteredSessions, setFilteredSessions] = React.useState<Session[] | null>(null);
   const { projectId, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ function SingleSessionPage() {
       navigate('/');
     }
 
-  }, [projectId, isLoading])  
+  }, [projectId, isLoading, navigate])  
 
   React.useEffect(() => {
     const fetchSessions = async function() {
@@ -74,7 +75,7 @@ function SingleSessionPage() {
     }
 
     fetchSessions();
-  }, [])
+  }, [navigate, projectId])
 
   return (
     <div className={styles.mainPageWrapper}>
@@ -82,7 +83,13 @@ function SingleSessionPage() {
         <Header selectedPage={'single'} project='Providence'/>
       </div>
       <div className={styles.sidebar}>
-        <SingleSessionSidebar selectedSession={selectedSession} onFilter={filterSessions} onSort={sortSessions} onSessionSelect={handleSessionSelect} sessions={filteredSessions || allSessions}/>
+        <SingleSessionSidebar 
+          selectedSession={selectedSession} 
+          onFilter={filterSessions} 
+          onSort={sortSessions} 
+          onSessionSelect={handleSessionSelect} 
+          sessions={filteredSessions || allSessions}
+        />
       </div>
       <div className={styles.player}>
         {!selectedSession && <EmptyPlayer />}

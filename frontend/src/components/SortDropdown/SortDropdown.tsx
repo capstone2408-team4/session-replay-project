@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './SortDropdown.module.css'
 
 interface SortDropdownProp {
-  onClosingClick: (e: any) => void
+  onClosingClick: (e: MouseEvent) => void
   onSort: (sortType: string) => void
   onCloseDropdown: () => void
 }
@@ -14,7 +14,7 @@ const SortDropdown = React.forwardRef<HTMLDivElement, SortDropdownProp>(( {onClo
     return (() => {
       document.removeEventListener('click', onClosingClick)
     })
-  }, [])
+  }, [onClosingClick])
 
   const handleSortChoice = function(sortType: string) {
     onSort(sortType);
