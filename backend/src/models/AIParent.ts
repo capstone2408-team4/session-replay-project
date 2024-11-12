@@ -3,9 +3,6 @@ import { ProcessedSession } from '../preprocessor/types.js';
 
 interface Summary {
   session_summary: string;
-  status: string;
-  value: string;
-
 }
 
 abstract class AIParent {

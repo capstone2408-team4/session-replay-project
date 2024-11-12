@@ -34,7 +34,7 @@ describe('ConsoleProcessor', () => {
         }
       },
       dom: {
-        fullSnapshot: {},
+        fullSnapshot: {}, // changed type... need to fix
         incrementalSnapshots: [],
       }
     };
