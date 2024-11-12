@@ -51,7 +51,7 @@ function MultiSessionPage() {
 
     try {
       const ids = selectedSessions.map(session => session.id);
-      const response = await axios.post('http://localhost:5001/api/multi-summary', {ids: ids}, { withCredentials: true});
+      const response = await axios.post('/api/multi-summary', {ids: ids}, { withCredentials: true});
       console.log('summary response from back end was:', response.data)
       summarizedIds.current = ids;
       setCurrentSummary(response.data)
@@ -74,7 +74,7 @@ function MultiSessionPage() {
   React.useEffect(() => {
     const fetchSessions = async function() {
       try {
-        const sessions = await axios.get(`http://localhost:5001/api/projects/${projectId}`, { withCredentials: true});
+        const sessions = await axios.get(`/api/projects/${projectId}`, { withCredentials: true});
         setAllSessions(sessions.data);
       } catch (error) {
         console.error('Error fecthing sessions', error);
