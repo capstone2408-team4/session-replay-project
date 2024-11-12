@@ -44,19 +44,7 @@ module.exports = {
     'no-return-await': 'warn',
     'no-throw-literal': 'error',
     'no-unused-expressions': 'warn',
-    'no-template-curly-in-string': 'warn',
-
-    'max-len': ['warn', {
-      code: 80,               // Maximum line length
-      tabWidth: 2,           // Tab counts as 2 spaces
-      comments: 100,         // Longer line length for comments
-      ignorePattern: '^import .*', // Ignore import statements
-      ignoreUrls: true,      // Ignore lines containing URLs
-      ignoreStrings: true,   // Ignore lines that are strings
-      ignoreTemplateLiterals: true,
-      ignoreRegExpLiterals: true
-    }]
-    
+    'no-template-curly-in-string': 'warn'
   },
   settings: {
     react: {
