@@ -5,8 +5,9 @@ import EmptyMultiSession from '../EmptyMultiSession/EmptyMultiSession.tsx';
 import styles from './MultiSessionPage.module.css'
 import axios from 'axios'
 import { Session } from '../../Types/index.ts'
-import { useAuth } from '../AuthProvider/AuthProvider.tsx';
+import { useAuth } from '../../hooks/authContext';
 import { useNavigate } from 'react-router-dom';
+import logger from '../../utils/logger.ts';
 
 function MultiSessionPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
@@ -49,6 +50,7 @@ function MultiSessionPage() {
       return
     } 
 
+    const ids = selectedSessions.map(session => session.id);
     try {
       const ids = selectedSessions.map(session => session.id);
       const response = await axios.post('/api/multi-summary', {ids: ids}, { withCredentials: true});
@@ -56,7 +58,13 @@ function MultiSessionPage() {
       summarizedIds.current = ids;
       setCurrentSummary(response.data)
     } catch (error) {
-      console.error('Error sending ids to to backend API')
+      logger.error('Error fetching multi-session summary', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        ids: ids,
+        projectId: projectId,
+        timestamp: new Date().toISOString()
+      })
       throw error
     } finally {
       setSummaryIsLoading(false)
@@ -69,7 +77,7 @@ function MultiSessionPage() {
       navigate('/');
     }
 
-  }, [projectId, isLoading])
+  }, [projectId, isLoading, navigate])
 
   React.useEffect(() => {
     const fetchSessions = async function() {
@@ -77,13 +85,18 @@ function MultiSessionPage() {
         const sessions = await axios.get(`/api/projects/${projectId}`, { withCredentials: true});
         setAllSessions(sessions.data);
       } catch (error) {
-        console.error('Error fecthing sessions', error);
+        logger.error('Error fetching sessions.', {
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+          projectId: projectId,
+          timestamp: new Date().toISOString()
+        })
         throw error
       }
     }
 
     fetchSessions();
-  }, [])
+  }, [projectId])
 
   return (
     <div className={styles.mainPageWrapper}>

@@ -2,6 +2,7 @@
   flex: 1 1 0%;
   padding: 128px 0;
   isolation: isolate;
+  min-width: 600px;
 }
 
 .loginDialogBox {

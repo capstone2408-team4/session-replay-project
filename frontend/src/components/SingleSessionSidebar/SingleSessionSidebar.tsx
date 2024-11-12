@@ -15,7 +15,10 @@ interface SingleSessionSidebarProps {
   selectedSession: Session | null
 }
 
-function SingleSessionSidebar( { sessions, onSessionSelect, onSort, onFilter, selectedSession } : SingleSessionSidebarProps) {
+function SingleSessionSidebar(
+  {sessions, onSessionSelect, onSort, onFilter, selectedSession}: 
+  SingleSessionSidebarProps
+) {
   const [showSortDropdown, setShowSortDropdown] = React.useState(false);
   const [showFilterPopover, setShowFilterPopover] = React.useState(false);
   const [radioChoice, setRadioChoice] = React.useState('')
@@ -36,7 +39,7 @@ function SingleSessionSidebar( { sessions, onSessionSelect, onSort, onFilter, se
     setShowFilterPopover((prev) => !prev)
   }
 
-  const handleClosingClick = function(e: React.MouseEvent) {
+  const handleClosingClick = function(e: MouseEvent) {
     if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
       setShowSortDropdown(false)
     } 
@@ -65,17 +68,36 @@ function SingleSessionSidebar( { sessions, onSessionSelect, onSort, onFilter, se
             <image href={down} x='2' y='6'height='20'width='20' />
           </svg>
         </button>
-        {showSortDropdown && <SortDropdown onCloseDropdown={closeDropdown} onSort={onSort} onClosingClick={handleClosingClick} ref={dropdownRef}/>}
+        {showSortDropdown && 
+          <SortDropdown 
+            onCloseDropdown={closeDropdown} 
+            onSort={onSort} 
+            onClosingClick={handleClosingClick} 
+            ref={dropdownRef}
+          />}
         <button onClick={togglePopover} className={styles.sidebarButton}>
           Filter
           <svg width={30} height={30} xmlns="http://www.w3.org/2000/svg">
             <image href={down} x='2' y='6' height='20' width='20' />
           </svg>
         </button>
-        {showFilterPopover && <FilterPopover onClosePopover={closePopover} onRadioSelect={handleRadioSelect} radioChoice={radioChoice} onFilter={onFilter} onClosingClick={handleClosingClick} ref={popoverRef}/>}
+        {showFilterPopover && 
+          <FilterPopover 
+            onClosePopover={closePopover} 
+            onRadioSelect={handleRadioSelect} 
+            radioChoice={radioChoice} 
+            onFilter={onFilter} 
+            onClosingClick={handleClosingClick} 
+            ref={popoverRef}
+          />}
       </div>
       {sessions.map(session => {
-        return <SessionCard isActive={!!selectedSession && session.id === selectedSession.id} key={session.id} onSessionSelect={onSessionSelect} session={session} />
+        return <SessionCard 
+          isActive={!!selectedSession && session.id === selectedSession.id} 
+          key={session.id} 
+          onSessionSelect={onSessionSelect} 
+          session={session} 
+        />
       })}
     </div>
     

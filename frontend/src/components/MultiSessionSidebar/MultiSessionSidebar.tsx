@@ -12,20 +12,34 @@ interface SingleSessionSidebarProps {
   buttonDisabled: boolean
 }
 
-function SingleSessionSidebar( { sessions, onSessionSelect, showSessionCountError, onSummarizeSession, buttonDisabled } : SingleSessionSidebarProps) {
+function SingleSessionSidebar(
+  {sessions, onSessionSelect, showSessionCountError, onSummarizeSession, buttonDisabled}: 
+  SingleSessionSidebarProps
+) {
   return (
     <div className={styles.sidebarMain}>
       <div className={styles.sidebarHeader}>
         {showSessionCountError && <SessionCountError />}
-        <button disabled={buttonDisabled} onClick={onSummarizeSession} className={styles.sidebarButton}>
-            Summarize Recordings
-            <svg width={30} height={30} xmlns="http://www.w3.org/2000/svg">
-              <image href={ai} x='0' y='0'height='30'width='30' />
-            </svg>
-          </button>
+        <button 
+          disabled={buttonDisabled} 
+          onClick={onSummarizeSession} 
+          className={styles.sidebarButton}
+        >
+          Summarize Recordings
+          <svg width={30} height={30} xmlns="http://www.w3.org/2000/svg">
+            <image href={ai} x='0' y='0'height='30'width='30' />
+          </svg>
+        </button>
       </div>
       {sessions.map(session => {
-        return <SessionCard isActive={!!session.is_selected} key={session.id} onSessionSelect={onSessionSelect} session={session} />
+        return( 
+          <SessionCard 
+            isActive={!!session.is_selected} 
+            key={session.id} 
+            onSessionSelect={onSessionSelect} 
+            session={session} 
+          />
+        )
       })}
     </div>
     

@@ -2,7 +2,7 @@ import styles from './Login.module.css'
 import padlock from '../../assets/padlock.png'
 
 interface LoginProps {
-  onToggleLoginModal: (e: any) => void
+  onToggleLoginModal: (e: React.MouseEvent) => void
 }
 
 function Login( { onToggleLoginModal }: LoginProps) {
