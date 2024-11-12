@@ -62,11 +62,6 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
         ...prev,
         messages: [...prev.messages, botMessage],
       }));
-      logger.error('Error retrieving response from OpenAI.', {
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-        timestamp: new Date().toISOString()
-      })
       throw error
     }
   }

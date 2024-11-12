@@ -11,7 +11,6 @@ import { filterToday, filterYday, filterRange, sorter } from '../../utils/helper
 import { useAuth } from '../../hooks/authContext';
 import { useNavigate } from 'react-router-dom';
 import { eventWithTime } from 'rrweb';
-import logger from '../../utils/logger.ts';
 
 function SingleSessionPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
@@ -53,12 +52,6 @@ function SingleSessionPage() {
       const response = await axios.get(`/api/events/${session.file_name}`, { withCredentials: true});
       setSelectedSessionEvents(JSON.parse(response.data));
     } catch (error) {
-      logger.error('Error fetching events file.', {
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-        fileName: session.file_name,
-        timestamp: new Date().toISOString()
-      })
       throw error
     }
   }
@@ -76,12 +69,6 @@ function SingleSessionPage() {
         const sessions = await axios.get(`/api/projects/${projectId}`, { withCredentials: true});
         setAllSessions(sessions.data);
       } catch (error) {
-        logger.error('Error fetching sessions.', {
-          error: error instanceof Error ? error.message : String(error),
-          stack: error instanceof Error ? error.stack : undefined,
-          projectId: projectId,
-          timestamp: new Date().toISOString()
-        })
         throw error
       }
     }
