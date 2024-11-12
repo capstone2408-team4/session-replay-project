@@ -1,5 +1,6 @@
 import pkg from 'pg';
 const { Pool } = pkg;
+import type { Pool as PoolType } from 'pg';
 import bcrypt from 'bcrypt';
 import config from '../config/environment.js';
 
@@ -8,7 +9,7 @@ interface SummaryRow {
 }
 // Provides functionality to interact with the PSQL database.
 export class PsqlService {
-  private connection: Pool;
+  private connection: PoolType;
 
   constructor() {
     this.connection = new Pool({
@@ -16,7 +17,7 @@ export class PsqlService {
       host: config.POSTGRESQL.HOST,
       database: config.POSTGRESQL.DATABASE,
       password: config.POSTGRESQL.PASSWORD,
-      port: config.POSTGRESQL.PORT,
+      port: Number(config.POSTGRESQL.PORT),
       ssl: false
     });
   }
@@ -123,7 +124,7 @@ export class PsqlService {
     }
   }
 
-  async getSummaries(sessionIds): Promise<SummaryRow[]> {
+  async getSummaries(sessionIds: Number[]): Promise<SummaryRow[]> {
     console.log('TYPE OF FIRST SESSION ID:', typeof sessionIds[0]);
     try {
       const summaries = await this.connection.query(

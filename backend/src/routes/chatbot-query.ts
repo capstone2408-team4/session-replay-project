@@ -69,7 +69,7 @@ router.post('/', async (req: express.Request<{}, {}, ChatbotQueryRequest>, res: 
       .map(point => {
         return `---SESSION START (ID: ${point.id})---\n` +
                `Similarity Score: ${point.score.toFixed(3)}\n` +
-               `Summary: ${point.payload.summary}\n` +
+               `Summary: ${point.payload?.summary ?? 'No summary available'}\n` +
                `---SESSION END---`;
       })
       .join('\n\n');

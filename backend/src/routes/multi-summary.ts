@@ -8,7 +8,7 @@ const openAI = new OpenAIService();
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-  const { ids }  = req.body;
+  const { ids } = req.body as { ids: number[] };
 
   if (!Array.isArray(ids) || ids.length === 0) {
     return res.status(400).json({ error: 'Invalid input: ids should be a non-empty array' });

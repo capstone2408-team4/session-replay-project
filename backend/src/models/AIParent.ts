@@ -1,6 +1,10 @@
 import * as AIConfig from '../utils/aiModelsConfig.js';
 import { ProcessedSession } from '../preprocessor/types.js';
 
+interface Summary {
+  session_summary: string;
+}
+
 abstract class AIParent {
   protected abstract maxPromptLength: number;
   protected abstract query(systemPrompt: any, userPrompt: any, data: string): Promise<string>;
@@ -123,7 +127,7 @@ abstract class AIParent {
       .filter(Boolean);
   }
 
-  async summarizeMultipleSessions(summaries) {
+  async summarizeMultipleSessions(summaries: Summary[]): Promise<string> {
     let selectedSummaries = '';
 
     for (const { session_summary } of summaries) {

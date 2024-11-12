@@ -13,7 +13,10 @@ export class RedisService {
   async getRecording(key: string): Promise<any[]> {
     try {
       const data = await this.connection.call('JSON.GET', key);
-      return JSON.parse(data);
+      if (data === null) {
+        throw new Error(`Key "${key}" does not exist in Redis`);
+      }
+      return JSON.parse(data as string);
     } catch (error) {
       console.error(`Error retrieving events for ${key} from Redis:`, error);
       throw error;
