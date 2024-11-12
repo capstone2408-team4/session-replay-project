@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../hooks/authContext';
+import logger from '../../utils/logger';
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -42,7 +43,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setProjectId(response.data.projectID);
       return response.data;
     } catch (error) {
-      console.log('Login error occurred', error);
+      logger.error('Login error occured', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        projectName: projectName,
+        timestamp: new Date().toISOString()
+      })
       throw error;
     }
   };
@@ -53,7 +59,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setProjectId(null);
       setProjectName(null);
     } catch (error) {
-      console.error('Logout failed:', error);
+      logger.error('Logout Failed.', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        projectName: projectName,
+        timestamp: new Date().toISOString()
+      })
     }
   };
 

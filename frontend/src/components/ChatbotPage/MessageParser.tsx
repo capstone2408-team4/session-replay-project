@@ -10,7 +10,6 @@ const MessageParser = ({ children, actions }) => {
   
   const parse = async (message) => { 
     const messageTime = Date.now()
-    console.log('parsing', messageTime - lastMessageTime);
     if (message.length < 15) {
       actions.handleShortMessage()
     } else if ((messageTime - lastMessageTime) < FIVE_SECONDS) {
