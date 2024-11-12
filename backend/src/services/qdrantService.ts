@@ -2,6 +2,16 @@ import config from '../config/environment.js';
 import { QdrantClient } from "@qdrant/js-client-rest";
 import { EmbeddingDimensions } from '../utils/aiModelsConfig.js';
 
+interface Payload {
+  metadata: {
+    sessionId: string;
+    startTime: string;
+    endTime: string;
+    duration: string;
+    summary: string;
+  };
+}
+
 export class QdrantService {
   private connection: QdrantClient
   private collection: string
@@ -30,7 +40,7 @@ export class QdrantService {
     }
   }
 
-  async addVector(vector: number[], id, payload) {
+  async addVector(vector: number[], id: string, payload: Payload | null) {
     await this.connection.upsert(
       this.collection,
       {
