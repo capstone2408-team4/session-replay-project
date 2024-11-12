@@ -5,7 +5,7 @@ import Chatbot from 'react-chatbot-kit'
 import config from './config.ts';
 import MessageParser from './MessageParser.tsx'
 import ActionProvider from './ActionProvider.tsx'
-import { useAuth } from '../AuthProvider/AuthProvider.tsx';
+import { useAuth } from '../../hooks/authContext';
 import { useNavigate } from 'react-router-dom';
 
 function ChatbotPage() {
@@ -17,7 +17,7 @@ function ChatbotPage() {
       navigate('/');
     }
 
-  }, [projectId, isLoading])
+  }, [projectId, isLoading, navigate])
 
   return (
     <div className={styles.mainPageWrapper}>

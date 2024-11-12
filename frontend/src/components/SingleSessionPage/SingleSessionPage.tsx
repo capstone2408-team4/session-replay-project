@@ -8,13 +8,15 @@ import { Session } from '../../Types/index.ts'
 import SessionInfoBox from '../SessionInfoBox/SessionInfoBox.tsx';
 import EmptyPlayer from '../EmptyPlayer/EmptyPlayer.tsx';
 import { filterToday, filterYday, filterRange, sorter } from '../../utils/helpers.ts';
-import { useAuth } from '../AuthProvider/AuthProvider.tsx';
+import { useAuth } from '../../hooks/authContext';
 import { useNavigate } from 'react-router-dom';
+import { eventWithTime } from 'rrweb';
+import logger from '../../utils/logger.ts';
 
 function SingleSessionPage() {
   const [allSessions, setAllSessions] = React.useState<Session[]>([]);
   const [selectedSession, setSelectedSession] = React.useState<Session | null>(null);
-  const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<any[]>([]);
+  const [selectedSessionEvents, setSelectedSessionEvents] = React.useState<eventWithTime[]>([]);
   const [filteredSessions, setFilteredSessions] = React.useState<Session[] | null>(null);
   const { projectId, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -48,10 +50,16 @@ function SingleSessionPage() {
 
   const fetchSessionEvents = async function(session: Session) {
     try {
-      const response = await axios.get(`http://localhost:5001/api/events/${session.file_name}`, { withCredentials: true});
+      const response = await axios.get(`/api/events/${session.file_name}`, { withCredentials: true});
       setSelectedSessionEvents(JSON.parse(response.data));
     } catch (error) {
-      console.log('error fetching single session', error)
+      logger.error('Error fetching events file.', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        fileName: session.file_name,
+        timestamp: new Date().toISOString()
+      })
+      throw error
     }
   }
 
@@ -60,21 +68,26 @@ function SingleSessionPage() {
       navigate('/');
     }
 
-  }, [projectId, isLoading])  
+  }, [projectId, isLoading, navigate])  
 
   React.useEffect(() => {
     const fetchSessions = async function() {
       try {
-        const sessions = await axios.get(`http://localhost:5001/api/projects/${projectId}`, { withCredentials: true});
+        const sessions = await axios.get(`/api/projects/${projectId}`, { withCredentials: true});
         setAllSessions(sessions.data);
       } catch (error) {
-        console.error('Error fecthing sessions', error);
+        logger.error('Error fetching sessions.', {
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+          projectId: projectId,
+          timestamp: new Date().toISOString()
+        })
         throw error
       }
     }
 
     fetchSessions();
-  }, [])
+  }, [navigate, projectId])
 
   return (
     <div className={styles.mainPageWrapper}>
@@ -82,7 +95,13 @@ function SingleSessionPage() {
         <Header selectedPage={'single'} project='Providence'/>
       </div>
       <div className={styles.sidebar}>
-        <SingleSessionSidebar selectedSession={selectedSession} onFilter={filterSessions} onSort={sortSessions} onSessionSelect={handleSessionSelect} sessions={filteredSessions || allSessions}/>
+        <SingleSessionSidebar 
+          selectedSession={selectedSession} 
+          onFilter={filterSessions} 
+          onSort={sortSessions} 
+          onSessionSelect={handleSessionSelect} 
+          sessions={filteredSessions || allSessions}
+        />
       </div>
       <div className={styles.player}>
         {!selectedSession && <EmptyPlayer />}

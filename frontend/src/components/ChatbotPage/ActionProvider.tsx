@@ -43,7 +43,7 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
 
   const handleValidQuery = async function(message: string) {
     try {
-      const response = await axios.post('http://localhost:5001/api/chatbot-query', { query: message }, {
+      const response = await axios.post('/api/chatbot-query', { query: message }, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -62,7 +62,11 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
         ...prev,
         messages: [...prev.messages, botMessage],
       }));
-      console.error('Error retrieving response from OpenAI.', error)
+      logger.error('Error retrieving response from OpenAI.', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        timestamp: new Date().toISOString()
+      })
       throw error
     }
   }

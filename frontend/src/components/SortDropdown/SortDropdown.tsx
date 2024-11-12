@@ -2,19 +2,20 @@ import React from 'react';
 import styles from './SortDropdown.module.css'
 
 interface SortDropdownProp {
-  onClosingClick: (e: any) => void
+  onClosingClick: (e: MouseEvent) => void
   onSort: (sortType: string) => void
   onCloseDropdown: () => void
 }
 
-const SortDropdown = React.forwardRef<HTMLDivElement, SortDropdownProp>(( {onClosingClick, onSort, onCloseDropdown}, ref) => {
+const SortDropdown = React.forwardRef<HTMLDivElement, SortDropdownProp>(
+  ({onClosingClick, onSort, onCloseDropdown}, ref) => {
   React.useEffect(() => {
     document.addEventListener('click', onClosingClick);
 
     return (() => {
       document.removeEventListener('click', onClosingClick)
     })
-  }, [])
+  }, [onClosingClick])
 
   const handleSortChoice = function(sortType: string) {
     onSort(sortType);
@@ -30,5 +31,7 @@ const SortDropdown = React.forwardRef<HTMLDivElement, SortDropdownProp>(( {onClo
     </div>
   );
 })
+
+SortDropdown.displayName = 'SortDropdown';
 
 export default SortDropdown;

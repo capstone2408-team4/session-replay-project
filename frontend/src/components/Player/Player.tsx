@@ -1,16 +1,17 @@
 import React from "react";
 import rrwebPlayer from "rrweb-player";
 import styles from './Player.module.css'
-// import { getReplayConsolePlugin } from '@rrweb/rrweb-plugin-console-replay';
+import type { eventWithTime } from "@rrweb/types";
+import logger from "../../utils/logger";
 
 interface PlayerProps {
-  session: any[]
+  session: eventWithTime[]
 }
 
 const Player = ({ session }: PlayerProps) => {
   React.useEffect(() => {
     const playerRoot = document.getElementById("replayer");
-    let playerInstance: any;
+    let playerInstance: rrwebPlayer | null = null;
 
     const initializeWebPlayer = function() {
       if (playerRoot !== null && session.length > 1) {
@@ -26,7 +27,11 @@ const Player = ({ session }: PlayerProps) => {
             },
           });
         } catch (error) {
-          console.log('Error initializing web player:', error);
+          logger.error('Error intializing rrweb player instance.', {
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+            timestamp: new Date().toISOString()
+          })
         }
       }
     }

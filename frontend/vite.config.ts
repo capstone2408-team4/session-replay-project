@@ -11,7 +11,7 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./setupTests.ts"],
   },
-  // proxy setup (only for full stack apps)
+  // proxy setup (for development)
   server: {
     proxy: {
       "/api": {
@@ -26,4 +26,14 @@ export default defineConfig({
     strictPort: true,
     port: 5173
   },
+  // server: {
+  //   proxy: {
+  //     '/api': {
+  //       target: 'http://localhost:5001',
+  //       changeOrigin: true,
+  //       secure: false,
+  //     }
+  //   }
+  // }
 });
+

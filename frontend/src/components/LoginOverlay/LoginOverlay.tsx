@@ -2,11 +2,11 @@ import React from 'react';
 import styles from './LoginOverlay.module.css';
 import xButton from '../../assets/x.png';
 import BadLoginAlert from '../BadLoginAlert';
-import { useAuth } from '../AuthProvider/AuthProvider'
+import { useAuth } from '../../hooks/authContext';
 import { useNavigate } from 'react-router-dom';
 
 interface LoginOverlayProps {
-  onClose: (e: any) => void;
+  onClose: (e: React.MouseEvent) => void;
 }
 
 function LoginOverlay( { onClose }: LoginOverlayProps) {
@@ -16,11 +16,11 @@ function LoginOverlay( { onClose }: LoginOverlayProps) {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleNameInput = function(e: any) {
+  const handleNameInput = function(e: React.ChangeEvent<HTMLInputElement>) {
     setProjectName(e.target.value)
   }
 
-  const handlePasswordInput = function(e: any) {
+  const handlePasswordInput = function(e: React.ChangeEvent<HTMLInputElement>) {
     setPassword(e.target.value)
   }
 
