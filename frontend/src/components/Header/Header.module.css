@@ -12,10 +12,11 @@ button {
 
 .header {
   padding: 8px 24px;
+  padding-left: 0px;
   display: flex;
   align-items: center;
   border-radius: 8px;
-  min-width: 1160px;
+  min-width: 600px;
 }
 
 .headerChoice {
