@@ -7,7 +7,8 @@ interface SortDropdownProp {
   onCloseDropdown: () => void
 }
 
-const SortDropdown = React.forwardRef<HTMLDivElement, SortDropdownProp>(( {onClosingClick, onSort, onCloseDropdown}, ref) => {
+const SortDropdown = React.forwardRef<HTMLDivElement, SortDropdownProp>(
+  ({onClosingClick, onSort, onCloseDropdown}, ref) => {
   React.useEffect(() => {
     document.addEventListener('click', onClosingClick);
 
@@ -30,5 +31,7 @@ const SortDropdown = React.forwardRef<HTMLDivElement, SortDropdownProp>(( {onClo
     </div>
   );
 })
+
+SortDropdown.displayName = 'SortDropdown';
 
 export default SortDropdown;

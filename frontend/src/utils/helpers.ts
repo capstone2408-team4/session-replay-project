@@ -32,13 +32,19 @@ export const filterRange = function(sessions: Session[], range: number) {
 
 }
 
-export const sorter = function(sessions: Session[], sortType: string): Session[] {
+export const sorter = function(
+  sessions: Session[], 
+  sortType: string
+): Session[] {
   return sessions.slice().sort((a, b) => {
+    const dateA = new Date(a.session_start).getTime();
+    const dateB = new Date(b.session_start).getTime();
+
     switch (sortType) {
       case 'Time Ascending':
-        return (new Date(a.session_start).getTime() - new Date(b.session_start).getTime());
+        return dateA - dateB;
       case 'Time Descending':
-        return (new Date(b.session_start).getTime() - new Date(a.session_start).getTime());
+        return dateB - dateA
       default:
         return 0;
     }
