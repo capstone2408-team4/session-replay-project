@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pkg from 'body-parser';
 const { json, urlencoded } = pkg;
-import cookieParser from 'cookie-parser.js';
+import cookieParser from 'cookie-parser';
 import recordRouter from './routes/record.js';
 import projectsRouter from './routes/projects.js';
 import eventsRouter from './routes/events.js';
@@ -40,6 +40,9 @@ app.use('/api/record', (req, res, next) => {
 app.use('/api/record', recordRouter);
 app.use('/api/geo', geoRouter);
 app.use('/api/auth', dashAuthRouter);
+app.use('/api/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 // Protected routes -- dashboard
 app.use('/api/projects', authenticateToken, projectsRouter);
@@ -50,6 +53,17 @@ app.use('/api/chatbot-query', authenticateToken, chatbotQueryRouter);
 // Spawn worker process
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Catch-all route to serve the index.html file for non-API routes
+app.get('*', (req, res) => {
+  // Only handle non-API routes
+  if (!req.path.startsWith('/api/')) {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+  }
+});
 
 const workerPath = path.join(__dirname, 'workers', 'inactiveSessionsWorker.js');
 const worker = fork(workerPath);

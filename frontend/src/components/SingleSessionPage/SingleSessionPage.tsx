@@ -50,7 +50,7 @@ function SingleSessionPage() {
 
   const fetchSessionEvents = async function(session: Session) {
     try {
-      const response = await axios.get(`http://localhost:5001/api/events/${session.file_name}`, { withCredentials: true});
+      const response = await axios.get(`/api/events/${session.file_name}`, { withCredentials: true});
       setSelectedSessionEvents(JSON.parse(response.data));
     } catch (error) {
       logger.error('Error fetching events file.', {
@@ -73,7 +73,7 @@ function SingleSessionPage() {
   React.useEffect(() => {
     const fetchSessions = async function() {
       try {
-        const sessions = await axios.get(`http://localhost:5001/api/projects/${projectId}`, { withCredentials: true});
+        const sessions = await axios.get(`/api/projects/${projectId}`, { withCredentials: true});
         setAllSessions(sessions.data);
       } catch (error) {
         logger.error('Error fetching sessions.', {

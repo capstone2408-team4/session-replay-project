@@ -11,7 +11,7 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./setupTests.ts"],
   },
-  // proxy setup (only for full stack apps)
+  // proxy setup (for development)
   server: {
     proxy: {
       "/api": {

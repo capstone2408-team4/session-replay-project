@@ -1,31 +1,24 @@
 services:
-  # Frontend React application
+  # Frontend React application (Vite dev-only server)
   frontend:
     build:
       context: ./frontend
       target: development
     ports:
       - "${REACT_PORT}:${REACT_PORT}"  # Maps port 5173 on the host to port 5173 in the container
-    volumes:
-      - ./frontend:/app  # Mounts the frontend directory for live reloading
-      - /app/node_modules  # Anonymous volume to prevent overwriting node_modules
-    environment:
-      - NODE_ENV=development
-    command: sh -c "npm install && npm run dev"
     depends_on:
       - backend  # Ensures backend is started before frontend
 
-  # Backend Express application
+  # Backend Express application (can be run in dev or prod mode)
   backend:
     build:
-      context: ./backend
-      target: development
+      context: . # Root context to access both frontend/backend for prod builds
+      dockerfile: backend/Dockerfile
+      target: ${NODE_ENV:-development}  # Uses the development target by default, but can be overridden with NODE_ENV
     ports:
       - "${API_PORT}:${API_PORT}"  # Maps port 5001 on the host to port 5001 in the container
-    volumes:
-      - ./backend:/app  # Mounts the backend directory for live reloading
-      - /app/node_modules  # Anonymous volume to prevent overwriting node_modules
     environment:
+      - NODE_ENV=${NODE_ENV:-development}
       - OPENAI_API_KEY
       - REDIS_URL
       - PSQL_HOST
@@ -46,12 +39,15 @@ services:
       - PROVIDENCE_ROOT_USERNAME
       - PROVIDENCE_ROOT_PASSWORD
       - JWT_SECRET
-    command: sh -c "npm install && node src/migrations/initPostgres.js && npm run dev"
     depends_on:
-      - postgres
-      - redis
-      - minio
-      - qdrant
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      minio:
+        condition: service_started
+      qdrant:
+        condition: service_started
 
   # PostgreSQL database
   postgres:
@@ -64,6 +60,11 @@ services:
       - postgres_data:/var/lib/postgresql/data  # Persists database data
     ports:
       - "${PSQL_PORT}:${PSQL_PORT}"  # Maps port 5432 on the host to port 5432 in the container
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PSQL_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Redis + RedisStack database
   redis:

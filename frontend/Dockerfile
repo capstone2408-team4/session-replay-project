@@ -1,37 +1,11 @@
-# Base stage for both development and production
-FROM node:20 as base
+FROM node:20 AS development
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Development stage
-FROM base as development
-
-# Install all dependencies (including devDependencies)
+COPY package.json ./
 RUN npm install
 
-# Copy the rest of the code
 COPY . .
 
-EXPOSE 5173
-
+# Start Vite dev server with hot reloading
 CMD ["npm", "run", "dev"]
-
-# Production stage (if needed in the future)
-# FROM base as production
-
-# Install only production dependencies
-# RUN npm ci --only=production
-
-# Copy the rest of the code
-# COPY . .
-
-# Build the app
-# RUN npm run build
-
-# EXPOSE 5173
-
-# Use a static server to serve the built app
-# CMD ["npm", "run", "preview"]
