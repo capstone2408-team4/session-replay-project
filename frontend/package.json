@@ -19,7 +19,6 @@
     "react-router-dom": "^6.27.0",
     "rrweb": "^2.0.0-alpha.4",
     "rrweb-player": "^1.0.0-alpha.4",
-    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@rrweb/types": "^2.0.0-alpha.17",
