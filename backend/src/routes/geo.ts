@@ -80,29 +80,36 @@ router.get('/', async (req, res) => {
     console.error('Error in geolocation lookup:', error);
 
     // User IP can't be determined from the request
-    if (error.message.includes('Unable to determine user IP')) {
+    if (error instanceof Error && error.message.includes('Unable to determine user IP')) {
       res.status(400).json({
         error: 'Failed to fetch geolocation data',
         details: error.message
       });
     // Backend configuration error
-    } else if (error.message.includes('API key not configured')) {
+    } else if (error instanceof Error && error.message.includes('API key not configured')) {
       res.status(500).json({
         error: 'Internval server error',
         details: 'Geolocation service misconfigured'
       });
     // 3rd party geo service error
-    } else if (error.message.includes('Geo service error')) {
+    } else if (error instanceof Error && error.message.includes('Geo service error')) {
       res.status(502).json({
         error: 'External service error',
         details: error.message
       });
     // Catch-all for unexpected errors
     } else {
-      res.status(500).json({
-        error: 'Failed to fetch geolocation data',
-        details: error.message
-      });
+      if (error instanceof Error) {
+        res.status(500).json({
+          error: 'Failed to fetch geolocation data',
+          details: error.message
+        });
+      } else {
+        res.status(500).json({
+          error: 'Failed to fetch geolocation data',
+          details: String(error)
+        });
+      }
     }
   }
 });

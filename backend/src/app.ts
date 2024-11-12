@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pkg from 'body-parser';
 const { json, urlencoded } = pkg;
-import cookieParser from 'cookie-parser.js';
+import cookieParser from 'cookie-parser';
 import recordRouter from './routes/record.js';
 import projectsRouter from './routes/projects.js';
 import eventsRouter from './routes/events.js';

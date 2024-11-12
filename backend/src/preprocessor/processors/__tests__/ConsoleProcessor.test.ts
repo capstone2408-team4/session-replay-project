@@ -35,7 +35,7 @@ describe('ConsoleProcessor', () => {
       },
       dom: {
         fullSnapshot: {},
-        incrementalSnapshots: SemanticIncrementalSnapshot[],
+        incrementalSnapshots: [],
       }
     };
   });
