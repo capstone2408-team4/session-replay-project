@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand, HeadBucketCommand, CreateBucketCommand } from '@aws-sdk/client-s3';
+import { S3Client, S3ClientConfig, PutObjectCommand, GetObjectCommand, HeadBucketCommand, CreateBucketCommand } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 import config from '../config/environment.js';
 
@@ -7,23 +7,29 @@ export class S3Service {
   private bucketName: string;
 
   // Storing region and endpoint as class properties for use in URL construction.
-  // Revist this later
   private region: string;
   private endpoint: string | undefined;
 
   constructor() {
-    this.endpoint = config.S3.ENDPOINT;
+    this.endpoint = config.S3.ENDPOINT; // undefined for AWS
     this.region = config.S3.REGION!;
 
-    this.connection = new S3Client({
-      endpoint: this.endpoint, // Set for MinIO, leave undefined for AWS S3
+    // Base config for S3Client
+    const clientConfig: S3ClientConfig = {
       region: this.region,
-      credentials: {
+    }
+
+    // Add extra config only for MinIO (IAM role handles AWS credentials when using the AWS deployment!)
+    if (this.endpoint) {
+      clientConfig.endpoint = this.endpoint;
+      clientConfig.credentials = {
         accessKeyId: config.S3.ACCESS_KEY!,
         secretAccessKey: config.S3.SECRET_ACCESS_KEY!,
-      },
-      forcePathStyle: true, // Needed for MinIO, doesn't affect AWS S3
-    });
+      };
+      clientConfig.forcePathStyle = true;
+    }
+
+    this.connection = new S3Client(clientConfig);
     this.bucketName = config.S3.BUCKET_NAME!;
     this.createBucket();
   }
