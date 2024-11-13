@@ -82,7 +82,10 @@ function MultiSessionPage() {
       }
     }
 
-    fetchSessions();
+    if (projectId) {
+      fetchSessions();
+    }
+  
   }, [projectId])
 
   return (

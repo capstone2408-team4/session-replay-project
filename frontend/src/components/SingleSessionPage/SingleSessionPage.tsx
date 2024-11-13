@@ -73,7 +73,10 @@ function SingleSessionPage() {
       }
     }
 
-    fetchSessions();
+    if (projectId) {
+      fetchSessions();
+    }
+    
   }, [navigate, projectId])
 
   return (
