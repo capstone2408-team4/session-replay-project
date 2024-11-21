@@ -1,127 +1,152 @@
-// import { describe, it, expect, beforeEach } from "vitest";
-// import { MetaProcessor } from "../MetaProcessor.js";
-// import { ProcessedSession, RRWebEvent } from "../../types.js";
+import { describe, it, expect, beforeEach } from "vitest";
+import { MetaProcessor } from "../MetaProcessor";
+import { ProcessedSession, RRWebEvent, NodeType } from "../../types";
 
-// describe("MetaProcessor", () => {
-//   let processor: MetaProcessor;
-//   let mockSession: ProcessedSession;
+describe("MetaProcessor", () => {
+  let processor: MetaProcessor;
+  let mockSession: ProcessedSession;
 
-//   beforeEach(() => {
-//     processor = new MetaProcessor();
-//     mockSession = {
-//       metadata: {
-//         sessionId: "",
-//         startTime: "",
-//         endTime: "",
-//         duration: 0,
-//       },
-//       events: {
-//         total: 0,
-//         byType: {},
-//         bySource: {},
-//         significant: [],
-//       },
-//       technical: {
-//         errors: [],
-//         performance: {
-//           domUpdates: 0,
-//           networkRequests: 0,
-//         },
-//         network: {
-//           requests: 0,
-//           failures: 0,
-//         },
-//       },
-//       dom: {
-//         fullSnapshot: undefined,
-//         allNodes: [],
-//       },
-//     };
-//   });
+  beforeEach(() => {
+    processor = new MetaProcessor();
+    mockSession = {
+      metadata: {
+        sessionId: "",
+        startTime: "",
+        endTime: "",
+        duration: "",
+      },
+      events: {
+        total: 0,
+        byType: {},
+        bySource: {},
+        significant: [],
+      },
+      technical: {
+        errors: [],
+        performance: {
+          domUpdates: 0,
+          networkRequests: 0,
+        },
+        network: {
+          requests: 0,
+          failures: 0,
+        },
+      },
+      dom: {
+        fullSnapshot: {
+          type: NodeType.Document,
+          childNodes: [],
+          id: 1
+        },
+        incrementalSnapshots: []
+      },
+    };
+  });
 
-//   it("should process a valid meta event", () => {
-//     const metaEvent: RRWebEvent = {
-//       type: 4,
-//       data: {
-//         href: "https://www.example.com",
-//         width: 1280,
-//         height: 720,
-//       },
-//       timestamp: 12345,
-//     };
+  it("should process a valid meta event with complete data", () => {
+    const metaEvent: RRWebEvent = {
+      type: 4,
+      data: {
+        href: "https://example.com/dashboard",
+        width: 1920,
+        height: 1080,
+      },
+      timestamp: 1730154000000,
+    };
 
-//     processor.process(metaEvent, mockSession);
+    processor.process(metaEvent, mockSession);
 
-//     expect(mockSession.metadata.url).toBe("https://www.example.com");
-//     expect(mockSession.metadata.device?.viewport?.width).toBe(1280); // Optional chaining
-//     expect(mockSession.metadata.device?.viewport?.height).toBe(720);
-//     expect(mockSession.events.significant).toHaveLength(1);
-//     expect(mockSession.events.significant[0].details).toBe(
-//       "Initial page view: https://www.example.com (viewport: 1280x720)",
-//     );
-//     expect(mockSession.events.significant[0].impact).toBe(
-//       "Page loaded with initial viewport dimensions.",
-//     );
+    // Check URL was set
+    expect(mockSession.metadata.url).toBe("https://example.com/dashboard");
 
-//     expect(mockSession.events.byType.Meta).toEqual(1);
-//     expect(mockSession.events.total).toEqual(1);
+    // Check viewport dimensions were set
+    expect(mockSession.metadata.device?.viewport?.width).toBe(1920);
+    expect(mockSession.metadata.device?.viewport?.height).toBe(1080);
 
+    // Check event counting
+    expect(mockSession.events.total).toBe(1);
+    expect(mockSession.events.byType.Meta).toBe(1);
 
-//   });
+    // Check significant event creation
+    expect(mockSession.events.significant).toHaveLength(1);
+    expect(mockSession.events.significant[0]).toMatchObject({
+      type: "Meta",
+      details: expect.stringContaining("Initial page view: https://example.com/dashboard (viewport: 1920x1080)"),
+      impact: "Page loaded with initial viewport dimensions.",
+    });
+  });
 
-//   it("should handle a meta event with missing data", () => {
-//     const invalidMetaEvent: RRWebEvent = {
-//       type: 4,
-//       data: {
-//         // Missing href and height.
-//         width: 800,
-//       },
-//       timestamp: 1730154000000,
-//     };
+  it("should process a valid meta event with minimum required data", () => {
+    const metaEvent: RRWebEvent = {
+      type: 4,
+      data: {
+        href: "https://example.com",
+        width: 800,
+        height: 600,
+      },
+      timestamp: 1730154000000,
+    };
 
-//     processor.process(invalidMetaEvent, mockSession);
+    processor.process(metaEvent, mockSession);
 
-//     expect(mockSession.events.significant).toHaveLength(0); // Should not create an event.
-//     expect(mockSession.events.total).toEqual(0);
-//     expect(mockSession.events.byType.Meta).toBeUndefined();
-//   });
+    expect(mockSession.metadata.url).toBe("https://example.com");
+    expect(mockSession.metadata.device?.viewport?.width).toBe(800);
+    expect(mockSession.metadata.device?.viewport?.height).toBe(600);
+    expect(mockSession.events.significant).toHaveLength(1);
+  });
 
-//   it("should gracefully handle an invalid meta event type", () => {
-//     const invalidMetaEvent: RRWebEvent = {
-//       type: 0, // Invalid type
-//       data: {
-//         href: "https://www.example.com",
-//         width: 1920,
-//         height: 1080,
-//       },
-//       timestamp: 1730154000000,
-//     };
+  it("should handle invalid meta event types gracefully", () => {
+    const invalidEvent: RRWebEvent = {
+      type: 3, // Wrong type
+      data: {
+        href: "https://example.com",
+        width: 1024,
+        height: 768,
+      },
+      timestamp: 1730154000000,
+    };
 
-//     processor.process(invalidMetaEvent, mockSession);
+    processor.process(invalidEvent, mockSession);
 
-//     expect(mockSession.events.significant).toHaveLength(0); // No significant event should be added
+    // Should not process invalid event type
+    expect(mockSession.metadata.url).toBeUndefined();
+    expect(mockSession.metadata.device?.viewport).toBeUndefined();
+    expect(mockSession.events.significant).toHaveLength(0);
+    expect(mockSession.events.total).toBe(0);
+    expect(mockSession.events.byType.Meta).toBeUndefined();
+  });
 
-//     expect(mockSession.events.total).toEqual(0);
-//     expect(mockSession.events.byType.Meta).toBeUndefined();
+  it("should handle meta event with missing data gracefully", () => {
+    const incompleteEvent: RRWebEvent = {
+      type: 4,
+      data: {
+        // Missing required fields
+      },
+      timestamp: 1730154000000,
+    };
 
-//     expect(mockSession.metadata.url).toBeUndefined();
-//     expect(mockSession.metadata.device?.viewport).toBeUndefined();
-//   });
+    processor.process(incompleteEvent, mockSession);
 
-//   // Test case with null data
-//   it("should not add a significant event and not crash if data is null", () => {
-//     const metaEventNullData: RRWebEvent = {
-//       type: 4,
-//       data: null, // Data is explicitly set to null.
-//       timestamp: 1730154000000,
-//     };
+    // Should not process event with missing required data
+    expect(mockSession.metadata.url).toBeUndefined();
+    expect(mockSession.metadata.device?.viewport).toBeUndefined();
+    expect(mockSession.events.significant).toHaveLength(0);
+    expect(mockSession.events.total).toBe(0);
+  });
 
-//     processor.process(metaEventNullData, mockSession);
+  it("should handle null event data gracefully", () => {
+    const nullDataEvent: RRWebEvent = {
+      type: 4,
+      data: null,
+      timestamp: 1730154000000,
+    };
 
-//     expect(mockSession.events.significant).toHaveLength(0);
-//     expect(mockSession.metadata.url).toBeUndefined();
-//     expect(mockSession.metadata.device?.viewport).toBeUndefined();
-//     expect(mockSession.events.total).toEqual(0);
-//     expect(mockSession.events.byType.Meta).toBeUndefined();
-//   });
-// });
+    processor.process(nullDataEvent, mockSession);
+
+    // Should not process event with null data
+    expect(mockSession.metadata.url).toBeUndefined();
+    expect(mockSession.metadata.device?.viewport).toBeUndefined();
+    expect(mockSession.events.significant).toHaveLength(0);
+    expect(mockSession.events.total).toBe(0);
+  });
+});

@@ -1,190 +1,225 @@
-// import { describe, it, expect, beforeEach } from "vitest";
-// import { ContextProcessor } from "../ContextProcessor.js";
-// import { ProcessedSession, RRWebEvent } from "../../types.js";
+import { describe, it, expect, beforeEach } from "vitest";
+import { ContextProcessor } from "../ContextProcessor";
+import { ProcessedSession, RRWebEvent, NodeType } from "../../types";
 
-// describe("ContextProcessor", () => {
-//   let processor: ContextProcessor;
-//   let mockSession: ProcessedSession;
+describe("ContextProcessor", () => {
+  let processor: ContextProcessor;
+  let mockSession: ProcessedSession;
 
-//   beforeEach(() => {
-//     processor = new ContextProcessor();
-//     mockSession = {
-//       metadata: {
-//         sessionId: "",
-//         startTime: "",
-//         endTime: "",
-//         duration: 0,
-//       },
-//       events: {
-//         total: 0,
-//         byType: {},
-//         bySource: {},
-//         significant: [],
-//       },
-//       technical: {
-//         errors: [],
-//         performance: {
-//           domUpdates: 0,
-//           networkRequests: 0,
-//         },
-//         network: {
-//           requests: 0,
-//           failures: 0,
-//         },
-//       },
-//       dom: {
-//         fullSnapshot: undefined,
-//         allNodes: [],
-//       },
-//     };
-//   });
+  beforeEach(() => {
+    processor = new ContextProcessor();
+    mockSession = {
+      metadata: {
+        sessionId: "",
+        startTime: "",
+        endTime: "",
+        duration: "",
+      },
+      events: {
+        total: 0,
+        byType: {},
+        bySource: {},
+        significant: [],
+      },
+      technical: {
+        errors: [],
+        performance: {
+          domUpdates: 0,
+          networkRequests: 0,
+        },
+        network: {
+          requests: 0,
+          failures: 0,
+        },
+      },
+      dom: {
+        fullSnapshot: {
+          type: NodeType.Document,
+          childNodes: [],
+          id: 1
+        },
+        incrementalSnapshots: []
+      },
+    };
+  });
 
-//   it("should process a valid context event with full geolocation data", () => {
-//     const contextEvent: RRWebEvent = {
-//       type: 51,
-//       timestamp: 1730133342836,
-//       data: {
-//         sessionID: "366fbcbb-e55b-4ca4-8090-af6b12e62c26",
-//         url: "https://conduit.jjjones.dev/", // Use a fixed URL for testing
-//         datetime: "2024-10-28T16:35:42.836Z",
-//         userAgent: {
-//           raw: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-//           mobile: false,
-//           platform: "macOS",
-//           brands: [
-//             {
-//               brand: "Chromium",
-//               version: "130",
-//             },
-//             {
-//               brand: "Google Chrome",
-//               version: "130",
-//             },
-//             {
-//               brand: "Not?A_Brand",
-//               version: "99",
-//             },
-//           ],
-//         },
-//         geo: {
-//           city: {
-//             en: "Atlanta", // Simplified for testing
-//           },
-//           state: {
-//             en: "Georgia",
-//           },
-//           country: {
-//             en: "United States",
-//           },
-//           latitude: 33.7488,
-//           longitude: -84.3877,
-//           timezone: "America/New_York",
-//         },
-//       },
-//     };
+  it("should process a complete context event with all fields", () => {
+    const contextEvent: RRWebEvent = {
+      type: 51,
+      timestamp: 1730154000000,
+      data: {
+        sessionID: "test-session-123",
+        url: "https://example.com/dashboard",
+        datetime: "2024-03-21T12:00:00Z",
+        userAgent: {
+          raw: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+          mobile: false,
+          platform: "macOS",
+          brands: [
+            { brand: "Chrome", version: "120" },
+            { brand: "Chromium", version: "120" },
+            { brand: "Not?A_Brand", version: "24" }
+          ]
+        },
+        geo: {
+          city: { en: "San Francisco" },
+          state: { en: "California" },
+          country: { en: "United States" },
+          latitude: 37.7749,
+          longitude: -122.4194,
+          timezone: "America/Los_Angeles"
+        }
+      }
+    };
 
-//     processor.process(contextEvent, mockSession);
+    processor.process(contextEvent, mockSession);
 
-//     expect(mockSession.metadata.sessionId).toBe(
-//       "366fbcbb-e55b-4ca4-8090-af6b12e62c26",
-//     );
-//     expect(mockSession.metadata.location?.city).toBe("Atlanta");
-//     expect(mockSession.metadata.location?.state).toBe("Georgia");
-//     expect(mockSession.metadata.location?.country).toBe("United States");
-//     expect(mockSession.metadata.device?.os).toBe("macOS");
-//     expect(mockSession.metadata.device?.browser).toBe("Chromium 130"); // Check without NotABrand
-//     expect(mockSession.metadata.device?.mobile).toBe(false);
-//     expect(mockSession.events.significant).toHaveLength(1);
-//     expect(mockSession.events.significant[0].details).toBe(
-//       "Session context captured: City: Atlanta, State: Georgia, Country: United States, Chromium 130 on macOS",
-//     );
+    // Check session metadata
+    expect(mockSession.metadata.sessionId).toBe("test-session-123");
+    
+    // Check location data
+    expect(mockSession.metadata.location).toEqual({
+      city: "San Francisco",
+      state: "California",
+      country: "United States",
+      latitude: 37.7749,
+      longitude: -122.4194,
+      timezone: "America/Los_Angeles"
+    });
 
-//     expect(mockSession.events.byType.SessionContext).toEqual(1);
-//     expect(mockSession.events.total).toEqual(1);
-//   });
+    // Check device data (should use primary brand excluding Not?A_Brand)
+    expect(mockSession.metadata.device).toEqual({
+      os: "macOS",
+      browser: "Chrome 120",
+      mobile: false
+    });
 
-//   it("should process a valid context event with minimal geolocation data", () => {
-//     const contextEvent: RRWebEvent = {
-//       type: 51,
-//       timestamp: 1730135766754,
-//       data: {
-//         sessionID: "some session ID",
-//         url: "https://some-url.com",
-//         datetime: "2024-10-28T17:16:06.754Z",
-//         userAgent: {
-//           raw: "Some User Agent",
-//           mobile: true, // Now mobile
-//           platform: "iOS",
-//           brands: [], // no brands available
-//         },
-//         geo: {
-//           city: "Unknown",
-//           state: "Unknown",
-//           country: "Unknown",
-//           latitude: "Unknown",
-//           longitude: "Unknown",
-//           timezone: "America/New_York",
-//         },
-//         error: {
-//           message: "Geo lookup failed: 500 Internal Server Error",
-//           type: "Error",
-//         },
-//       },
-//     };
+    // Check event counting
+    expect(mockSession.events.total).toBe(1);
+    expect(mockSession.events.byType.SessionContext).toBe(1);
 
-//     processor.process(contextEvent, mockSession);
+    // Check significant event
+    expect(mockSession.events.significant).toHaveLength(1);
+    expect(mockSession.events.significant[0]).toMatchObject({
+      type: "SessionContext",
+      details: expect.stringContaining("Session context captured: City: San Francisco, State: California, Country: United States, Chrome 120 on macOS")
+    });
+  });
 
-//     expect(mockSession.metadata.sessionId).toBe("some session ID");
-//     expect(mockSession.metadata.location?.city).toBe("Unknown");
-//     expect(mockSession.metadata.location?.country).toBe("Unknown"); // Check unknown values
-//     expect(mockSession.metadata.device?.os).toBe("iOS");
-//     expect(mockSession.metadata.device?.browser).toBe("Some User Agent"); // Correctly grabs raw if brands isn't there
-//     expect(mockSession.metadata.device?.mobile).toBe(true);
+  it("should handle context event with minimal location data", () => {
+    const contextEvent: RRWebEvent = {
+      type: 51,
+      timestamp: 1730154000000,
+      data: {
+        sessionID: "test-session-456",
+        url: "https://example.com",
+        datetime: "2024-03-21T12:00:00Z",
+        userAgent: {
+          raw: "Mozilla/5.0",
+          mobile: true,
+          platform: "iOS",
+          brands: []
+        },
+        geo: {
+          city: "Unknown",
+          state: "Unknown",
+          country: "Unknown",
+          latitude: "Unknown",
+          longitude: "Unknown",
+          timezone: "UTC"
+        }
+      }
+    };
 
-//     expect(mockSession.events.significant[0].details).toBe(
-//       "Context error: Geo lookup failed: 500 Internal Server Error",
-//     ); // Checks for error message
+    processor.process(contextEvent, mockSession);
 
-//     expect(mockSession.technical.errors[0].message).toBe(
-//       "Geo lookup failed: 500 Internal Server Error",
-//     ); // Check if error is added to array
+    expect(mockSession.metadata.location).toEqual({
+      city: "Unknown",
+      state: "Unknown",
+      country: "Unknown",
+      timezone: "UTC"
+    });
 
-//     expect(mockSession.events.byType.SessionContext).toEqual(1);
-//     expect(mockSession.events.total).toEqual(1);
-//   });
+    // Should fall back to raw user agent when brands array is empty
+    expect(mockSession.metadata.device?.browser).toBe("Mozilla/5.0");
+    expect(mockSession.metadata.device?.mobile).toBe(true);
+  });
 
-//   it("should gracefully handle invalid event types", () => {
-//     const invalidEvent: RRWebEvent = {
-//       type: 3, // Invalid type
-//       data: {},
-//       timestamp: 1730154000000,
-//     };
+  it("should handle context event with geo error", () => {
+    const contextEvent: RRWebEvent = {
+      type: 51,
+      timestamp: 1730154000000,
+      data: {
+        sessionID: "test-session-789",
+        url: "https://example.com",
+        datetime: "2024-03-21T12:00:00Z",
+        userAgent: {
+          raw: "Mozilla/5.0",
+          mobile: false,
+          platform: "Windows",
+          brands: [{ brand: "Firefox", version: "115" }]
+        },
+        geo: {
+          city: "Unknown",
+          state: "Unknown",
+          country: "Unknown",
+          timezone: "UTC"
+        },
+        error: {
+          message: "Geo lookup failed: Rate limit exceeded",
+          type: "RateLimitError"
+        }
+      }
+    };
 
-//     processor.process(invalidEvent, mockSession);
+    processor.process(contextEvent, mockSession);
 
-//     // Assertions for invalid type handling
-//     expect(mockSession.events.significant).toHaveLength(0); // Should not add significant events
+    // Should record the error
+    expect(mockSession.technical.errors).toHaveLength(1);
+    expect(mockSession.technical.errors[0]).toMatchObject({
+      type: "network",
+      message: "Geo lookup failed: Rate limit exceeded"
+    });
 
-//     expect(mockSession.events.total).toEqual(0); // Counts should not be incremented
-//     expect(mockSession.events.byType.SessionContext).toBeUndefined();
-//     expect(mockSession.metadata.location).toBeUndefined();
-//     expect(mockSession.metadata.device).toBeUndefined(); // Should not set device metadata
-//   });
+    // Should still create significant event with error context
+    expect(mockSession.events.significant[0].details).toBe(
+      "Context error: Geo lookup failed: Rate limit exceeded"
+    );
+  });
 
-//   // Test case with null data
-//   it("should not add a significant event or crash if data is null", () => {
-//     const contextEventNullData: RRWebEvent = {
-//       type: 51,
-//       data: null, // Data is explicitly null
-//       timestamp: 1730154000000,
-//     };
+  it("should handle invalid event types gracefully", () => {
+    const invalidEvent: RRWebEvent = {
+      type: 3,
+      timestamp: 1730154000000,
+      data: {
+        sessionID: "test-session",
+        userAgent: { raw: "test", mobile: false, platform: "test" },
+        geo: {}
+      }
+    };
 
-//     processor.process(contextEventNullData, mockSession);
+    processor.process(invalidEvent, mockSession);
 
-//     expect(mockSession.events.significant).toHaveLength(0);
-//     expect(mockSession.metadata.location).toBeUndefined();
-//     expect(mockSession.metadata.device).toBeUndefined(); // Device metadata not set
-//     expect(mockSession.events.total).toEqual(0);
-//     expect(mockSession.events.byType.SessionContext).toBeUndefined();
-//   });
-// });
+    expect(mockSession.metadata.sessionId).toBe("");
+    expect(mockSession.metadata.location).toBeUndefined();
+    expect(mockSession.metadata.device).toBeUndefined();
+    expect(mockSession.events.total).toBe(0);
+    expect(mockSession.events.significant).toHaveLength(0);
+  });
+
+  it("should handle missing or null event data gracefully", () => {
+    const nullDataEvent: RRWebEvent = {
+      type: 51,
+      timestamp: 1730154000000,
+      data: null
+    };
+
+    processor.process(nullDataEvent, mockSession);
+
+    expect(mockSession.metadata.sessionId).toBe("");
+    expect(mockSession.metadata.location).toBeUndefined();
+    expect(mockSession.metadata.device).toBeUndefined();
+    expect(mockSession.events.total).toBe(0);
+    expect(mockSession.events.significant).toHaveLength(0);
+  });
+});
