@@ -9,12 +9,12 @@ services:
     depends_on:
       - backend  # Ensures backend is started before frontend
 
-  # Backend Express application (can be run in dev or prod mode)
+  # Backend Express application
   backend:
     build:
       context: . # Root context to access both frontend/backend for prod builds
       dockerfile: backend/Dockerfile
-      target: ${NODE_ENV:-development}  # Uses the development target by default, but can be overridden with NODE_ENV
+      target: ${NODE_ENV:-development}  # Uses the development target by default. Override with NODE_ENV
     ports:
       - "${API_PORT}:${API_PORT}"  # Maps port 5001 on the host to port 5001 in the container
     environment:
@@ -43,11 +43,11 @@ services:
       postgres:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
       minio:
-        condition: service_started
+        condition: service_healthy
       qdrant:
-        condition: service_started
+        condition: service_healthy
 
   # PostgreSQL database
   postgres:
@@ -61,8 +61,8 @@ services:
     ports:
       - "${PSQL_PORT}:${PSQL_PORT}"  # Maps port 5432 on the host to port 5432 in the container
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PSQL_USER}"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U ${PSQL_USER} -d ${PSQL_DB_NAME}"]
+      interval: 30s
       timeout: 10s
       retries: 3
 
@@ -78,10 +78,15 @@ services:
       - REDIS_ARGS=--requirepass ${REDIS_PASSWORD}
       - REDISINSIGHT_DEFAULT_USERNAME=default
       - REDISINSIGHT_DEFAULT_PASSWORD=${REDIS_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # MinIO for S3-compatible object storage
   minio:
-    image: minio/minio
+    image: minio/minio:latest
     ports:
       - "${S3_PORT}:${S3_PORT}"  # API port
       - "${S3_CONSOLE_PORT}:${S3_CONSOLE_PORT}"  # Console port
@@ -91,6 +96,11 @@ services:
     command: server /data --console-address ":${S3_CONSOLE_PORT}"  # Starts MinIO server and console
     volumes:
       - minio_data:/data  # Persists MinIO data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${S3_PORT}/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Qdrant Vector Database Service
   qdrant:
@@ -99,11 +109,15 @@ services:
     ports:
       - "${QDRANT_PORT}:${QDRANT_PORT}"  # Maps port 6333 on the host to port 6333 in the container
     volumes:
-      - qdrant_data:/qdrant/storage  # Persists Qdrant data (optional)
+      - qdrant_data:/qdrant/storage  # Persists Qdrant data
     environment:
       - QDRANT__SERVICE__API_KEY=${QDRANT_API_KEY}
+    entrypoint: >
+      sh -c "apt-get update &&
+             apt-get install -y curl &&
+             ./entrypoint.sh"
     healthcheck:
-      test: ["CMD", "curl", "-H", "api-key: ${QDRANT_API_KEY}", "-f", "http://localhost:${QDRANT_PORT}/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${QDRANT_PORT}/healthz"]
       interval: 30s
       timeout: 10s
       retries: 3

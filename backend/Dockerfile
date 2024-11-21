@@ -1,5 +1,5 @@
 # Development stage
-FROM public.ecr.aws/docker/library/node:20 AS development
+FROM node:20 AS development
 
 WORKDIR /app
 COPY backend/package.json ./
@@ -14,7 +14,7 @@ RUN npm rebuild bcrypt --build-from-source
 CMD node /app/src/migrations/initPostgres.js && npm run dev
 
 # Frontend build stage (for production)
-FROM public.ecr.aws/docker/library/node:20 AS frontend-builder
+FROM node:20 AS frontend-builder
 
 WORKDIR /frontend
 COPY frontend/package.json ./
@@ -24,7 +24,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Backend build stage (for production)
-FROM public.ecr.aws/docker/library/node:20 AS backend-builder
+FROM node:20 AS backend-builder
 
 WORKDIR /app
 COPY backend/package.json ./
@@ -37,7 +37,7 @@ RUN npm run build || echo "Backend built with TS errors. Continuing."
 RUN npm rebuild bcrypt --build-from-source
 
 # Production stage
-FROM public.ecr.aws/docker/library/node:20 AS production
+FROM node:20 AS production
 
 WORKDIR /app
 
