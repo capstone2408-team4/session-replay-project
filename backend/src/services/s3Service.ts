@@ -11,7 +11,7 @@ export class S3Service {
   private endpoint: string | undefined;
 
   constructor() {
-    this.endpoint = config.S3.ENDPOINT; // undefined for AWS
+    this.endpoint = config.S3.ENDPOINT;
     this.region = config.S3.REGION!;
 
     // Base config for S3Client
