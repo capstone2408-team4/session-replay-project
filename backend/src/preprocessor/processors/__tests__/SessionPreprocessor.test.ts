@@ -1,75 +1,114 @@
-// import { describe, it, expect, beforeEach } from "vitest";
-// import { SessionPreprocessor } from "../../SessionPreprocessor.js";
-// import { RRWebEvent } from "../../types.js";
+import { describe, it, expect, beforeEach } from "vitest";
+import { SessionPreprocessor } from "../../SessionPreprocessor";
+import { RRWebEvent } from "../../types";
 
-// describe("SessionPreprocessor", () => {
-//   let preprocessor: SessionPreprocessor;
+describe("SessionPreprocessor", () => {
+  let preprocessor: SessionPreprocessor;
+  const timestamp = 1730154000000; // March 21, 2024
+  
+  const mockEvents: RRWebEvent[] = [
+    {
+      type: 4, // Meta
+      data: {
+        href: "https://example.com",
+        width: 1920,
+        height: 1080
+      },
+      timestamp
+    },
+    {
+      type: 2, // FullSnapshot
+      data: {
+        node: {
+          type: 0,
+          id: 1,
+          childNodes: []
+        },
+        initialOffset: { top: 0, left: 0 }
+      },
+      timestamp: timestamp + 100
+    },
+    {
+      type: 51, // Context
+      data: {
+        sessionID: "test-session-123",
+        url: "https://example.com",
+        datetime: new Date(timestamp).toISOString(),
+        userAgent: {
+          raw: "Mozilla/5.0",
+          mobile: false,
+          platform: "macOS",
+          brands: [{ brand: "Chrome", version: "120" }]
+        },
+        geo: {
+          city: "San Francisco",
+          state: "California", 
+          country: "United States",
+          timezone: "America/Los_Angeles"
+        }
+      },
+      timestamp: timestamp + 200
+    }
+  ];
 
-//   beforeEach(() => {
-//     preprocessor = new SessionPreprocessor();
-//   });
+  beforeEach(() => {
+    preprocessor = new SessionPreprocessor();
+  });
 
-//   it("should process a session with meta, full snapshot, and context events", () => {
-//     const events: RRWebEvent[] = [];
+  it("should throw error for empty events array", () => {
+    expect(() => preprocessor.process([])).toThrowError("No events provided for processing");
+  });
 
-//     const processedSession = preprocessor.process(events);
+  it("should process session metadata and timing correctly", () => {
+    const processed = preprocessor.process(mockEvents);
+    const endTime = new Date(timestamp + 200).toISOString();
+    const startTime = new Date(timestamp).toISOString();
 
-//     // Assertions
+    expect(processed.metadata).toMatchObject({
+      url: "https://example.com",
+      sessionId: "test-session-123",
+      startTime,
+      endTime,
+      duration: "0 seconds",
+      device: {
+        os: "macOS",
+        browser: "Chrome 120",
+        mobile: false,
+        viewport: { width: 1920, height: 1080 }
+      },
+      location: {
+        city: "San Francisco",
+        state: "California",
+        country: "United States",
+        timezone: "America/Los_Angeles"
+      }
+    });
+  });
 
-//     // Meta event and Context (geo) event processing
-//     expect(processedSession.metadata.url).toBe("https://providenceapp.jjjones.dev/");
-//     expect(processedSession.metadata.sessionId).toBe("6b1138f4-48ea-49c6-9623-173ea3ad3948");
-//     expect(processedSession.metadata.startTime).toBe(
-//       "2024-10-29T15:37:56.791Z",
-//     );
-//     expect(processedSession.metadata.endTime).toBe('2024-10-29T15:38:03.377Z');
-//     expect(processedSession.metadata.duration).toEqual(6);
+  it("should track event counts and types", () => {
+    const processed = preprocessor.process(mockEvents);
 
-//     expect(processedSession.metadata.device?.viewport?.width).toBe(1440);
-//     expect(processedSession.metadata.device?.viewport?.height).toBe(788);
+    expect(processed.events.total).toBe(3);
+    expect(processed.events.byType).toEqual({
+      Meta: 1,
+      FullSnapshot: 1,
+      SessionContext: 1
+    });
+  });
 
-//     expect(processedSession.metadata.location?.country).toBe("United States");
+  it("should initialize technical metrics", () => {
+    const processed = preprocessor.process(mockEvents);
 
-//     expect(processedSession.metadata.device?.os).toBe("macOS");
-//     expect(processedSession.metadata.device?.browser).toBe("Chromium 130");
-//     expect(processedSession.metadata.device?.mobile).toBe(false);
-
-//     // FullSnapshot event processing & BaseProcessor testing
-//     if (processedSession.dom && processedSession.dom.fullSnapshot) {
-//       // expect(processedSession.dom.fullSnapshot).toEqual(events[1]);
-//       expect(processedSession.dom?.allNodes).toHaveLength(437);
-//     }
-//     expect(processedSession.events.total).toBe(3); // 17
-//     expect(processedSession.events.byType.Meta).toEqual(1);
-//     expect(processedSession.events.byType.FullSnapshot).toEqual(1);
-//     expect(processedSession.events.byType.IncrementalSnapshot).toEqual(undefined); // 13
-//     expect(processedSession.events.byType.SessionContext).toEqual(1);
-//     expect(processedSession.events.bySource.MouseMove).toEqual(undefined); // 5
-//     // expect(processedSession.events.bySource.MouseInteraction).toEqual(undefined); // NONE
-//   });
-
-//   it("should handle an empty events array", () => {
-//     expect(() => preprocessor.process([])).toThrowError(
-//       "No events provided for processing",
-//     );
-//   });
-
-//   it("should handle a session with no meta, full snapshot, or context events", () => {
-//     const processedSession = preprocessor.process([
-//       { type: 0, data: {}, timestamp: 123 },
-//     ]); // Arbitrary event
-
-//     expect(processedSession.metadata.url).toBeUndefined();
-//     expect(processedSession.metadata.sessionId).toBe("");
-//     expect(processedSession.metadata.startTime).toBe('1970-01-01T00:00:00.123Z');
-//     expect(processedSession.metadata.endTime).toBe('1970-01-01T00:00:00.123Z');
-
-//     expect(processedSession.metadata.duration).toEqual(0);
-
-//     expect(processedSession.metadata.device).toBeUndefined();
-//     expect(processedSession.metadata.location).toBeUndefined();
-//     expect(processedSession.dom?.allNodes).toEqual([]);
-//   });
-
-//   // Future processor tests
-// });
+    expect(processed.technical).toEqual({
+      errors: [],
+      performance: {
+        domUpdates: 0,
+        networkRequests: 0
+      },
+      network: {
+        requests: 0,
+        failures: 0
+      }
+    });
+  });
+});
