@@ -1,6 +1,6 @@
 import express from 'express';
 import config from '../config/environment.js';
-
+import { PsqlService } from '../services/psqlService.js';
 const router = express.Router();
 
 function getUserIP(req: express.Request): string {
@@ -45,8 +45,22 @@ function isValidIP(ip: string): boolean {
   return ipv4Regex.test(ip) || ipv6Regex.test(ip);
 }
 
+const psql: PsqlService = new PsqlService();
+
 router.get('/', async (req, res) => {
+  const projectID = req.headers['x-providence-project-id'];
+
+  if (!projectID || typeof projectID !== 'string') {
+    return res.status(400).json({ error: 'Invalid request' });
+  }
+
   try {
+    const projectMetadata = await psql.getProject(projectID);
+
+    if (!projectMetadata) {
+      return res.status(400).json({ error: 'Invalid project' });
+    }
+
     const userIP = getUserIP(req);
     console.log(`User IP detected from Agent request: ${userIP}`);
 
