@@ -1,186 +1,252 @@
-// import { describe, test, expect, beforeEach } from 'vitest';
-// import { ConsoleProcessor } from '../ConsoleProcessor.js';
-// import { ProcessedSession, EVENT_TYPE_NAMES } from '../../types.js';
+import { describe, it, expect, beforeEach } from "vitest";
+import { ConsoleProcessor } from "../ConsoleProcessor";
+import { ProcessedSession, RRWebEvent, NodeType } from "../../types";
 
-// describe('ConsoleProcessor', () => {
-//   let processor: ConsoleProcessor;
-//   let mockSession: ProcessedSession;
+describe("ConsoleProcessor", () => {
+  let processor: ConsoleProcessor;
+  let mockSession: ProcessedSession;
 
-//   beforeEach(() => {
-//     processor = new ConsoleProcessor();
-//     // Initialize a mock session with required structure
-//     mockSession = {
-//       metadata: {
-//         sessionId: 'test-session',
-//         startTime: '',
-//         endTime: '',
-//         duration: '0'
-//       },
-//       events: {
-//         total: 0,
-//         byType: {},
-//         bySource: {},
-//         significant: []
-//       },
-//       technical: {
-//         errors: [],
-//         performance: {
-//           domUpdates: 0,
-//           networkRequests: 0
-//         },
-//         network: {
-//           requests: 0,
-//           failures: 0
-//         }
-//       },
-//       dom: {
-//         fullSnapshot: {},
-//         incrementalSnapshots: SemanticIncrementalSnapshot[],
-//       }
-//     };
-//   });
+  beforeEach(() => {
+    processor = new ConsoleProcessor();
+    mockSession = {
+      metadata: {
+        sessionId: "",
+        startTime: "",
+        endTime: "",
+        duration: "",
+      },
+      events: {
+        total: 0,
+        byType: {},
+        bySource: {},
+        significant: [],
+      },
+      technical: {
+        errors: [],
+        performance: {
+          domUpdates: 0,
+          networkRequests: 0,
+        },
+        network: {
+          requests: 0,
+          failures: 0,
+        },
+      },
+      dom: {
+        fullSnapshot: {
+          type: NodeType.Document,
+          childNodes: [],
+          id: 1
+        },
+        incrementalSnapshots: []
+      },
+    };
+  });
 
-//   test('processes console log event', () => {
-//     // Example console event
-//     const consoleEvent = {
-//       "type": 6,
-//       "data": {
-//         "plugin": "rrweb/console@1",
-//         "payload": {
-//           "level": "log",
-//           "trace": [
-//             "u (https://conduit.jjjones.dev/assets/index-616d3f06.js:69:18696)",
-//             "Object.wE (https://conduit.jjjones.dev/assets/index-616d3f06.js:37:9855)",
-//             "SE (https://conduit.jjjones.dev/assets/index-616d3f06.js:37:10009)"
-//           ],
-//           "payload": [
-//             "\"Running network tests\""
-//           ]
-//         }
-//       },
-//       "timestamp": 1730135778555
-//     };
+  it("should process console error events correctly", () => {
+    const errorEvent: RRWebEvent = {
+      type: 6,
+      timestamp: 1730154000000,
+      data: {
+        plugin: "rrweb/console@1",
+        payload: {
+          level: "error",
+          trace: [
+            "app.js:42:15",
+            "vendor.js:1337:10"
+          ],
+          payload: [
+            "Failed to load user data: Network timeout"
+          ]
+        }
+      }
+    };
 
-//     // Process the event
-//     processor.process(consoleEvent, mockSession);
+    processor.process(errorEvent, mockSession);
 
-//     // Verify results
-//     expect(mockSession.events.total).toBe(1);
-//     expect(mockSession.events.byType['Console']).toBe(1);
-//     expect(mockSession.events.byType[EVENT_TYPE_NAMES[6]]).toBe(1);
+    // Check error recording
+    expect(mockSession.technical.errors).toHaveLength(1);
+    expect(mockSession.technical.errors[0]).toMatchObject({
+      type: "console",
+      message: "Failed to load user data: Network timeout",
+      timestamp: expect.any(String)
+    });
 
-//     // Verify no numeric types exist in byType
-//     const hasNumericKeys = Object.keys(mockSession.events.byType).some(
-//       key => !isNaN(Number(key))
-//     );
-//     expect(hasNumericKeys).toBe(false);
-    
-//     // Test significant event structure
-//     expect(mockSession.events.significant).toHaveLength(1);
-//     const significantEvent = mockSession.events.significant[0];
-    
-//     expect(significantEvent).toMatchObject({
-//       type: 'Console',
-//       details: expect.stringContaining('Running network tests'),
-//       impact: 'System diagnostic activity',
-//       timestamp: expect.any(String)
-//     });
+    // Check event counting
+    expect(mockSession.events.total).toBe(1);
+    expect(mockSession.events.byType.Console).toBe(1);
 
-//     // Test timestamp format
-//     expect(Date.parse(significantEvent.timestamp)).not.toBeNaN();
-//   });
+    // Check significant event creation
+    expect(mockSession.events.significant).toHaveLength(1);
+    expect(mockSession.events.significant[0]).toMatchObject({
+      type: "Console",
+      details: "Console error: Failed to load user data: Network timeout",
+      impact: "Application error occurred that requires investigation"
+    });
+  });
 
-//   test('processes a console error event with proper type naming', () => {
-//     const errorEvent = {
-//       type: 6,
-//       data: {
-//         plugin: "rrweb/console@1",
-//         payload: {
-//           level: "error",
-//           trace: [
-//             "u (https://conduit.jjjones.dev/assets/index-616d3f06.js:69:18696)"
-//           ],
-//           payload: [
-//             "\"Failed to load resource\""
-//           ]
-//         }
-//       },
-//       timestamp: 1730135778555
-//     };
+  it("should process warning events with proper significance", () => {
+    const warningEvent: RRWebEvent = {
+      type: 6,
+      timestamp: 1730154000000,
+      data: {
+        plugin: "rrweb/console@1",
+        payload: {
+          level: "warn",
+          trace: [
+            "components/form.js:156:22"
+          ],
+          payload: [
+            "Performance warning: form submission taking longer than expected"
+          ]
+        }
+      }
+    };
 
-//     processor.process(errorEvent, mockSession);
+    processor.process(warningEvent, mockSession);
 
-//     // Test type naming in event counts
-//     expect(mockSession.events.byType['Console']).toBe(1);
-//     expect(Object.keys(mockSession.events.byType)).toContain('Console');
-    
-//     // Test error recording
-//     expect(mockSession.technical.errors).toHaveLength(1);
-//     expect(mockSession.technical.errors[0]).toMatchObject({
-//       type: 'console',
-//       message: 'Failed to load resource'
-//     });
+    expect(mockSession.events.significant).toHaveLength(1);
+    expect(mockSession.events.significant[0]).toMatchObject({
+      type: "Console",
+      details: "Console warn: Performance warning: form submission taking longer than expected",
+      impact: "Warning logged that may need attention"
+    });
+  });
 
-//     // Test significant event for error
-//     expect(mockSession.events.significant).toHaveLength(1);
-//     expect(mockSession.events.significant[0]).toMatchObject({
-//       type: 'Console',
-//       details: expect.stringContaining('Failed to load resource')
-//     });
-//   });
+  it("should handle React development warnings specially", () => {
+    const reactWarningEvent: RRWebEvent = {
+      type: 6,
+      timestamp: 1730154000000,
+      data: {
+        plugin: "rrweb/console@1",
+        payload: {
+          level: "error",
+          trace: ["react-dom.development.js:42:15"],
+          payload: [
+            "Warning: Each child in a list should have a unique \"key\" prop"
+          ]
+        }
+      }
+    };
 
-//   test('processes a console warning event with proper type naming', () => {
-//     const warningEvent = {
-//       type: 6,
-//       data: {
-//         plugin: "rrweb/console@1",
-//         payload: {
-//           level: "warn",
-//           trace: [
-//             "u (https://conduit.jjjones.dev/assets/index-616d3f06.js:69:18696)"
-//           ],
-//           payload: [
-//             "\"Performance warning: slow operation\""
-//           ]
-//         }
-//       },
-//       timestamp: 1730135778555
-//     };
+    processor.process(reactWarningEvent, mockSession);
 
-//     processor.process(warningEvent, mockSession);
+    expect(mockSession.events.significant[0].impact).toBe(
+      "React development warning detected that may indicate potential issues"
+    );
+  });
 
-//     // Test type naming
-//     expect(mockSession.events.byType['Console']).toBe(1);
-    
-//     // Test warning handling
-//     const significantEvent = mockSession.events.significant[0];
-//     expect(significantEvent).toMatchObject({
-//       type: 'Console',
-//       details: expect.stringContaining('Performance warning'),
-//     });
-//   });
+  it("should process info events about state changes", () => {
+    const stateEvent: RRWebEvent = {
+      type: 6,
+      timestamp: 1730154000000,
+      data: {
+        plugin: "rrweb/console@1",
+        payload: {
+          level: "info",
+          trace: ["store.js:89:12"],
+          payload: [
+            "User preferences state updated"
+          ]
+        }
+      }
+    };
 
-//   test('ignores non-significant console logs', () => {
-//     const nonSignificantEvent = {
-//       type: 6,
-//       data: {
-//         plugin: "rrweb/console@1",
-//         payload: {
-//           level: "log",
-//           trace: [],
-//           payload: [
-//             "\"Some random log\""
-//           ]
-//         }
-//       },
-//       timestamp: 1730135778555
-//     };
+    processor.process(stateEvent, mockSession);
 
-//     processor.process(nonSignificantEvent, mockSession);
+    expect(mockSession.events.significant[0].impact).toBe(
+      "Application state change recorded"
+    );
+  });
 
-//     // Should count the event but not mark as significant
-//     expect(mockSession.events.total).toBe(1);
-//     expect(mockSession.events.byType['Console']).toBe(1);
-//     expect(mockSession.events.significant).toHaveLength(0);
-//   });
-// });
+  it("should process network-related logs specially", () => {
+    const networkEvent: RRWebEvent = {
+      type: 6,
+      timestamp: 1730154000000,
+      data: {
+        plugin: "rrweb/console@1",
+        payload: {
+          level: "log",
+          trace: ["api.js:123:45"],
+          payload: [
+            "Network request retrying after timeout"
+          ]
+        }
+      }
+    };
+
+    processor.process(networkEvent, mockSession);
+
+    expect(mockSession.events.significant[0].impact).toBe(
+      "Network-related activity logged"
+    );
+  });
+
+  it("should handle console events with multiple payload items", () => {
+    const multiPayloadEvent: RRWebEvent = {
+      type: 6,
+      timestamp: 1730154000000,
+      data: {
+        plugin: "rrweb/console@1",
+        payload: {
+          level: "log",
+          trace: ["debug.js:1:1"],
+          payload: [
+            "User %s logged in successfully",
+            "john.doe@example.com"
+          ]
+        }
+      }
+    };
+
+    processor.process(multiPayloadEvent, mockSession);
+
+    expect(mockSession.events.significant[0].details).toBe(
+      "Console log: User john.doe@example.com logged in successfully"
+    );
+  });
+
+  it("should handle malformed console events gracefully", () => {
+    const malformedEvent: RRWebEvent = {
+      type: 6,
+      timestamp: 1730154000000,
+      data: {
+        plugin: "rrweb/console@1",
+        payload: {
+          // Missing required level
+          trace: [],
+          // Malformed or missing payload
+          payload: null
+        }
+      }
+    };
+
+    processor.process(malformedEvent, mockSession);
+
+    // Malformed events are not counted or processed
+    expect(mockSession.events.total).toBe(0);
+    expect(mockSession.events.byType.Console).toBeUndefined();
+    expect(mockSession.events.significant).toHaveLength(0);
+  });
+
+  it("should not process non-console events", () => {
+    const nonConsoleEvent: RRWebEvent = {
+      type: 3,
+      timestamp: 1730154000000,
+      data: {
+        plugin: "rrweb/console@1",
+        payload: {
+          level: "error",
+          trace: [],
+          payload: ["This should be ignored"]
+        }
+      }
+    };
+
+    processor.process(nonConsoleEvent, mockSession);
+
+    expect(mockSession.events.total).toBe(0);
+    expect(mockSession.events.significant).toHaveLength(0);
+    expect(mockSession.technical.errors).toHaveLength(0);
+  });
+});

@@ -31,7 +31,7 @@ COPY backend/package.json ./
 RUN npm install
 
 COPY backend/ ./
-RUN npm run build || echo "Backend built with TS errors. Continuing."
+RUN npm run build
 
 # Rebuild bcrypt
 RUN npm rebuild bcrypt --build-from-source

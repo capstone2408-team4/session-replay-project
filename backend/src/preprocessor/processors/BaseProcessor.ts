@@ -97,10 +97,14 @@ export abstract class BaseProcessor implements EventProcessor {
     }
 
     if (event.type === 50) {
-      if (event.data.error) {
+      if (event.data.type === 'WebSocket') {
+        if (event.data.event === 'open') {
+          type = 'WebSocket Connection Opened';
+        } else if (event.data.event === 'close') {
+          type = 'WebSocket Connection Closed';
+        }
+      } else if (event.data.error) {
         type = `${event.data.method} Request Failed (${event.data.status})`;
-      } else if (event.data.event === 'open') {
-        type = 'WebSocket Connection Opened';
       } else {
         type = `${event.data.method} Request (${event.data.status})`;
       }

@@ -1,5 +1,4 @@
 import { RRWebEvent, ProcessedSession, NodeType } from './types.js';
-import { EventDownsampler } from './EventDownsampler.js';
 import { MetaProcessor } from './processors/MetaProcessor.js';
 import { FullSnapshotProcessor } from './processors/FullSnapshotProcessor.js';
 import { IncrementalSnapshotProcessor } from './processors/IncrementalSnapshotProcessor.js';
@@ -14,7 +13,6 @@ import {
 } from "./types.js";
 
 export class SessionPreprocessor {
-  private downsampler = new EventDownsampler();
   private metaProcessor = new MetaProcessor();
   private fullSnapshotProcessor = new FullSnapshotProcessor();
   private incrementalSnapshotProcessor = new IncrementalSnapshotProcessor();
@@ -64,9 +62,6 @@ export class SessionPreprocessor {
       throw new Error('No events provided for processing');
     }
 
-    const downsampledEvents = this.downsampler.downsample(events);
-    console.log(`[preprocessor] Downsampled from ${events.length} to ${downsampledEvents.length} events`);
-
     const processed = this.initializeProcessedSession();
 
     try {
@@ -88,7 +83,7 @@ export class SessionPreprocessor {
       this.fullSnapshotProcessor.process(events[1], processed);
 
       // 4. Remaining events including Context
-      this.processEvents(downsampledEvents.slice(2), processed);
+      this.processEvents(events.slice(2), processed);
 
     } catch (error) {
       console.error('Error processing session:', error);

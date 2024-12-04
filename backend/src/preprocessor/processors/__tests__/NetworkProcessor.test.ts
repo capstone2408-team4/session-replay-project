@@ -1,361 +1,266 @@
-// import { describe, test, expect, beforeEach } from 'vitest';
-// import { NetworkProcessor } from '../NetworkProcessor.js';
-// import { ProcessedSession } from '../../types.js';
+import { describe, it, expect, beforeEach } from "vitest";
+import { NetworkProcessor } from "../NetworkProcessor";
+import { ProcessedSession, RRWebEvent, NodeType } from "../../types";
 
-// describe('NetworkProcessor', () => {
-//   let processor: NetworkProcessor;
-//   let mockSession: ProcessedSession;
+describe("NetworkProcessor", () => {
+  let processor: NetworkProcessor;
+  let mockSession: ProcessedSession;
 
-//   beforeEach(() => {
-//     processor = new NetworkProcessor();
-//     mockSession = {
-//       metadata: {
-//         sessionId: 'test-session',
-//         startTime: '',
-//         endTime: '',
-//         duration: 0
-//       },
-//       events: {
-//         total: 0,
-//         byType: {},
-//         bySource: {},
-//         significant: []
-//       },
-//       technical: {
-//         errors: [],
-//         performance: {
-//           domUpdates: 0,
-//           networkRequests: 0
-//         },
-//         network: {
-//           requests: 0,
-//           failures: 0
-//         }
-//       }
-//     };
-//   });
+  beforeEach(() => {
+    processor = new NetworkProcessor();
+    mockSession = {
+      metadata: {
+        sessionId: "",
+        startTime: "",
+        endTime: "",
+        duration: "",
+      },
+      events: {
+        total: 0,
+        byType: {},
+        bySource: {},
+        significant: [],
+      },
+      technical: {
+        errors: [],
+        performance: {
+          domUpdates: 0,
+          networkRequests: 0,
+        },
+        network: {
+          requests: 0,
+          failures: 0,
+        }
+      },
+      dom: {
+        fullSnapshot: {
+          type: NodeType.Document,
+          childNodes: [],
+          id: 1
+        },
+        incrementalSnapshots: []
+      },
+    };
+  });
 
-//   test('processes successful HTTP fetch request with proper metrics', () => {
-//     const fetchEvent = {
-//       type: 50,
-//       data: {
-//         url: "https://jsonplaceholder.typicode.com/todos/1",
-//         type: "FETCH",
-//         requestMadeAt: 1730135778555,
-//         method: "GET",
-//         responseReceivedAt: 1730135778624,
-//         latency: 69,
-//         status: 200
-//       },
-//       timestamp: 1730135778624
-//     };
+  it("should process successful HTTP fetch requests correctly", () => {
+    const fetchEvent: RRWebEvent = {
+      type: 50,
+      timestamp: 1730154000000,
+      data: {
+        type: "FETCH",
+        url: "/api/v1/users",
+        method: "GET",
+        status: 200,
+        requestMadeAt: 1730154000000,
+        responseReceivedAt: 1730154000100,
+        latency: 100
+      }
+    };
 
-//     processor.process(fetchEvent, mockSession);
+    processor.process(fetchEvent, mockSession);
 
-//     // Test event counting
-//     expect(mockSession.events.total).toBe(1);
-//     expect(mockSession.events.byType['Network']).toBe(1);
+    // Check request counting
+    expect(mockSession.events.total).toBe(1);
+    expect(mockSession.events.byType.Network).toBe(1);
+    expect(mockSession.technical.performance.networkRequests).toBe(1);
+    expect(mockSession.technical.network.requests).toBe(1);
+    expect(mockSession.technical.network.failures).toBe(0);
+    expect(mockSession.technical.network.averageResponseTime).toBe(100);
+  });
 
-//     // Test network stats
-//     expect(mockSession.technical.network.requests).toBe(1);
-//     expect(mockSession.technical.network.failures).toBe(0);
-//     expect(mockSession.technical.network.averageResponseTime).toBe(69);
+  it("should process successful XHR requests correctly", () => {
+    const xhrEvent: RRWebEvent = {
+      type: 50,
+      timestamp: 1730154000000,
+      data: {
+        type: "XHR",
+        url: "/api/v1/auth/login",
+        method: "POST",
+        status: 200,
+        requestMadeAt: 1730154000000,
+        responseReceivedAt: 1730154000150,
+        latency: 150
+      }
+    };
+
+    processor.process(xhrEvent, mockSession);
+
+    // Should create significant event for auth endpoint
+    expect(mockSession.events.significant).toHaveLength(1);
+    expect(mockSession.events.significant[0]).toMatchObject({
+      type: "POST Request (200)",
+      details: expect.stringContaining("Successful POST request to /api/v1/auth/login"),
+      impact: "Key application interaction"
+    });
+  });
+
+  it("should handle failed HTTP requests properly", () => {
+    const failedRequest: RRWebEvent = {
+      type: 50,
+      timestamp: 1730154000000,
+      data: {
+        type: "FETCH",
+        url: "/api/v1/data",
+        method: "GET",
+        status: 404,
+        error: "Not Found",
+        requestMadeAt: 1730154000000
+      }
+    };
+
+    processor.process(failedRequest, mockSession);
+
+    // Check error recording
+    expect(mockSession.technical.errors).toHaveLength(1);
+    expect(mockSession.technical.errors[0]).toMatchObject({
+      type: "network",
+      message: expect.stringContaining("GET request to /api/v1/data failed: Not Found")
+    });
+
+    // Check failure counting
+    expect(mockSession.technical.network.failures).toBe(1);
     
-//     // Test performance metrics
-//     expect(mockSession.technical.performance.networkRequests).toBe(1);
+    // Should create significant event for failure
+    expect(mockSession.events.significant).toHaveLength(1);
+    expect(mockSession.events.significant[0]).toMatchObject({
+      type: "GET Request Failed (404)",
+      details: expect.stringContaining("Failed GET request"),
+      impact: "Network request failure may impact functionality"
+    });
 
-//     // Non-significant endpoint shouldn't create significant event
-//     expect(mockSession.events.significant).toHaveLength(0);
-//   });
+    // Failed request should not affect average response time
+    expect(mockSession.technical.network.averageResponseTime).toBeUndefined();
+  });
 
-//   test('processes POST request with 201 status', () => {
-//     const postEvent = {
-//       type: 50,
-//       data: {
-//         url: "https://jsonplaceholder.typicode.com/posts",
-//         type: "FETCH",
-//         requestMadeAt: 1730135778625,
-//         method: "POST",
-//         responseReceivedAt: 1730135778764,
-//         latency: 139,
-//         status: 201
-//       },
-//       timestamp: 1730135778764
-//     };
+  it("should handle WebSocket lifecycle events", () => {
+    const wsOpenEvent: RRWebEvent = {
+      type: 50,
+      timestamp: 1730154000000,
+      data: {
+        type: "WebSocket",
+        url: "wss://api.example.com/ws",
+        event: "open"
+      }
+    };
 
-//     processor.process(postEvent, mockSession);
+    const wsMessageEvent: RRWebEvent = {
+      type: 50,
+      timestamp: 1730154000100,
+      data: {
+        type: "WebSocket",
+        url: "wss://api.example.com/ws",
+        event: "message",
+        message: "Hello"
+      }
+    };
 
-//     expect(mockSession.technical.network.requests).toBe(1);
-//     expect(mockSession.technical.network.averageResponseTime).toBe(139);
-//     expect(mockSession.technical.errors).toHaveLength(0);
-//     expect(mockSession.technical.performance.networkRequests).toBe(1);
-//   });
+    const wsCloseEvent: RRWebEvent = {
+      type: 50,
+      timestamp: 1730154000200,
+      data: {
+        type: "WebSocket",
+        url: "wss://api.example.com/ws",
+        event: "close",
+        code: 1000,
+        reason: ""
+      }
+    };
 
-//   test('processes complete WebSocket lifecycle with proper metrics', () => {
-//     const wsEvents = [
-//       {
-//         type: 50,
-//         timestamp: 1730135778911,
-//         data: {
-//           url: "wss://ws.postman-echo.com/raw",
-//           type: "WebSocket",
-//           event: "open"
-//         }
-//       },
-//       {
-//         type: 50,
-//         timestamp: 1730135778912,
-//         data: {
-//           url: "wss://ws.postman-echo.com/raw",
-//           type: "WebSocket",
-//           event: "send",
-//           message: "Hello WebSocket!"
-//         }
-//       },
-//       {
-//         type: 50,
-//         timestamp: 1730135778962,
-//         data: {
-//           url: "wss://ws.postman-echo.com/raw",
-//           type: "WebSocket",
-//           event: "close",
-//           code: 1000,
-//           reason: ""
-//         }
-//       }
-//     ];
+    // Process WebSocket lifecycle events
+    processor.process(wsOpenEvent, mockSession);
+    processor.process(wsMessageEvent, mockSession);
+    processor.process(wsCloseEvent, mockSession);
 
-//     wsEvents.forEach(event => processor.process(event, mockSession));
+    // Check all events were counted
+    expect(mockSession.events.total).toBe(3);
+    expect(mockSession.technical.performance.networkRequests).toBe(3);
 
-//     // Test event counting
-//     expect(mockSession.events.total).toBe(3);
-//     expect(mockSession.events.byType['Network']).toBe(3);
+    // Check significant events
+    expect(mockSession.events.significant).toHaveLength(1);
+    expect(mockSession.events.significant[0]).toMatchObject({
+      type: "WebSocket Connection Opened",
+      details: expect.stringContaining("WebSocket connection opened"),
+      impact: "Real-time communication established"
+    });
+  });
 
-//     // Test performance metrics
-//     expect(mockSession.technical.performance.networkRequests).toBe(3);
+  it("should handle WebSocket errors properly", () => {
+    const wsErrorEvent: RRWebEvent = {
+      type: 50,
+      timestamp: 1730154000000,
+      data: {
+        type: "WebSocket",
+        url: "wss://api.example.com/ws",
+        event: "close",
+        code: 1006,
+        reason: "Abnormal closure"
+      }
+    };
 
-//     // Test significant events (open should be significant)
-//     expect(mockSession.events.significant).toHaveLength(1);
-//     expect(mockSession.events.significant[0]).toMatchObject({
-//       type: 'Network',
-//       details: expect.stringContaining('WebSocket connection opened'),
-//       impact: 'Real-time communication established'
-//     });
+    processor.process(wsErrorEvent, mockSession);
 
-//     // Normal close (1000) shouldn't create an error
-//     expect(mockSession.technical.errors).toHaveLength(0);
+    // Check error recording
+    expect(mockSession.technical.errors).toHaveLength(1);
+    expect(mockSession.technical.errors[0]).toMatchObject({
+      type: "network",
+      message: expect.stringContaining("Abnormal closure")
+    });
 
-//     // WebSocket events shouldn't affect average response time
-//     expect(mockSession.technical.network.averageResponseTime).toBeUndefined();
+    // Check significant event
+    expect(mockSession.events.significant).toHaveLength(1);
+    expect(mockSession.events.significant[0]).toMatchObject({
+      type: "WebSocket Connection Closed",
+      details: expect.stringContaining("WebSocket close"),
+      impact: "Real-time communication interrupted"
+    });
+  });
 
-//     console.log(JSON.stringify(mockSession));
-//   });
+  it("should calculate average response time correctly across multiple requests", () => {
+    const requests: RRWebEvent[] = [
+      {
+        type: 50,
+        timestamp: 1730154000000,
+        data: {
+          type: "FETCH",
+          url: "/api/v1/data/1",
+          method: "GET",
+          status: 200,
+          latency: 100
+        }
+      },
+      {
+        type: 50,
+        timestamp: 1730154000200,
+        data: {
+          type: "FETCH",
+          url: "/api/v1/data/2",
+          method: "GET",
+          status: 200,
+          latency: 300
+        }
+      }
+    ];
 
-//   test('processes failed WebSocket events with proper error handling', () => {
-//     const failedWsEvent = {
-//       type: 50,
-//       timestamp: 1730135778962,
-//       data: {
-//         url: "wss://ws.postman-echo.com/raw",
-//         type: "WebSocket",
-//         event: "close",
-//         code: 1006,
-//         reason: "Abnormal closure"
-//       }
-//     };
+    requests.forEach(request => processor.process(request, mockSession));
 
-//     processor.process(failedWsEvent, mockSession);
+    expect(mockSession.technical.network.averageResponseTime).toBe(200); // (100 + 300) / 2
+  });
 
-//     // Test performance metrics
-//     expect(mockSession.technical.performance.networkRequests).toBe(1);
+  it("should not process non-network events", () => {
+    const nonNetworkEvent: RRWebEvent = {
+      type: 3,
+      timestamp: 1730154000000,
+      data: {
+        source: 0,
+        payload: {}
+      }
+    };
 
-//     // Should record error and significant event
-//     expect(mockSession.technical.errors).toHaveLength(1);
-//     expect(mockSession.technical.errors[0]).toMatchObject({
-//       type: 'network',
-//       message: expect.stringContaining('Abnormal closure')
-//     });
+    processor.process(nonNetworkEvent, mockSession);
 
-//     expect(mockSession.events.significant).toHaveLength(1);
-//     expect(mockSession.events.significant[0]).toMatchObject({
-//       details: expect.stringContaining('WebSocket close'),
-//       impact: 'Real-time communication interrupted'
-//     });
-//   });
-
-//   test('processes significant API endpoint requests', () => {
-//     const apiEvent = {
-//       type: 50,
-//       data: {
-//         url: "/api/v1/auth/login",
-//         type: "XHR",
-//         method: "POST",
-//         requestMadeAt: 1730135784104,
-//         responseReceivedAt: 1730135784263,
-//         latency: 159,
-//         status: 200
-//       },
-//       timestamp: 1730135784263
-//     };
-
-//     processor.process(apiEvent, mockSession);
-
-//     // Test performance metrics
-//     expect(mockSession.technical.performance.networkRequests).toBe(1);
-
-//     // Should be marked as significant due to being an auth endpoint
-//     expect(mockSession.events.significant).toHaveLength(1);
-//     expect(mockSession.events.significant[0]).toMatchObject({
-//       details: expect.stringContaining('Successful POST request to /api/v1/auth/login'),
-//       impact: 'Key application interaction'
-//     });
-//   });
-
-//   test('processes failed network requests with proper error handling', () => {
-//     const failedRequest = {
-//       type: 50,
-//       data: {
-//         url: "https://api.example.com/data",
-//         type: "FETCH",
-//         method: "GET",
-//         requestMadeAt: 1730135784104,
-//         error: "Failed to fetch",
-//         status: 404
-//       },
-//       timestamp: 1730135784263
-//     };
-
-//     processor.process(failedRequest, mockSession);
-
-//     // Test performance metrics
-//     expect(mockSession.technical.performance.networkRequests).toBe(1);
-
-//     // Should increment failure count
-//     expect(mockSession.technical.network.failures).toBe(1);
-    
-//     // Should record error
-//     expect(mockSession.technical.errors).toHaveLength(1);
-//     expect(mockSession.technical.errors[0]).toMatchObject({
-//       type: 'network',
-//       message: expect.stringContaining('Failed to fetch')
-//     });
-
-//     // Should be marked as significant due to failure
-//     expect(mockSession.events.significant).toHaveLength(1);
-//     expect(mockSession.events.significant[0]).toMatchObject({
-//       details: expect.stringContaining('Failed GET request'),
-//       impact: 'Network request failure may impact functionality'
-//     });
-
-//     // Failed request shouldn't affect average response time
-//     expect(mockSession.technical.network.averageResponseTime).toBeUndefined();
-//   });
-
-//   test('calculates correct average response time excluding requests without latency', () => {
-//     const events = [
-//       // Request with latency
-//       {
-//         type: 50,
-//         data: {
-//           url: "/api/data/1",
-//           type: "FETCH",
-//           method: "GET",
-//           latency: 100,
-//           status: 200
-//         },
-//         timestamp: 1000
-//       },
-//       // Failed request without latency
-//       {
-//         type: 50,
-//         data: {
-//           url: "/api/data/2",
-//           type: "FETCH",
-//           method: "GET",
-//           error: "Failed to fetch",
-//           status: 404
-//         },
-//         timestamp: 2000
-//       },
-//       // WebSocket event (no latency)
-//       {
-//         type: 50,
-//         data: {
-//           url: "ws://example.com",
-//           type: "WebSocket",
-//           event: "open"
-//         },
-//         timestamp: 3000
-//       },
-//       // Another request with latency
-//       {
-//         type: 50,
-//         data: {
-//           url: "/api/data/3",
-//           type: "FETCH",
-//           method: "GET",
-//           latency: 300,
-//           status: 200
-//         },
-//         timestamp: 4000
-//       }
-//     ];
-
-//     events.forEach(event => processor.process(event, mockSession));
-
-//     // Should have 4 total requests
-//     expect(mockSession.technical.network.requests).toBe(4);
-    
-//     // But average should only consider the 2 requests with latency
-//     expect(mockSession.technical.network.averageResponseTime).toBe(200); // (100 + 300) / 2
-    
-//     // Verify other metrics
-//     expect(mockSession.technical.network.failures).toBe(1);
-//     expect(mockSession.technical.performance.networkRequests).toBe(4);
-//   });
-
-//   test('properly handles URL parsing and path extraction', () => {
-//     const events = [
-//       // Full URL with query parameters
-//       {
-//         type: 50,
-//         data: {
-//           url: "https://api.example.com/api/v1/auth/login?redirect=dashboard",
-//           type: "FETCH",
-//           method: "GET",
-//           status: 200
-//         },
-//         timestamp: 1000
-//       },
-//       // Relative URL
-//       {
-//         type: 50,
-//         data: {
-//           url: "/api/v1/users",
-//           type: "FETCH",
-//           method: "GET",
-//           status: 200
-//         },
-//         timestamp: 2000
-//       },
-//       // Malformed URL
-//       {
-//         type: 50,
-//         data: {
-//           url: "not-a-url",
-//           type: "FETCH",
-//           method: "GET",
-//           status: 200
-//         },
-//         timestamp: 3000
-//       }
-//     ];
-
-//     events.forEach(event => processor.process(event, mockSession));
-
-//     // Check significant events for proper URL handling
-//     expect(mockSession.events.significant).toHaveLength(2); // Only API endpoints
-//     expect(mockSession.events.significant[0].details).toContain('/api/v1/auth/login?redirect=dashboard');
-//     expect(mockSession.events.significant[1].details).toContain('/api/v1/users');
-//   });
-// });
+    expect(mockSession.events.total).toBe(0);
+    expect(mockSession.events.byType.Network).toBeUndefined();
+    expect(mockSession.technical.network.requests).toBe(0);
+  });
+});
