@@ -1,42 +1,88 @@
-# Session Replay Project
+![Providence's Logo](https://github.com/providence-replay/.github/blob/main/assets/transparent-logo.png)
 
-# (WIP)
+Providence is an open-source session replay framework that captures pixel-perfect user interactions and generates AI-powered insights across individual and aggregate sessions.
 
-## Prerequisites
+![Providence's Architecture Diagram]()
 
-- Docker
-- Node.js v20+
-- Git
+## Getting Started
 
-## Setup Instructions
+Setting up Providence involves two main steps:
 
-1. Clone the repository:
-   ```
+1. **Deploy the Providence Infrastructure** (this repository)
+   - Choose between a local Docker Compose setup or a tailored Amazon AWS cloud deployment.
+   - Sets up the backend services, data stores, and dashboard UI.
+
+2. **Instrument Your Application** 
+   - Add the Providence Agent to your app.
+   - Configure session recording.
+   - See the [Agent repository](https://github.com/providence-replay/agent) for instrumentation instructions after your infrastructure is set up.
+
+## Infrastructure Setup Options
+
+### Option 1: Local setup with Docker
+Continue with the instructions below.
+
+### Option 2: AWS Deployment
+Visit our [deployment repository](https://github.com/providence-replay/deploy) to get Providence running in your own AWS cloud environment.
+
+## Local Setup Instructions
+
+### Prerequisites
+
+- [Docker](https://www.docker.com/get-started/) and [Docker Compose](https://docs.docker.com/compose/install/)
+- [Node.js](https://nodejs.org/en) v20 or later
+- [Git](https://git-scm.com/)
+- [OpenAI API key](https://platform.openai.com/api-keys) (for leveraging AI insights)
+- [FindIP](https://findip.net/) API key (for session geolocation stamping)
+
+### Setup Steps
+
+1. **Clone the Repository**
+   ```bash
    git clone https://github.com/providence-replay/providence.git
    cd providence
    ```
 
-2. Copy the example environment file:
-   ```
+2. **Configure Environment**
+   ```bash
    cp .env.example .env
    ```
-   Edit the `.env` file and set environment variables.
+   
+   **Follow the .env.example as your guide. All listed variables are required. Remember to use strong passwords & secrets!**
 
-3. Login to Docker:
-   ```
-   docker login -u <username>
-   ```
+   - For a development configuration where the frontend will be spun up in its own container, set your `NODE_ENV` to `development`.
+   - For a production configuration where the frontend will be served out of the backend Express server, set your `NODE_ENV` to `production`.
 
-4. Build and start the Docker containers:
-   ```
-   docker-compose up -d
-   ```
+4. **Start Services**
 
-## Useful Scripts
-- `./scripts/update-frontend.sh`: Rebuilds frontend container with latest changes in /frontend folder.
-- `./scripts/update-backend.sh`: Rebuilds backend container with latest changes in /backend folder.
-- `./scripts/update-env.sh`: Rebuilds both frontend and backend containers.
-- `./scripts/reset-postgres.sh`: Resets the PostgreSQL database.
-- `./scripts/reset-minio.sh`: Resets the MinIO (S3) storage.
-- `./scripts/reset-redis.sh`: Resets Redis + RedisStack.
-- `./scripts/health-check.sh`: Polls each container service.
+   - Development:
+      ```bash
+      docker-compose up -d
+      ```
+
+   - Production:
+      ```bash
+      docker-compose up -d backend
+      ```
+
+5. **Access Providence**
+   - Dashboard:
+      - http://localhost:5173 (development configuration)
+      - http://localhost:5001 (production configuration)
+   - API: http://localhost:5001/api
+
+6. **Next Steps**
+   - Visit the [Agent repository](https://github.com/providence-replay/agent) for instructions on instrumenting your application.
+
+## Architecture Overview
+
+Providence consists of several key components:
+
+- **Frontend**: React-based dashboard for session replay and analysis
+- **Backend**: Node.js/Express API handling session processing and AI integration
+- **Agent**: Lightweight JavaScript client for capturing user sessions
+- **Storage Layer**:
+  - PostgreSQL for metadata and summaries
+  - Redis for active session events
+  - MinIO/S3 for session storage
+  - Qdrant for vector embeddings
