@@ -1,6 +1,6 @@
 ![Providence's Logo](https://github.com/providence-replay/.github/blob/main/assets/transparent-logo.png)
 
-Providence is an open-source session replay framework that captures pixel-perfect user interactions and generates AI-powered insights across individual and aggregate sessions.
+Providence is an open-source session replay tool for single-page applications that uncovers insights from user interactions. By incorporating AI session analysis, aggregated session trends, and an RAG chatbot for contextual exploration, Providence helps developers understand and improve user experiences.
 
 ![Providence's Architecture Diagram]()
 
@@ -15,7 +15,7 @@ Setting up Providence involves two main steps:
 2. **Instrument Your Application** 
    - Add the Providence Agent to your app.
    - Configure session recording.
-   - See the [Agent repository](https://github.com/providence-replay/agent) for instrumentation instructions after your infrastructure is set up.
+   - See the [Agent repository](https://github.com/providence-replay/agent) for instrumentation instructions after your Providence infrastructure is set up.
 
 ## Infrastructure Setup Options
 
@@ -50,10 +50,10 @@ Visit our [deployment repository](https://github.com/providence-replay/deploy) t
    
    **Follow the .env.example as your guide. All listed variables are required. Remember to use strong passwords & secrets!**
 
-   - For a development configuration where the frontend will be spun up in its own container, set your `NODE_ENV` to `development`.
+   - For a development configuration where the frontend will be spun up in its own container, set the variable `NODE_ENV` to `development`.
    - For a production configuration where the frontend will be served out of the backend Express server, set your `NODE_ENV` to `production`.
 
-4. **Start Services**
+4. **Start Services CLI Commands**
 
    - Development:
       ```bash
@@ -66,7 +66,7 @@ Visit our [deployment repository](https://github.com/providence-replay/deploy) t
       ```
 
 5. **Access Providence**
-   - Dashboard:
+   - View the Dashboard:
       - http://localhost:5173 (development configuration)
       - http://localhost:5001 (production configuration)
    - API: http://localhost:5001/api
