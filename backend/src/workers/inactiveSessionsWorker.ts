@@ -13,8 +13,8 @@ const qdrant = new QdrantService();
 const preprocessor = new SessionPreprocessor();
 
 // Configuration
-const INACTIVITY_THRESHOLD = 1 * 60 * 1000; // 1 minute in milliseconds
-const CHECK_INTERVAL = 30000; // 30 seconds in milliseconds
+const INACTIVITY_THRESHOLD = 5 * 60 * 1000; // 5 minutes in milliseconds
+const CHECK_INTERVAL = 60000; // 1 minute in milliseconds
 
 async function checkInactiveSessions() {
   try {
