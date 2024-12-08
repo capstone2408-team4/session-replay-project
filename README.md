@@ -15,7 +15,7 @@ Setting up Providence involves two main steps:
 2. **Instrument Your Application** 
    - Add the Providence Agent to your app.
    - Configure session recording.
-   - See the [Agent repository](https://github.com/providence-replay/agent) for instrumentation instructions after your Providence infrastructure is set up.
+   - Visit the [Agent repository](https://github.com/providence-replay/agent) for instrumentation instructions after your Providence infrastructure is set up.
 
 ## Infrastructure Setup Options
 
@@ -53,7 +53,7 @@ Visit our [deployment repository](https://github.com/providence-replay/deploy) t
    - For a development configuration where the frontend will be spun up in its own container, set the variable `NODE_ENV` to `development`.
    - For a production configuration where the frontend will be served out of the backend Express server, set your `NODE_ENV` to `production`.
 
-4. **Start Services CLI Commands**
+4. **Start Services**
 
    - Development:
       ```bash
