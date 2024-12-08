@@ -29,13 +29,6 @@ app.use(cors({
   credentials: true
 }));
 
-// Log request payload size
-app.use('/api/record', (req, res, next) => {
-  const contentLength = req.headers['content-length'];
-  console.log(`Batch request body: ${contentLength} bytes`);
-  next();
-});
-
 // Public routes
 app.use('/api/record', recordRouter);
 app.use('/api/geo', geoRouter);
