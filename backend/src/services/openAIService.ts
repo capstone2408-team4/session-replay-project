@@ -1,6 +1,6 @@
-import OpenAI from 'openai'; // From OpenAI SDK
+import OpenAI from 'openai';
 import AIParent from '../models/AIParent.js';
-import * as AIConfig from '../utils/aiModelsConfig.js'; // Import configuration values for OpenAI LLM.
+import * as AIConfig from '../utils/aiModelsConfig.js';
 import config from '../config/environment.js';
 
 interface Message {
@@ -8,7 +8,6 @@ interface Message {
   content: string;
 }
 
-// Provides functionality to interact with Open AI
 export class OpenAIService extends AIParent {
   private connection: OpenAI;
   private model: string;
@@ -25,7 +24,6 @@ export class OpenAIService extends AIParent {
     this.embeddingModel = AIConfig.EmbeddingModel;
   }
 
-  // query the model
   async query(systemPrompt: Message, userPrompt: Message, data: string): Promise<string> {
     try {
       // @ts-ignore

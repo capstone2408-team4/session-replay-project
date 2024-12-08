@@ -126,7 +126,6 @@ export class SessionPreprocessor {
   }
 
   private updateEventCounts(event: RRWebEvent, session: ProcessedSession): void {
-    // Update total count
     session.events.total += 1;
 
     // Update type count with named type

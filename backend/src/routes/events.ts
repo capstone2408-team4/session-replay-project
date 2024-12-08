@@ -5,7 +5,6 @@ const router = express.Router();
 
 const s3 = new S3Service();
 
-// single session events
 router.get('/:fileName', async (req, res) => {
   const fileName = req.params.fileName;
 

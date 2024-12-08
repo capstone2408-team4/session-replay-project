@@ -22,7 +22,7 @@ const app = express();
 app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
 app.use(json({
-  limit: '10mb' // Increase JSON payload limit
+  limit: '10mb'
 }));
 app.use(cors({
   origin: true,
@@ -74,7 +74,6 @@ worker.on('error', (error) => {
 
 worker.on('exit', (code, signal) => {
   console.log(`Worker process exited with code ${code} and signal ${signal}`);
-  // Restart?
 });
 
 export default app;

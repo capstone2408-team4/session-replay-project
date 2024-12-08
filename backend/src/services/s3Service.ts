@@ -6,7 +6,6 @@ export class S3Service {
   private connection: S3Client;
   private bucketName: string;
 
-  // Storing region and endpoint as class properties for use in URL construction.
   private region: string;
   private endpoint: string | undefined;
 
@@ -63,7 +62,6 @@ export class S3Service {
       const command = new PutObjectCommand(params);
       await this.connection.send(command);
 
-      // Construct the URL
       const location = this.constructS3Url(fileName);
       console.log(`File uploaded successfully to S3 at: ${location}`);
       return location;
