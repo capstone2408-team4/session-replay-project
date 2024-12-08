@@ -44,7 +44,7 @@ async function handleSessionEnd(sessionID: string, fileName: string) {
         throw new Error('Failed to add session to S3. Session will not be removed from Redis.');
       });
 
-      const processedSession = preprocessor.process(events);
+      const processedSession = preprocessor.process(sessionID, events);
 
       await s3.addFile(`processed-${fileName}`, processedSession).catch(error => {
         console.error(`[worker] Error adding processed session ${sessionID} to S3:`, error);
