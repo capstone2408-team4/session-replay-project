@@ -54,10 +54,8 @@ export class NetworkProcessor extends BaseProcessor {
     const { url, status, method, error, latency } = event.data;
     const urlPath = this.getUrlPath(url);
 
-    // Update request counts
     this.incrementMapCount(this.requestCounts, urlPath);
 
-    // Update performance metrics
     session.technical.performance.networkRequests += 1;
     
     if (error || (status && status >= 400)) {
@@ -77,14 +75,12 @@ export class NetworkProcessor extends BaseProcessor {
       });
     }
 
-    // Track latency for performance metrics
     if (latency !== undefined && !isNaN(latency)) {
       this.validRequestCount += 1;
       const currentTotal = this.latencyTotals.get(urlPath) || 0;
       this.latencyTotals.set(urlPath, currentTotal + latency);
     }
 
-    // Track potentially significant successful requests
     if (status && status >= 200 && status < 300 && this.isSignificantEndpoint(urlPath)) {
       this.addSignificantEvent(
         event,
@@ -99,10 +95,8 @@ export class NetworkProcessor extends BaseProcessor {
     const { url, event: wsEvent, code, reason } = event.data;
     const urlPath = this.getUrlPath(url);
 
-    // Update performance metrics for WebSockets events
     session.technical.performance.networkRequests += 1;
 
-    // Count all WebSocket events that represent communication
     if (wsEvent === 'open' || wsEvent === 'message' || wsEvent === 'send') {
       this.incrementMapCount(this.requestCounts, urlPath);
     }

@@ -28,7 +28,6 @@ export abstract class BaseProcessor implements EventProcessor {
   }
 
   protected updateEventCounts(event: RRWebEvent, session: ProcessedSession): void {
-    // Update total count
     session.events.total += 1;
 
     // Update type count with named type
@@ -65,10 +64,6 @@ export abstract class BaseProcessor implements EventProcessor {
       impact,
     });
   }
-
-  // protected getNodeById(id: number, session: ProcessedSession): RRWebNode | null {
-  //   return session.dom?.allNodes?.find(node => node.id === id) || null;
-  // }
 
   protected getDetailedEventType(event: RRWebEvent, details?: string): string {
     let type = EVENT_TYPE_NAMES[String(event.type) as keyof typeof EVENT_TYPE_NAMES] || 'Unknown Event';

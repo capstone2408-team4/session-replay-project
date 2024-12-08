@@ -36,12 +36,10 @@ export class QdrantService {
       this.collection,
       {
         wait: true, // @ts-ignore
-        // amend id below
         points: [{id: id, vector: vector, payload: payload}]
     })
   }
   
-  //  can decide to add filters here if we want
   async retrieveContext(vector: number[], limit: number = 100) {
     const context = await this.connection.query(
       this.collection,

@@ -43,7 +43,7 @@ export class ContextProcessor extends BaseProcessor {
       city: typeof geo.city === "string" ? geo.city : geo.city?.en,
       state: typeof geo.state === "string" ? geo.state : geo.state?.en,
       country: typeof geo.country === "string" ? geo.country : geo.country?.en,
-      latitude: typeof geo?.latitude === "number" ? geo.latitude : undefined, // Or handle string values if needed
+      latitude: typeof geo?.latitude === "number" ? geo.latitude : undefined,
       longitude: typeof geo?.longitude === "number" ? geo.longitude : undefined,
       timezone: geo?.timezone,
     };

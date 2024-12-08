@@ -5,7 +5,6 @@ const router = express.Router();
 
 const psql = new PsqlService();
 
-// all project session metadata from psql for populating left sidebar
 router.get('/:projectID', async (req, res) => {
   const projectID = req.params.projectID;
 

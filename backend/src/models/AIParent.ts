@@ -66,29 +66,20 @@ abstract class AIParent {
     return chunks;
   }
 
-  // Feeds session data into the instation of a specific AI model. Handles if
-  // there is more than one chunk of data.
   async summarizeSession(data: ProcessedSession): Promise<string> {
     const totalSize = JSON.stringify(data).length;
-    console.log('**TOTAL SESSION LENGTH PRE-CHUNKING**:', totalSize);
 
-    // First determine if chunking is needed
     if (totalSize < this.maxPromptLength) {
-      console.log('**NO CHUNKING**');
       return await this.query(
         AIConfig.SessionSystemPrompt,
         AIConfig.SessionUserPrompt,
         JSON.stringify(data));
     }
 
-    // Chunking is needed
-    console.log('**CHUNKING**');
     const chunks = this.splitIntoChunks(data);
 
-    // Get summaries for each chunk
     const chunkSummaries = await this.summarizeSessionChunks(chunks);
 
-    // Create context for final summary
     const finalContext = {
       sessionMeta: chunks[0].metadata,
       numberOfChunks: chunks.length,
@@ -99,7 +90,6 @@ abstract class AIParent {
       }))
     };
 
-    // Get final cohesive summary
     return await this.query(
       AIConfig.FinalSummarySystemPrompt,
       AIConfig.FinalSummaryUserPrompt,
@@ -107,7 +97,6 @@ abstract class AIParent {
     );
   }
 
-  // This is needed to speed up the queries to the AI model via Promise.allSettled
   private async summarizeSessionChunks(chunks: any[]): Promise<string[]> {
     const summaryPromises = chunks.map((chunk, index) => {
       const timeRange = chunk.dom.incrementalSnapshotRange;

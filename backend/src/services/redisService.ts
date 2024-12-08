@@ -1,7 +1,6 @@
-import Redis from 'ioredis'; // NPM package providing redis functionality
+import Redis from 'ioredis';
 import config from '../config/environment.js';
 
-// Provides functionality to interact with the redis database.
 export class RedisService {
   private connection: Redis;
 
@@ -9,7 +8,6 @@ export class RedisService {
     this.connection = new Redis(config.REDIS.URL as string);
   }
 
-  // Pull recording data from redis
   async getRecording(key: string): Promise<any[]> {
     try {
       const data = await this.connection.call('JSON.GET', key);
@@ -23,7 +21,6 @@ export class RedisService {
     }
   }
 
-  // Add recording data to redis. If key exists, append data. If not, create it
   async addRecording(key: string, value: any[]): Promise<void> {
     const keyExists = await this.sessionExists(key);
     if (keyExists) {
@@ -36,7 +33,6 @@ export class RedisService {
     }
   }
 
-  // Does the key exist?
   async sessionExists(key: string): Promise<boolean> {
     try {
       const data = await this.connection.call('JSON.GET', key);
@@ -57,8 +53,6 @@ export class RedisService {
     }
   }
 
-
-  // Private method only to be called by addRecording
   private async appendRecording(key: string, value: any[]): Promise<void> {
     try {
       await this.connection.call('JSON.ARRAPPEND', key, '$', ...value.map(event => JSON.stringify(event)));
@@ -69,7 +63,6 @@ export class RedisService {
     }
   }
 
-  // Private method only to be called by addRecording
   private async createRecording(key: string): Promise<void> {
     try {
       await this.connection.call('JSON.SET', key, '$', '[]');

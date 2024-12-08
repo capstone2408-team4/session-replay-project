@@ -21,24 +21,20 @@ const psql: PsqlService = new PsqlService();
 router.post('/', async (req: express.Request<{}, {}, SessionRequestBody>, res: express.Response) => {
   const { projectID, sessionID, events } = req.body;
 
-  // Early return
   if (!projectID || !sessionID || !Array.isArray(events)) {
     return res.status(400).send('Invalid request body');
   }
 
   try {
-    // Check for valid project in PSQL
     const projectMetadata = await psql.getProject(projectID);
 
     if (!projectMetadata) {
       console.log(`Project not found for ${projectID}. Rejecting request`);
-      // Reject the request >> 404?
       return res.status(400).json({ error: 'Invalid project' });
     } else {
       console.log(`Valid project ${projectID} found for incoming request`);
     }
 
-    // Check for session metadata in PSQL
     const sessionMetadata = await psql.getActiveSession(sessionID);
     
     if (!sessionMetadata) {
@@ -51,7 +47,6 @@ router.post('/', async (req: express.Request<{}, {}, SessionRequestBody>, res: e
       await psql.updateSessionLastActivity(sessionID, eventTimestamp);
     }
     
-    // Add session event data to Redis
     console.log(`Moving ${events.length} events for session ${sessionID} to Redis...`)
     await redis.addRecording(sessionID, events);
 

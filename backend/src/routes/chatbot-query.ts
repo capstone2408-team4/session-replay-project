@@ -16,7 +16,6 @@ router.post('/', async (req: express.Request<{}, {}, ChatbotQueryRequest>, res: 
   try {
     console.log('Received request body:', req.body);
 
-    // Input validation
     const { query } = req.body;
     
     if (!query || typeof query !== 'string') {

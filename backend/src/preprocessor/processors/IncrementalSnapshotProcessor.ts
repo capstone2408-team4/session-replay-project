@@ -38,7 +38,6 @@ interface IncrementalSnapshotEvent extends RRWebEvent {
 }
 
 export class IncrementalSnapshotProcessor extends BaseProcessor {
-  // Reference to the procesed session for incrementing domUpdates
   private session: ProcessedSession | null = null;
 
   process(event: RRWebEvent, session: ProcessedSession): void {
@@ -98,9 +97,6 @@ export class IncrementalSnapshotProcessor extends BaseProcessor {
   }
 
   private transformMutationData(data: any): SemanticMutation {
-    // Debug log to see the actual data structure
-    // console.log('Mutation Data:', JSON.stringify(data, null, 2));
-
     return {
       type: 'mutation',
       adds: data.adds?.map(this.transformNodeOperation),
@@ -113,9 +109,6 @@ export class IncrementalSnapshotProcessor extends BaseProcessor {
         }))
       })),
       texts: data.texts?.map((text: any) => {
-        // Debug log for text mutation structure
-        // console.log('Text Mutation:', JSON.stringify(text, null, 2));
-        
         return {
           nodeDescription: text.id ? `node-${text.id}` : 'unknown',
           oldText: text.oldValue,
@@ -126,9 +119,6 @@ export class IncrementalSnapshotProcessor extends BaseProcessor {
   }
 
   private transformNodeOperation = (operation: any): any => {
-    // Debug log for node operation
-    // console.log('Node Operation:', JSON.stringify(operation, null, 2));
-
     if (!operation.node) {
       return {
         parentId: operation.parentId,
@@ -136,7 +126,6 @@ export class IncrementalSnapshotProcessor extends BaseProcessor {
       };
     }
 
-    // Helper to convert numeric type to NodeType
     const getNodeType = (numericType: number): NodeType => {
       switch (numericType) {
         case 0:

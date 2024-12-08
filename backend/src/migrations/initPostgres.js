@@ -38,7 +38,6 @@ async function initalizeDatabase() {
       );
     `);
 
-    // Root project setup
     const rootName = process.env.PROVIDENCE_ROOT_PROJECT;
     const rootPassword = process.env.PROVIDENCE_ROOT_PASSWORD;
 
