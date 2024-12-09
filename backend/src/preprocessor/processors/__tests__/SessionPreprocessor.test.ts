@@ -56,11 +56,11 @@ describe("SessionPreprocessor", () => {
   });
 
   it("should throw error for empty events array", () => {
-    expect(() => preprocessor.process([])).toThrowError("No events provided for processing");
+    expect(() => preprocessor.process('mockSessionID', [])).toThrowError("No events provided for processing");
   });
 
   it("should process session metadata and timing correctly", () => {
-    const processed = preprocessor.process(mockEvents);
+    const processed = preprocessor.process('mockSessionID', mockEvents);
     const endTime = new Date(timestamp + 200).toISOString();
     const startTime = new Date(timestamp).toISOString();
 
@@ -86,7 +86,7 @@ describe("SessionPreprocessor", () => {
   });
 
   it("should track event counts and types", () => {
-    const processed = preprocessor.process(mockEvents);
+    const processed = preprocessor.process('mockSessionID', mockEvents);
 
     expect(processed.events.total).toBe(3);
     expect(processed.events.byType).toEqual({
@@ -97,7 +97,7 @@ describe("SessionPreprocessor", () => {
   });
 
   it("should initialize technical metrics", () => {
-    const processed = preprocessor.process(mockEvents);
+    const processed = preprocessor.process('mockSessionID', mockEvents);
 
     expect(processed.technical).toEqual({
       errors: [],

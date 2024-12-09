@@ -57,11 +57,12 @@ export class SessionPreprocessor {
     };
   }
 
-  public process(events: RRWebEvent[]) {
+  public process(sessionID: string, events: RRWebEvent[]) {
     if (!events || events.length === 0) {
-      throw new Error('No events provided for processing');
+      throw new Error('[preprocessor] No events provided for processing');
     }
 
+    console.log(`[preprocessor] Processing session ${sessionID}...`);
     const processed = this.initializeProcessedSession();
 
     try {
@@ -86,10 +87,11 @@ export class SessionPreprocessor {
       this.processEvents(events.slice(2), processed);
 
     } catch (error) {
-      console.error('Error processing session:', error);
+      console.error(`[preprocessor] Error processing session ${sessionID}:`, error);
       throw error;
     }
 
+    console.log(`[preprocessor] Successfully processed session ${sessionID}`);
     return processed;
   }
 
@@ -126,7 +128,6 @@ export class SessionPreprocessor {
   }
 
   private updateEventCounts(event: RRWebEvent, session: ProcessedSession): void {
-    // Update total count
     session.events.total += 1;
 
     // Update type count with named type

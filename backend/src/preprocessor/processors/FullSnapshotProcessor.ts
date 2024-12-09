@@ -29,7 +29,6 @@ export class FullSnapshotProcessor extends BaseProcessor {
   private transformNodeTypes(node: any): void {
     if (!node) return;
 
-    // Convert numeric type to NodeType enum
     node.type = this.getNodeType(node.type);
 
     // Recursively transform child nodes

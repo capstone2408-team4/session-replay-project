@@ -27,7 +27,7 @@ RUN npm run build
 FROM node:20 AS backend-builder
 
 WORKDIR /app
-COPY backend/package.json ./
+COPY backend/package*.json ./
 RUN npm install
 
 COPY backend/ ./
@@ -44,7 +44,7 @@ WORKDIR /app
 # Copy built backend files
 COPY --from=backend-builder /app/dist ./dist
 COPY --from=backend-builder /app/package*.json ./
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 # Copy built frontend static files
 COPY --from=frontend-builder /frontend/dist /app/public

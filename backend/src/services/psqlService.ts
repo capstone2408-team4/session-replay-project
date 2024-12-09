@@ -7,7 +7,6 @@ import config from '../config/environment.js';
 interface SummaryRow {
   session_summary: string;
 }
-// Provides functionality to interact with the PSQL database.
 export class PsqlService {
   private connection: PoolType;
 
@@ -22,7 +21,6 @@ export class PsqlService {
     });
   }
 
-  // Get project metadata
   async getProject(projectID: string): Promise<any[]> {
     try {
       const result = await this.connection.query('SELECT * FROM projects WHERE id = $1', [projectID]);
@@ -33,7 +31,6 @@ export class PsqlService {
     }
   }
 
-  // Get an active session's metadata
   async getActiveSession(sessionID: string): Promise<any[]> {
     try {
       const result = await this.connection.query('SELECT * FROM sessions WHERE session_id = $1 AND is_active = TRUE', [sessionID]);
@@ -70,7 +67,7 @@ export class PsqlService {
       throw error;
     }
   }
- 
+
   async getCompletedSessions(projectID: string): Promise<any> {
     try {
       const result = await this.connection.query(
@@ -84,7 +81,6 @@ export class PsqlService {
     }
   }
 
-  // rename to stale or something else?
   async getInactiveSessions(cutoffTime: string): Promise<any> {
     try {
       const result = await this.connection.query(

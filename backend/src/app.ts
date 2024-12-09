@@ -22,19 +22,12 @@ const app = express();
 app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
 app.use(json({
-  limit: '10mb' // Increase JSON payload limit
+  limit: '10mb'
 }));
 app.use(cors({
   origin: true,
   credentials: true
 }));
-
-// Log request payload size
-app.use('/api/record', (req, res, next) => {
-  const contentLength = req.headers['content-length'];
-  console.log(`Batch request body: ${contentLength} bytes`);
-  next();
-});
 
 // Public routes
 app.use('/api/record', recordRouter);
@@ -74,7 +67,6 @@ worker.on('error', (error) => {
 
 worker.on('exit', (code, signal) => {
   console.log(`Worker process exited with code ${code} and signal ${signal}`);
-  // Restart?
 });
 
 export default app;

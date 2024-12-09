@@ -21,7 +21,6 @@ export class ConsoleProcessor extends BaseProcessor {
     
     const processedEvent = this.processConsoleEvent(event);
     
-    // Add as significant event with semantic meaning
     this.addSignificantEvent(
       event,
       session,
@@ -29,7 +28,6 @@ export class ConsoleProcessor extends BaseProcessor {
       this.deriveImpact(processedEvent)
     );
 
-    // Track errors in technical metrics
     if (processedEvent.level === 'error') {
       session.technical.errors.push({
         timestamp: processedEvent.timestamp,

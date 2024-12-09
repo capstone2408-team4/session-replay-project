@@ -1,4 +1,3 @@
-// Basic event types from rrweb
 export interface RRWebEvent {
   type: RRWebEventType;
   timestamp: number;
@@ -10,7 +9,7 @@ export interface SemanticFullSnapshot {
 }
 
 export interface SemanticRRWebNode {
-  type: NodeType; // Use a more descriptive type for node type
+  type: NodeType;
   id?: number;
   tagName?: string;
   textContent?: string | null;
@@ -28,9 +27,8 @@ export interface SemanticRRWebNode {
 export type RRWebEventType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 50 | 51;
 export type IncrementalSourceType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
 
-// Define RRWebNode to represent a node in the DOM tree
 export interface RRWebNode {
-  type: NodeType; // Use a more descriptive type for node type
+  type: NodeType;
   id?: number;
   tagName?: string;
   textContent?: string | null;
@@ -45,7 +43,6 @@ export interface RRWebNode {
   // isStyle?: boolean;
 }
 
-// More descriptive types for node type
 export enum NodeType {
   Document = 'Document',
   DocumentType = 'DocumentType',
@@ -55,7 +52,6 @@ export enum NodeType {
   Comment = 'Comment'
 }
 
-// Core processed session structure
 export interface ProcessedSession {
   metadata: SessionMetadata;
   events: EventSummary;

@@ -31,7 +31,6 @@ router.post('/login', async (req: express.Request<{}, {}, LoginRequest>, res: ex
       });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { projectID,
         projectName
@@ -40,7 +39,6 @@ router.post('/login', async (req: express.Request<{}, {}, LoginRequest>, res: ex
       { expiresIn: config.JWT.EXPIRES_IN }
     );
 
-    // Set httpOnly cookie
     res.cookie(config.COOKIE.NAME, token, {
       httpOnly: config.COOKIE.HTTP_ONLY,
       secure: config.COOKIE.SECURE,
