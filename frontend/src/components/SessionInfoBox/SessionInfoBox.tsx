@@ -11,7 +11,7 @@ function SessionInfoBox({ session }: SessionInfoBoxProps) {
       <div className={styles.sessionTitle}>
         Session: {session.session_id}
       </div>
-      Summary (provided generously by the Providence Team API):
+      Session Summary:
       <p>{session.session_summary}</p> 
     </div>
   )
