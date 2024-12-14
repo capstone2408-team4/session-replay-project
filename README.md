@@ -2,8 +2,6 @@
 
 Providence is an open-source session replay tool for single-page applications that uncovers insights from user interactions. By incorporating AI session analysis, aggregated session trends, and an RAG chatbot for contextual exploration, Providence helps developers understand and improve user experiences.
 
-![Providence's Architecture Diagram]()
-
 ## Getting Started
 
 Setting up Providence involves two main steps:
@@ -75,6 +73,8 @@ Visit our [deployment repository](https://github.com/providence-replay/deploy) t
    - Visit the [Agent repository](https://github.com/providence-replay/agent) for instructions on instrumenting your application.
 
 ## Architecture Overview
+
+![Providence's Architecture Diagram](https://github.com/providence-replay/providence-replay.github.io/blob/044332ff9a7425dc1ba70f890bb3c5b2156ae010/docs/public/final_arch.png)
 
 Providence consists of several key components:
 
