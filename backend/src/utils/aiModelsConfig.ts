@@ -1,7 +1,7 @@
 export const OpenAIMaxTokens = 100_000;
 export const OpenAICharsPerToken = 4;
 export const OpenAIMaxPromptLength = OpenAIMaxTokens * OpenAICharsPerToken;
-export const OpenAIModel = 'gpt-4o-mini';
+export const OpenAIModel = 'gpt-4o';
 export const EmbeddingDimensions = 1536;
 export const EmbeddingModel = 'text-embedding-3-small'
 
